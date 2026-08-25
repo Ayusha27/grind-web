@@ -3,10 +3,13 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "../pages/public/Home/Home";
 import PublicLayout from "../layouts/PublicLayout";
 import MembershipGuide from "../pages/public/MembershipGuide/MembershipGuide";
+import ScrollToHash from "../components/common/ScrollToHash";
+import StartYourJourney from "../pages/public/StartYourJourney/StartYourJourney";
 
 const AppRoutes = () => {
   return (
     <BrowserRouter>
+    <ScrollToHash />
       <Routes>
 
         <Route
@@ -24,6 +27,11 @@ const AppRoutes = () => {
               <MembershipGuide />
             </PublicLayout>
           }
+        />
+
+        <Route
+            path="/start-your-journey"
+            element={<StartYourJourney />}
         />
 
         <Route path="/login" element={<div>Login</div>} />
