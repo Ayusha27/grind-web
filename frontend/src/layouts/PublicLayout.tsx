@@ -11,9 +11,13 @@ const PublicLayout = ({ children }: PublicLayoutProps) => {
     <>
       <Navbar />
 
-      <main>
-        {children}
-      </main>
+      <main
+      style={{
+      paddingTop: "84px",
+             }}
+        >
+  {children}
+</main>
 
       <Footer />
     </>

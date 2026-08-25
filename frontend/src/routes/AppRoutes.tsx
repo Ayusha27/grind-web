@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Home from "../pages/public/Home/Home";
 import PublicLayout from "../layouts/PublicLayout";
+import MembershipGuide from "../pages/public/MembershipGuide/MembershipGuide";
 
 const AppRoutes = () => {
   return (
@@ -13,6 +14,14 @@ const AppRoutes = () => {
           element={
             <PublicLayout>
               <Home />
+            </PublicLayout>
+          }
+        />
+        <Route
+          path="/membership-guide"
+          element={
+            <PublicLayout>
+              <MembershipGuide />
             </PublicLayout>
           }
         />
