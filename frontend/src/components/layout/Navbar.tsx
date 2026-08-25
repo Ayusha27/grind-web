@@ -4,15 +4,20 @@ import { Link as RouterLink } from "react-router-dom";
 const Navbar = () => {
   return (
     <Box
-      component="header"
-      sx={{
-        height: 84,
-        backgroundColor: "#0b0b0b",
-        borderBottom: "1px solid #1d1d1d",
-        display: "flex",
-        alignItems: "center",
-      }}
-    >
+  component="header"
+  sx={{
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1200,
+    height: 84,
+    backgroundColor: "#0b0b0b",
+    borderBottom: "1px solid #1d1d1d",
+    display: "flex",
+    alignItems: "center",
+  }}
+>
       <Container
         maxWidth={false}
         sx={{
@@ -89,7 +94,8 @@ const Navbar = () => {
             </Link>
 
             <Link
-              href="#membership"
+              component={RouterLink}
+              to="/membership-guide"
               underline="none"
               sx={{
                 color: "#f5f5f0",
