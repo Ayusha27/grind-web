@@ -101,19 +101,20 @@ const StartJourneyHero = () => {
           GRIND
         </Typography>
 
+        {/* Hero Content */}
         <Container
-          maxWidth={false}
-          sx={{
-            maxWidth: 1400,
-            mx: "auto",
-            px: {
-              xs: 3,
-              md: 6,
-            },
-            position: "relative",
-            zIndex: 1,
-          }}
-        >
+  maxWidth={false}
+  sx={{
+    width: "100%",
+    mx: 0,
+    px: {
+      xs: 3,
+      md: 6,
+    },
+    position: "relative",
+    zIndex: 1,
+  }}
+>
           <Typography
             sx={{
               color: "primary.main",

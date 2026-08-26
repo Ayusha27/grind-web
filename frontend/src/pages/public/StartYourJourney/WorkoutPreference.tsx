@@ -1,8 +1,9 @@
 import { Box, Typography } from "@mui/material";
+import CheckIcon from "@mui/icons-material/Check";
 
 import { IntakeFormData } from "./types";
 
-interface Props {
+interface WorkoutPreferenceProps {
   data: IntakeFormData;
   onChange: <K extends keyof IntakeFormData>(
     field: K,
@@ -10,51 +11,56 @@ interface Props {
   ) => void;
 }
 
-const options = [
+const preferences = [
   {
-    value: "gym" as const,
+    value: "gym",
     title: "Gym",
     description: "Full equipment access",
     icon: "🏢",
   },
   {
-    value: "home" as const,
+    value: "home",
     title: "Home",
     description: "Minimal or no equipment",
     icon: "🏠",
   },
   {
-    value: "both" as const,
+    value: "both",
     title: "Both",
     description: "Mix of gym & home",
-    icon: "🔀",
+    icon: "🔄",
   },
 ];
 
 const WorkoutPreference = ({
   data,
   onChange,
-}: Props) => {
+}: WorkoutPreferenceProps) => {
   return (
     <Box
       sx={{
-        p: {
-          xs: 3,
-          md: 4,
+        mt: 3,
+        px: {
+          xs: 2.5,
+          sm: 3,
         },
-        borderBottom: "1px solid #292929",
+        py: {
+          xs: 2,
+          sm: 2.5,
+        },
       }}
     >
       <Typography
         sx={{
-          color: "primary.main",
-          fontSize: 12,
+          color: "#777",
+          fontSize: 9,
           fontWeight: 700,
-          letterSpacing: 1.5,
-          mb: 3,
+          letterSpacing: "1px",
+          textTransform: "uppercase",
+          mb: 1.5,
         }}
       >
-        WORKOUT PREFERENCE
+        Workout Preference
       </Typography>
 
       <Box
@@ -64,76 +70,107 @@ const WorkoutPreference = ({
             xs: "1fr",
             sm: "repeat(3, 1fr)",
           },
-          gap: 2,
+          gap: 1.25,
         }}
       >
-        {options.map((option) => {
+        {preferences.map((preference) => {
           const selected =
-            data.workoutPreference === option.value;
+            data.workoutPreference === preference.value;
 
           return (
             <Box
-              key={option.value}
+              key={preference.value}
               component="button"
               type="button"
               onClick={() =>
-                onChange(
-                  "workoutPreference",
-                  option.value
-                )
+                onChange("workoutPreference", preference.value)
               }
               sx={{
+                position: "relative",
+                minHeight: 58,
+                px: 1.5,
+                py: 1,
+                display: "flex",
+                alignItems: "center",
+                gap: 1.25,
                 textAlign: "left",
                 cursor: "pointer",
-                p: 2.5,
-                borderRadius: 1.5,
-                border: "1px solid",
-                borderColor: selected
-                  ? "primary.main"
-                  : "#292929",
-                backgroundColor: selected
-                  ? "rgba(255,122,0,0.08)"
-                  : "#151515",
                 color: "#f5f5f0",
+                border: selected
+                  ? "1px solid #ff7a1a"
+                  : "1px solid #292929",
+                backgroundColor: selected
+                  ? "rgba(255, 122, 26, 0.10)"
+                  : "#111",
+                transition: "all 0.2s ease",
+                fontFamily: "inherit",
 
                 "&:hover": {
                   borderColor: "primary.main",
                 },
               }}
             >
-              <Typography
-                component="span"
+              <Box
                 sx={{
-                  display: "block",
-                  fontSize: 22,
-                  mb: 1,
-                }}
-              >
-                {option.icon}
-              </Typography>
-
-              <Typography
-                component="span"
-                sx={{
-                  display: "block",
+                  width: 28,
+                  height: 28,
+                  flexShrink: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   fontSize: 15,
-                  fontWeight: 700,
-                  mb: 0.5,
                 }}
               >
-                {option.title}
-              </Typography>
+                {preference.icon}
+              </Box>
 
-              <Typography
-                component="span"
-                sx={{
-                  display: "block",
-                  color: "text.secondary",
-                  fontSize: 13,
-                }}
-              >
-                {option.description}
-              </Typography>
+              <Box>
+                <Typography
+                  sx={{
+                    color: "#f5f5f0",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {preference.title}
+                </Typography>
+
+                <Typography
+                  sx={{
+                    color: "#777",
+                    fontSize: 8,
+                    lineHeight: 1.4,
+                    mt: 0.3,
+                  }}
+                >
+                  {preference.description}
+                </Typography>
+              </Box>
+
+              {selected && (
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: 7,
+                    right: 7,
+                    width: 16,
+                    height: 16,
+                    borderRadius: "50%",
+                    backgroundColor: "primary.main",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <CheckIcon
+                    sx={{
+                      color: "#fff",
+                      fontSize: 12,
+                    }}
+                  />
+                </Box>
+              )}
             </Box>
           );
         })}

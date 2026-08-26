@@ -13,6 +13,7 @@ import {
   initialFormData,
   IntakeFormData,
 } from "./types";
+import IntakeFooter from "./IntakeFooter";
 
 const IntakeForm = () => {
   const [formData, setFormData] =
@@ -37,16 +38,17 @@ const IntakeForm = () => {
       component="section"
       sx={{
         backgroundColor: "#080808",
-        py: {
-          xs: 5,
-          md: 7,
+        pt: {
+          xs: 4,
+          md: 5,
         },
+        pb: 0,
       }}
     >
       <Container
         maxWidth={false}
         sx={{
-          maxWidth: 820,
+          maxWidth: 800,
           mx: "auto",
           px: {
             xs: 1.5,
@@ -62,12 +64,13 @@ const IntakeForm = () => {
             handleSubmit();
           }}
           sx={{
+            width: "100%",
             border: "1px solid #292929",
             backgroundColor: "#080808",
             overflow: "hidden",
           }}
         >
-          {/* Personal + Body Metrics */}
+          {/* PERSONAL + BODY METRICS */}
           <Box
             sx={{
               display: "grid",
@@ -75,7 +78,21 @@ const IntakeForm = () => {
                 xs: "1fr",
                 md: "1fr 1fr",
               },
-              borderBottom: "1px solid #292929",
+
+              "& > *": {
+                minWidth: 0,
+              },
+
+              "& > *:first-of-type": {
+                borderRight: {
+                  xs: "none",
+                  md: "1px solid #292929",
+                },
+                borderBottom: {
+                  xs: "1px solid #292929",
+                  md: "none",
+                },
+              },
             }}
           >
             <PersonalSection
@@ -89,34 +106,37 @@ const IntakeForm = () => {
             />
           </Box>
 
-          {/* Training Goals */}
+          {/* TRAINING GOALS */}
           <TrainingGoalsSection
             data={formData}
             onChange={handleChange}
           />
 
-          {/* Workout Preference */}
+          {/* WORKOUT PREFERENCE */}
           <WorkoutPreference
             data={formData}
             onChange={handleChange}
           />
 
-          {/* Health + Lifestyle */}
+          {/* HEALTH + LIFESTYLE */}
           <HealthLifestyleSection
             data={formData}
             onChange={handleChange}
           />
 
-          {/* Coaching Consultation */}
+          {/* COACHING */}
           <CoachingConsultation
             data={formData}
             onChange={handleChange}
           />
 
-          {/* Submit */}
+          {/* SUBMIT */}
           <IntakeSubmit />
         </Box>
       </Container>
+
+      {/* FOOTER */}
+      <IntakeFooter />
     </Box>
   );
 };

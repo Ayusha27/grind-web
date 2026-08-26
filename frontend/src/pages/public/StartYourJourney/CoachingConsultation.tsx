@@ -1,15 +1,12 @@
 import {
   Box,
   Checkbox,
-  FormControlLabel,
-  Link,
   Typography,
 } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
 
 import { IntakeFormData } from "./types";
 
-interface Props {
+interface CoachingConsultationProps {
   data: IntakeFormData;
   onChange: <K extends keyof IntakeFormData>(
     field: K,
@@ -20,81 +17,132 @@ interface Props {
 const CoachingConsultation = ({
   data,
   onChange,
-}: Props) => {
+}: CoachingConsultationProps) => {
   return (
     <Box
       sx={{
         p: {
-          xs: 3,
-          md: 4,
+          xs: 2,
+          md: 2.5,
         },
-        borderBottom: "1px solid #292929",
+        borderTop: "1px solid #292929",
       }}
     >
-      <Typography
+      {/* Heading */}
+      <Box
         sx={{
-          color: "primary.main",
-          fontSize: 12,
-          fontWeight: 700,
-          letterSpacing: 1.5,
-          mb: 2,
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          mb: 1.8,
         }}
       >
-        COACHING CONSULTATION
-      </Typography>
-
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={data.lifestyleConsultation}
-            onChange={(event) =>
-              onChange(
-                "lifestyleConsultation",
-                event.target.checked
-              )
-            }
-          />
-        }
-        label="I would like a consultation for lifestyle correction"
-      />
-
-      <Typography
-        sx={{
-          color: "text.secondary",
-          fontSize: 13,
-          lineHeight: 1.7,
-          maxWidth: 800,
-          mt: 1,
-        }}
-      >
-        Our coaches will reach out to discuss a holistic plan
-        covering training, nutrition, recovery, and daily
-        habits.
-      </Typography>
-
-      <Typography
-        sx={{
-          color: "text.secondary",
-          fontSize: 12,
-          lineHeight: 1.7,
-          mt: 1.5,
-        }}
-      >
-        Note: Lifestyle Correction Consultation is a paid
-        service. Pricing and package details are available
-        on the{" "}
-        <Link
-          component={RouterLink}
-          to="/membership-guide"
+        <Typography
           sx={{
-            color: "primary.main",
-            textDecoration: "none",
+            color: "#ff7417",
+            fontSize: 8,
+            fontWeight: 700,
+            letterSpacing: "1.2px",
+            whiteSpace: "nowrap",
           }}
         >
-          Membership Guide
-        </Link>
-        .
-      </Typography>
+          COACHING CONSULTATION
+        </Typography>
+
+        <Box
+          sx={{
+            flex: 1,
+            height: "1px",
+            backgroundColor: "#292929",
+          }}
+        />
+      </Box>
+
+      {/* Consultation option */}
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "flex-start",
+          gap: 1,
+          p: {
+            xs: 1.2,
+            md: 1.5,
+          },
+          border: "1px solid #292929",
+          backgroundColor: "#0d0d0d",
+        }}
+      >
+        <Checkbox
+          size="small"
+          checked={data.lifestyleConsultation}
+          onChange={(event) =>
+            onChange(
+              "lifestyleConsultation",
+              event.target.checked
+            )
+          }
+          sx={{
+            color: "#333",
+            p: 0.2,
+            mt: 0.1,
+
+            "&.Mui-checked": {
+              color: "#ff7417",
+            },
+          }}
+        />
+
+        <Box>
+          <Typography
+            sx={{
+              color: "#f5f5f0",
+              fontSize: 10,
+              fontWeight: 700,
+              lineHeight: 1.3,
+            }}
+          >
+            I would like a consultation for lifestyle
+            correction
+          </Typography>
+
+          <Typography
+            sx={{
+              mt: 0.45,
+              color: "#666",
+              fontSize: 8,
+              lineHeight: 1.45,
+            }}
+          >
+            Our coaches will reach out to discuss a
+            holistic plan covering training, nutrition,
+            recovery, and daily habits tailored to your
+            lifestyle.
+          </Typography>
+
+          <Typography
+            sx={{
+              mt: 0.35,
+              color: "#555",
+              fontSize: 7.5,
+              lineHeight: 1.4,
+            }}
+          >
+            Note: Lifestyle Correction Consultation is a
+            paid service. Pricing and package details are
+            available on the{" "}
+            <Box
+              component="span"
+              sx={{
+                color: "#ff7417",
+                fontWeight: 700,
+              }}
+            >
+              Membership Guide
+            </Box>
+            .
+          </Typography>
+        </Box>
+      </Box>
     </Box>
   );
 };

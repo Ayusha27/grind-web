@@ -1,37 +1,30 @@
 export interface IntakeFormData {
-  // Personal
   fullName: string;
   email: string;
   age: string;
   gender: string;
   occupation: string;
 
-  // Body metrics
-  weightUnit: "kg" | "lbs";
+  weightUnit: string;
   weight: string;
-  heightUnit: "cm" | "ft";
+  heightUnit: string;
   height: string;
+
   fitnessLevel: string;
   trainingDays: string;
   sessionLength: string;
 
-  // Goals
   trainingGoals: string[];
   specificFocus: string;
+  workoutPreference: string;
 
-  // Workout
-  workoutPreference: "gym" | "home" | "both" | "";
-
-  // Health
   injuries: string[];
   healthConcern: string;
 
-  // Lifestyle
   dietaryPreference: string;
-  sleep: string;
+  averageSleep: string;
   stressLevel: string;
 
-  // Coaching
   lifestyleConsultation: boolean;
 }
 
@@ -46,20 +39,20 @@ export const initialFormData: IntakeFormData = {
   weight: "",
   heightUnit: "cm",
   height: "",
+
   fitnessLevel: "",
   trainingDays: "",
   sessionLength: "",
 
   trainingGoals: [],
   specificFocus: "",
-
   workoutPreference: "",
 
   injuries: [],
   healthConcern: "",
 
   dietaryPreference: "",
-  sleep: "",
+  averageSleep: "",
   stressLevel: "",
 
   lifestyleConsultation: false,

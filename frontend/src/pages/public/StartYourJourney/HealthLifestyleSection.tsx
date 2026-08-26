@@ -1,15 +1,8 @@
-import {
-  Box,
-  Checkbox,
-  FormControlLabel,
-  MenuItem,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Checkbox, Typography } from "@mui/material";
 
 import { IntakeFormData } from "./types";
 
-interface Props {
+interface HealthLifestyleSectionProps {
   data: IntakeFormData;
   onChange: <K extends keyof IntakeFormData>(
     field: K,
@@ -17,7 +10,7 @@ interface Props {
   ) => void;
 }
 
-const injuryOptions = [
+const injuries = [
   "Knee issues",
   "Lower back pain",
   "Shoulder injury",
@@ -27,212 +20,369 @@ const injuryOptions = [
 const HealthLifestyleSection = ({
   data,
   onChange,
-}: Props) => {
+}: HealthLifestyleSectionProps) => {
+  const selectedInjuries = data.injuries ?? [];
+
   const toggleInjury = (injury: string) => {
     if (injury === "No injuries") {
-      onChange("injuries", ["No injuries"]);
+      onChange(
+        "injuries",
+        selectedInjuries.includes("No injuries")
+          ? []
+          : ["No injuries"]
+      );
+
       return;
     }
 
-    const withoutNone = data.injuries.filter(
+    const withoutNoInjuries = selectedInjuries.filter(
       (item) => item !== "No injuries"
     );
 
-    const exists = withoutNone.includes(injury);
+    const selected = withoutNoInjuries.includes(injury);
 
-    onChange(
-      "injuries",
-      exists
-        ? withoutNone.filter((item) => item !== injury)
-        : [...withoutNone, injury]
-    );
+    const updated = selected
+      ? withoutNoInjuries.filter((item) => item !== injury)
+      : [...withoutNoInjuries, injury];
+
+    onChange("injuries", updated);
   };
 
   return (
     <Box
       sx={{
-        p: {
-          xs: 3,
-          md: 4,
+        borderTop: "1px solid #292929",
+        px: {
+          xs: 2.5,
+          sm: 3,
         },
-        borderBottom: "1px solid #292929",
+        py: 3.5,
+        display: "grid",
+        gridTemplateColumns: {
+          xs: "1fr",
+          md: "1fr 1fr",
+        },
+        gap: {
+          xs: 4,
+          md: 5,
+        },
       }}
     >
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: {
-            xs: "1fr",
-            md: "repeat(2, 1fr)",
-          },
-          gap: {
-            xs: 5,
-            md: 6,
-          },
-        }}
-      >
-        {/* Health */}
-        <Box>
+      {/* =====================================================
+          HEALTH & LIMITATIONS
+      ===================================================== */}
+      <Box>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 2,
+            mb: 2.5,
+          }}
+        >
           <Typography
             sx={{
               color: "primary.main",
-              fontSize: 12,
+              fontSize: 9,
               fontWeight: 700,
-              letterSpacing: 1.5,
-              mb: 3,
+              letterSpacing: "2px",
+              textTransform: "uppercase",
+              whiteSpace: "nowrap",
             }}
           >
-            HEALTH & LIMITATIONS
-          </Typography>
-
-          <Typography
-            sx={{
-              color: "text.secondary",
-              fontSize: 13,
-              mb: 1.5,
-            }}
-          >
-            Any injuries or physical limitations?
+            Health & Limitations
           </Typography>
 
           <Box
             sx={{
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            {injuryOptions.map((injury) => (
-              <FormControlLabel
-                key={injury}
-                control={
-                  <Checkbox
-                    checked={data.injuries.includes(injury)}
-                    onChange={() =>
-                      toggleInjury(injury)
-                    }
-                  />
-                }
-                label={injury}
-              />
-            ))}
-          </Box>
-
-          <TextField
-            label="Describe any injury / health concern"
-            value={data.healthConcern}
-            onChange={(event) =>
-              onChange(
-                "healthConcern",
-                event.target.value
-              )
-            }
-            multiline
-            minRows={4}
-            fullWidth
-            sx={{
-              mt: 2,
+              height: "1px",
+              backgroundColor: "#292929",
+              flex: 1,
             }}
           />
         </Box>
 
-        {/* Lifestyle */}
+        <Typography
+          sx={{
+            color: "#777",
+            fontSize: 9,
+            fontWeight: 700,
+            letterSpacing: "1px",
+            textTransform: "uppercase",
+            mb: 1,
+          }}
+        >
+          Any injuries or physical limitations?
+        </Typography>
+
         <Box>
+          {injuries.map((injury) => {
+            const selected = selectedInjuries.includes(injury);
+
+            return (
+              <Box
+                key={injury}
+                component="button"
+                type="button"
+                onClick={() => toggleInjury(injury)}
+                sx={{
+                  width: "100%",
+                  minHeight: 38,
+                  px: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  border: 0,
+                  borderBottom: "1px solid #292929",
+                  background: "transparent",
+                  color: "#f5f5f0",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  fontFamily: "inherit",
+                }}
+              >
+                <Checkbox
+                  checked={selected}
+                  disableRipple
+                  sx={{
+                    p: 0,
+                    color: "#292929",
+
+                    "&.Mui-checked": {
+                      color: "primary.main",
+                    },
+
+                    "& .MuiSvgIcon-root": {
+                      fontSize: 20,
+                    },
+                  }}
+                />
+
+                <Typography
+                  sx={{
+                    color: selected ? "#f5f5f0" : "#777",
+                    fontSize: 10,
+                    fontWeight: selected ? 500 : 400,
+                  }}
+                >
+                  {injury}
+                </Typography>
+              </Box>
+            );
+          })}
+        </Box>
+
+        <Typography
+          sx={{
+            color: "#777",
+            fontSize: 9,
+            fontWeight: 700,
+            letterSpacing: "1px",
+            textTransform: "uppercase",
+            mt: 2.5,
+            mb: 1,
+          }}
+        >
+          Describe any injury / health concern
+        </Typography>
+
+        <Box
+          component="textarea"
+          value={data.healthConcern}
+          onChange={(event) =>
+            onChange("healthConcern", event.target.value)
+          }
+          placeholder="Eg. Torn ACL in 2022, fully recovered but cautious with heavy squats..."
+          sx={{
+            width: "100%",
+            minHeight: 72,
+            boxSizing: "border-box",
+            resize: "vertical",
+            border: "1px solid #292929",
+            backgroundColor: "#111",
+            color: "#f5f5f0",
+            px: 1.5,
+            py: 1.25,
+            fontFamily: "inherit",
+            fontSize: 10,
+            outline: "none",
+
+            "&::placeholder": {
+              color: "#555",
+              fontStyle: "italic",
+            },
+
+            "&:focus": {
+              borderColor: "primary.main",
+            },
+          }}
+        />
+      </Box>
+
+      {/* =====================================================
+          DIET & LIFESTYLE
+      ===================================================== */}
+      <Box>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 2,
+            mb: 2.5,
+          }}
+        >
           <Typography
             sx={{
               color: "primary.main",
-              fontSize: 12,
+              fontSize: 9,
               fontWeight: 700,
-              letterSpacing: 1.5,
-              mb: 3,
+              letterSpacing: "2px",
+              textTransform: "uppercase",
+              whiteSpace: "nowrap",
             }}
           >
-            DIET & LIFESTYLE
+            Diet & Lifestyle
           </Typography>
 
           <Box
             sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 2.5,
+              height: "1px",
+              backgroundColor: "#292929",
+              flex: 1,
             }}
-          >
-            <TextField
-              select
-              label="Dietary Preference"
-              value={data.dietaryPreference}
-              onChange={(event) =>
-                onChange(
-                  "dietaryPreference",
-                  event.target.value
-                )
-              }
-              fullWidth
-            >
-              <MenuItem value="none">
-                No Preference
-              </MenuItem>
-              <MenuItem value="vegetarian">
-                Vegetarian
-              </MenuItem>
-              <MenuItem value="vegan">
-                Vegan
-              </MenuItem>
-              <MenuItem value="non-vegetarian">
-                Non-Vegetarian
-              </MenuItem>
-              <MenuItem value="eggetarian">
-                Eggetarian
-              </MenuItem>
-            </TextField>
+          />
+        </Box>
 
-            <TextField
-              select
-              label="Average Sleep (Hours/Night)"
-              value={data.sleep}
-              onChange={(event) =>
-                onChange("sleep", event.target.value)
-              }
-              fullWidth
-            >
-              <MenuItem value="less-than-5">
-                Less than 5 hours
-              </MenuItem>
-              <MenuItem value="5-6">
-                5–6 hours
-              </MenuItem>
-              <MenuItem value="6-7">
-                6–7 hours
-              </MenuItem>
-              <MenuItem value="7-8">
-                7–8 hours
-              </MenuItem>
-              <MenuItem value="8-plus">
-                8+ hours
-              </MenuItem>
-            </TextField>
+        <Typography
+          sx={{
+            color: "#777",
+            fontSize: 9,
+            fontWeight: 700,
+            letterSpacing: "1px",
+            textTransform: "uppercase",
+            mb: 1,
+          }}
+        >
+          Dietary Preference
+        </Typography>
 
-            <TextField
-              select
-              label="Stress Level (Daily)"
-              value={data.stressLevel}
-              onChange={(event) =>
-                onChange(
-                  "stressLevel",
-                  event.target.value
-                )
-              }
-              fullWidth
-            >
-              <MenuItem value="low">Low</MenuItem>
-              <MenuItem value="moderate">
-                Moderate
-              </MenuItem>
-              <MenuItem value="high">High</MenuItem>
-              <MenuItem value="very-high">
-                Very High
-              </MenuItem>
-            </TextField>
-          </Box>
+        <Box
+          component="select"
+          value={data.dietaryPreference}
+          onChange={(event) =>
+            onChange("dietaryPreference", event.target.value)
+          }
+          sx={{
+            width: "100%",
+            height: 42,
+            border: "1px solid #292929",
+            backgroundColor: "#111",
+            color: "#f5f5f0",
+            px: 1.5,
+            fontFamily: "inherit",
+            fontSize: 10,
+            outline: "none",
+
+            "&:focus": {
+              borderColor: "primary.main",
+            },
+          }}
+        >
+          <option value="">Select</option>
+          <option value="Vegetarian">Vegetarian</option>
+          <option value="Non-Vegetarian">Non-Vegetarian</option>
+          <option value="Vegan">Vegan</option>
+          <option value="Eggetarian">Eggetarian</option>
+          <option value="Other">Other</option>
+        </Box>
+
+        <Typography
+          sx={{
+            color: "#777",
+            fontSize: 9,
+            fontWeight: 700,
+            letterSpacing: "1px",
+            textTransform: "uppercase",
+            mt: 2.5,
+            mb: 1,
+          }}
+        >
+          Average Sleep (Hours/Night)
+        </Typography>
+
+        <Box
+          component="select"
+          value={data.averageSleep}
+          onChange={(event) =>
+            onChange("averageSleep", event.target.value)
+          }
+          sx={{
+            width: "100%",
+            height: 42,
+            border: "1px solid #292929",
+            backgroundColor: "#111",
+            color: "#f5f5f0",
+            px: 1.5,
+            fontFamily: "inherit",
+            fontSize: 10,
+            outline: "none",
+
+            "&:focus": {
+              borderColor: "primary.main",
+            },
+          }}
+        >
+          <option value="">Select</option>
+          <option value="Less than 5 hours">
+            Less than 5 hours
+          </option>
+          <option value="5-6 hours">5-6 hours</option>
+          <option value="7-8 hours">7-8 hours</option>
+          <option value="More than 8 hours">
+            More than 8 hours
+          </option>
+        </Box>
+
+        <Typography
+          sx={{
+            color: "#777",
+            fontSize: 9,
+            fontWeight: 700,
+            letterSpacing: "1px",
+            textTransform: "uppercase",
+            mt: 2.5,
+            mb: 1,
+          }}
+        >
+          Stress Level (Daily)
+        </Typography>
+
+        <Box
+          component="select"
+          value={data.stressLevel}
+          onChange={(event) =>
+            onChange("stressLevel", event.target.value)
+          }
+          sx={{
+            width: "100%",
+            height: 42,
+            border: "1px solid #292929",
+            backgroundColor: "#111",
+            color: "#f5f5f0",
+            px: 1.5,
+            fontFamily: "inherit",
+            fontSize: 10,
+            outline: "none",
+
+            "&:focus": {
+              borderColor: "primary.main",
+            },
+          }}
+        >
+          <option value="">Select</option>
+          <option value="Low">Low</option>
+          <option value="Moderate">Moderate</option>
+          <option value="High">High</option>
         </Box>
       </Box>
     </Box>

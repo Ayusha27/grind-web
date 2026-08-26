@@ -1,12 +1,9 @@
-import {
-  Box,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import CheckIcon from "@mui/icons-material/Check";
 
 import { IntakeFormData } from "./types";
 
-interface Props {
+interface TrainingGoalsSectionProps {
   data: IntakeFormData;
   onChange: <K extends keyof IntakeFormData>(
     field: K,
@@ -16,23 +13,27 @@ interface Props {
 
 const goals = [
   {
-    value: "fat-loss",
+    value: "fat_loss",
     title: "Fat Loss",
+    description: "Burn, shred, recompose",
     icon: "🔥",
   },
   {
-    value: "muscle-gain",
+    value: "muscle_gain",
     title: "Muscle Gain",
+    description: "Size, mass, hypertrophy",
     icon: "💪",
   },
   {
     value: "strength",
     title: "Strength",
-    icon: "🏋",
+    description: "Power, lifts, PRs",
+    icon: "🏋️",
   },
   {
-    value: "general-fitness",
+    value: "general_fitness",
     title: "General Fitness",
+    description: "Move better, feel better",
     icon: "⚡",
   },
 ];
@@ -40,39 +41,62 @@ const goals = [
 const TrainingGoalsSection = ({
   data,
   onChange,
-}: Props) => {
-  const toggleGoal = (goal: string) => {
-    const exists = data.trainingGoals.includes(goal);
+}: TrainingGoalsSectionProps) => {
+  const selectedGoals = data.trainingGoals ?? [];
 
-    const updated = exists
-      ? data.trainingGoals.filter((item) => item !== goal)
-      : [...data.trainingGoals, goal];
+  const toggleGoal = (value: string) => {
+    const isSelected = selectedGoals.includes(value);
 
-    onChange("trainingGoals", updated);
+    const updatedGoals = isSelected
+      ? selectedGoals.filter((goal) => goal !== value)
+      : [...selectedGoals, value];
+
+    onChange("trainingGoals", updatedGoals);
   };
 
   return (
     <Box
       sx={{
-        p: {
-          xs: 3,
-          md: 4,
+        px: {
+          xs: 2.5,
+          sm: 3,
         },
-        borderBottom: "1px solid #292929",
+        py: 3.5,
+        borderTop: "1px solid #292929",
       }}
     >
-      <Typography
+      {/* Section heading */}
+      <Box
         sx={{
-          color: "primary.main",
-          fontSize: 12,
-          fontWeight: 700,
-          letterSpacing: 1.5,
-          mb: 3,
+          display: "flex",
+          alignItems: "center",
+          gap: 2,
+          mb: 2.5,
         }}
       >
-        TRAINING GOALS
-      </Typography>
+        <Typography
+          sx={{
+            color: "primary.main",
+            fontSize: 9,
+            fontWeight: 700,
+            letterSpacing: "2px",
+            textTransform: "uppercase",
+            whiteSpace: "nowrap",
+          }}
+        >
+          Training Goals
+        </Typography>
 
+        <Box
+          sx={{
+            height: "1px",
+            backgroundColor: "#292929",
+            flex: 1,
+          }}
+        />
+      </Box>
+
+      {/* Goal cards */}
       <Box
         sx={{
           display: "grid",
@@ -80,14 +104,11 @@ const TrainingGoalsSection = ({
             xs: "1fr",
             sm: "repeat(2, 1fr)",
           },
-          gap: 2,
-          mb: 3,
+          gap: 1.25,
         }}
       >
         {goals.map((goal) => {
-          const selected = data.trainingGoals.includes(
-            goal.value
-          );
+          const selected = selectedGoals.includes(goal.value);
 
           return (
             <Box
@@ -96,63 +117,103 @@ const TrainingGoalsSection = ({
               type="button"
               onClick={() => toggleGoal(goal.value)}
               sx={{
+                position: "relative",
+                width: "100%",
+                minHeight: 70,
+                px: 1.5,
+                py: 1.25,
+                display: "flex",
+                alignItems: "center",
+                gap: 1.25,
                 textAlign: "left",
                 cursor: "pointer",
-                p: 2.5,
-                borderRadius: 1.5,
-                border: selected
-                  ? "1px solid"
-                  : "1px solid #292929",
-                borderColor: selected
-                  ? "primary.main"
-                  : "#292929",
-                backgroundColor: selected
-                  ? "rgba(255,122,0,0.08)"
-                  : "#151515",
                 color: "#f5f5f0",
-                transition: "0.2s ease",
+                border: selected
+                  ? "1px solid #ff7a1a"
+                  : "1px solid #292929",
+                backgroundColor: selected
+                  ? "rgba(255, 122, 26, 0.10)"
+                  : "#111",
+                transition: "all 0.2s ease",
+                fontFamily: "inherit",
 
                 "&:hover": {
                   borderColor: "primary.main",
                 },
               }}
             >
-              <Typography
-                component="span"
+              {/* Icon */}
+              <Box
                 sx={{
-                  display: "block",
-                  fontSize: 22,
-                  mb: 1,
+                  width: 32,
+                  height: 32,
+                  flexShrink: 0,
+                  border: selected
+                    ? "1px solid #ff7a1a"
+                    : "1px solid #292929",
+                  backgroundColor: "#151515",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 16,
                 }}
               >
                 {goal.icon}
-              </Typography>
+              </Box>
 
-              <Typography
-                component="span"
-                sx={{
-                  fontSize: 15,
-                  fontWeight: 700,
-                }}
-              >
-                {goal.title}
-              </Typography>
+              {/* Text */}
+              <Box>
+                <Typography
+                  sx={{
+                    color: "#f5f5f0",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {goal.title}
+                </Typography>
+
+                <Typography
+                  sx={{
+                    color: "#777",
+                    fontSize: 9,
+                    lineHeight: 1.4,
+                    mt: 0.35,
+                  }}
+                >
+                  {goal.description}
+                </Typography>
+              </Box>
+
+              {/* Selected check */}
+              {selected && (
+                <Box
+                  sx={{
+                    position: "absolute",
+                    top: 8,
+                    right: 8,
+                    width: 16,
+                    height: 16,
+                    borderRadius: "50%",
+                    backgroundColor: "primary.main",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <CheckIcon
+                    sx={{
+                      color: "#fff",
+                      fontSize: 12,
+                    }}
+                  />
+                </Box>
+              )}
             </Box>
           );
         })}
       </Box>
-
-      <TextField
-        label="Specific Focus Area"
-        placeholder="Tell us what you would like to focus on..."
-        value={data.specificFocus}
-        onChange={(event) =>
-          onChange("specificFocus", event.target.value)
-        }
-        multiline
-        minRows={3}
-        fullWidth
-      />
     </Box>
   );
 };
