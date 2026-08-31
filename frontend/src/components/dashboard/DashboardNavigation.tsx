@@ -45,65 +45,161 @@ const DashboardNavigation = () => {
     <Box
       component="nav"
       sx={{
-        height: 58,
-        px: {
-          xs: 1,
-          sm: 2,
-          md: 4,
+        width: "100%",
+        height: {
+          xs: 52,
+          md: 58,
         },
+
         backgroundColor: "#151513",
+
+        borderBottom:
+          "1px solid #292725",
+
         display: "flex",
         alignItems: "stretch",
-        borderBottom: "1px solid #292725",
+
+        px: {
+          xs: 1.5,
+          sm: 3,
+          md: 5,
+        },
+
+        overflowX: "auto",
+
+        "&::-webkit-scrollbar": {
+          display: "none",
+        },
+
+        scrollbarWidth: "none",
       }}
     >
       {TABS.map((tab) => {
-        const isActive = location.pathname === tab.path;
+        const isActive =
+          location.pathname === tab.path;
 
         return (
           <Box
             key={tab.id}
             component="button"
+            type="button"
             onClick={() => navigate(tab.path)}
             sx={{
-              border: 0,
-              background: "transparent",
-              cursor: "pointer",
+              position: "relative",
+
+              height: "100%",
+
+              minWidth: {
+                xs: 105,
+                sm: 125,
+                md: 145,
+              },
 
               px: {
                 xs: 1.5,
-                sm: 2,
+                sm: 2.5,
                 md: 3,
               },
 
+              border: 0,
+              outline: "none",
+
+              backgroundColor:
+                "transparent",
+
+              cursor: "pointer",
+
               display: "flex",
               alignItems: "center",
+              justifyContent: "center",
 
-              borderBottom: isActive
-                ? "3px solid #ff5c35"
-                : "3px solid transparent",
+              color: isActive
+                ? "#ffffff"
+                : "#66625f",
+
+              transition:
+                "color 150ms ease, background-color 150ms ease",
 
               "&:hover": {
-                backgroundColor: "#1b1a18",
+                color: "#ffffff",
+                backgroundColor:
+                  "rgba(255,255,255,0.025)",
+              },
+
+              "&:focus-visible": {
+                outline:
+                  "1px solid #ff5c35",
+                outlineOffset: -2,
+              },
+
+              "&::after": {
+                content: '""',
+
+                position: "absolute",
+
+                left: 0,
+                right: 0,
+                bottom: 0,
+
+                height: 3,
+
+                backgroundColor:
+                  isActive
+                    ? "#ff5c35"
+                    : "transparent",
+
+                transition:
+                  "background-color 150ms ease",
               },
             }}
           >
-            <Typography
-              component="span"
+            <Box
               sx={{
-                fontSize: {
-                  xs: 11,
-                  sm: 13,
-                },
-                fontWeight: isActive ? 900 : 700,
-                letterSpacing: 1,
-                color: isActive
-                  ? "#ffffff"
-                  : "#66625f",
+                display: "flex",
+                alignItems: "center",
+                gap: 0.8,
               }}
             >
-              {tab.icon} {tab.label}
-            </Typography>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+
+                  color: isActive
+                    ? "#ffffff"
+                    : "#66625f",
+                }}
+              >
+                {tab.icon}
+              </Box>
+
+              <Typography
+                component="span"
+                sx={{
+                  fontSize: {
+                    xs: 10,
+                    sm: 11,
+                    md: 12,
+                  },
+
+                  lineHeight: 1,
+
+                  fontWeight:
+                    isActive ? 800 : 700,
+
+                  letterSpacing: {
+                    xs: 0.8,
+                    md: 1,
+                  },
+
+                  color: "inherit",
+
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {tab.label}
+              </Typography>
+            </Box>
           </Box>
         );
       })}

@@ -37,6 +37,8 @@ const DashboardLayout = () => {
           }}
         />
       </Box>
+
+      {/* Dashboard footer */}
       <Footer variant="dashboard" />
     </Box>
   );

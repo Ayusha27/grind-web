@@ -12,7 +12,7 @@ import ScrollToHash from "../components/common/ScrollToHash";
 import StartYourJourney from "../pages/public/StartYourJourney/StartYourJourney";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import Workout from "../pages/client/dashboard/Workout";
-import Diet from "../pages/client/dashboard/Diet";
+import Diet from "../pages/client/diet/Diet";
 import Progress from "../pages/client/dashboard/Progress";
 
 const AppRoutes = () => {
