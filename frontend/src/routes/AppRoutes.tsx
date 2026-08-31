@@ -1,13 +1,19 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
 import Home from "../pages/public/Home/Home";
 import PublicLayout from "../layouts/PublicLayout";
 import MembershipGuide from "../pages/public/MembershipGuide/MembershipGuide";
 import ScrollToHash from "../components/common/ScrollToHash";
 import StartYourJourney from "../pages/public/StartYourJourney/StartYourJourney";
-import Workout from "../pages/client/Workout/Workout";
-
-
+import DashboardLayout from "../components/dashboard/DashboardLayout";
+import Workout from "../pages/client/dashboard/Workout";
+import Diet from "../pages/client/dashboard/Diet";
+import Progress from "../pages/client/dashboard/Progress";
 
 const AppRoutes = () => {
   return (
@@ -15,8 +21,7 @@ const AppRoutes = () => {
       <ScrollToHash />
 
       <Routes>
-        {/* ================= PUBLIC ================= */}
-
+        {/* Public */}
         <Route
           path="/"
           element={
@@ -45,30 +50,33 @@ const AppRoutes = () => {
           element={<div>Login</div>}
         />
 
-        {/* ================= CLIENT ================= */}
-
+        {/* Client Dashboard */}
         <Route
           path="/client/dashboard"
-          element={<div>Client Dashboard</div>}
-        />
+          element={<DashboardLayout />}
+        >
+          <Route
+            index
+            element={<Navigate to="workout" replace />}
+          />
 
-        <Route
-          path="/client/workout"
-          element={<Workout />}
-        />
+          <Route
+            path="workout"
+            element={<Workout />}
+          />
 
-        <Route
-          path="/client/diet"
-          element={<div>Diet</div>}
-        />
+          <Route
+            path="diet"
+            element={<Diet />}
+          />
 
-        <Route
-          path="/client/progress"
-          element={<div>Progress</div>}
-        />
+          <Route
+            path="progress"
+            element={<Progress />}
+          />
+        </Route>
 
-        {/* ================= ADMIN ================= */}
-
+        {/* Admin */}
         <Route
           path="/admin/login"
           element={<div>Admin Login</div>}
