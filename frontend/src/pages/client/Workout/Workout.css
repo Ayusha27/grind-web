@@ -1,0 +1,340 @@
+.workout-page {
+  min-height: 100vh;
+  background: #f5f2ed;
+  color: #1a1714;
+}
+
+.workout-container {
+  width: 100%;
+  box-sizing: border-box;
+  padding-left: 24px !important;
+  padding-right: 24px !important;
+}
+
+/* =========================================================
+   LOGGING CONTEXT
+========================================================= */
+
+.logging-context {
+  height: 40px;
+  margin-top: 14px;
+  padding: 0 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border: 1px dashed #ffb9a8;
+  border-radius: 14px;
+
+  background: rgba(255, 255, 255, 0.28);
+  box-sizing: border-box;
+}
+
+.logging-icon {
+  font-size: 15px !important;
+  color: #ff5c35;
+}
+
+.logging-label {
+  font-size: 11px !important;
+  color: #77716b;
+}
+
+.logging-value {
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: #ff5c35;
+}
+
+.logging-change {
+  font-size: 11px !important;
+  color: #77716b;
+}
+
+.sync-badge {
+  padding: 4px 9px;
+
+  border-radius: 999px;
+
+  background: #ff5c35;
+  color: #fff;
+
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+/* =========================================================
+   DARK NAVIGATION
+========================================================= */
+
+.workout-navigation {
+  margin-top: 10px;
+
+  background: #1a1917;
+  color: #fff;
+}
+
+.workout-nav-container {
+  padding-left: 24px !important;
+  padding-right: 24px !important;
+}
+
+/* =========================================================
+   SELECTOR ROW
+========================================================= */
+
+.selector-row {
+  min-height: 52px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.selector-label {
+  font-size: 10px !important;
+  color: #77736e;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.dark-select {
+  min-width: 82px;
+  height: 34px;
+
+  color: #fff !important;
+  font-size: 11px !important;
+}
+
+.dark-select .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
+}
+
+.dark-select:hover
+  .MuiOutlinedInput-notchedOutline {
+  border-color: rgba(255, 255, 255, 0.28);
+}
+
+.dark-select .MuiSvgIcon-root {
+  color: #aaa;
+  font-size: 17px;
+}
+
+.auto-sync-text {
+  font-size: 10px !important;
+  color: #ff5c35;
+}
+
+/* =========================================================
+   DAY TABS
+========================================================= */
+
+.day-tabs {
+  min-height: 96px;
+
+  display: flex;
+  align-items: stretch;
+}
+
+.day-tab {
+  position: relative;
+
+  flex: 1;
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  box-sizing: border-box;
+
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.day-tab:hover {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.day-tab.active {
+  color: #fff;
+}
+
+.day-tab.active::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 3px;
+
+  background: #ff5c35;
+}
+
+.day-number {
+  font-size: 19px !important;
+  line-height: 1 !important;
+  font-weight: 800 !important;
+  color: #55514d;
+}
+
+.day-tab.active .day-number {
+  color: #fff;
+}
+
+.day-name {
+  margin-top: 7px !important;
+
+  font-size: 8px !important;
+  line-height: 1.2 !important;
+
+  font-weight: 800 !important;
+  letter-spacing: 0.8px;
+
+  text-transform: uppercase;
+
+  color: #57534f;
+}
+
+.day-tab.active .day-name {
+  color: #ddd8d2;
+}
+
+.day-workout {
+  max-width: 90%;
+
+  font-size: 7px !important;
+  line-height: 1.2 !important;
+
+  font-weight: 600 !important;
+  letter-spacing: 0.4px;
+
+  text-transform: uppercase;
+
+  text-align: center;
+
+  color: #4b4844;
+}
+
+.day-tab.active .day-workout {
+  color: #aaa5a0;
+}
+
+.day-dot {
+  width: 4px;
+  height: 4px;
+
+  margin-top: 8px;
+
+  border-radius: 50%;
+
+  background: #44413e;
+}
+
+.day-tab.active .day-dot {
+  background: #ff5c35;
+}
+
+/* =========================================================
+   CONTENT
+========================================================= */
+
+.workout-content {
+  padding-top: 18px !important;
+  padding-bottom: 30px !important;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 900px) {
+  .workout-container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .workout-nav-container {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .day-tabs {
+    min-height: 88px;
+  }
+
+  .day-number {
+    font-size: 17px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .workout-container {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .workout-nav-container {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .logging-context {
+    height: auto;
+    min-height: 40px;
+    padding: 8px 10px;
+  }
+
+  .logging-change {
+    display: none;
+  }
+
+  .sync-badge {
+    font-size: 7px;
+    padding: 3px 7px;
+  }
+
+  .selector-row {
+    min-height: 48px;
+  }
+
+  .auto-sync-text {
+    display: none;
+  }
+
+  .day-tabs {
+    min-height: 78px;
+  }
+
+  .day-number {
+    font-size: 16px !important;
+  }
+
+  .day-name {
+    font-size: 7px !important;
+  }
+
+  .day-workout {
+    display: none;
+  }
+
+  .day-dot {
+    margin-top: 6px;
+  }
+
+  .workout-content {
+    padding-top: 12px !important;
+  }
+}
