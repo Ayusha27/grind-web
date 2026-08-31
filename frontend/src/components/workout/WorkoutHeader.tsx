@@ -43,22 +43,32 @@ const WorkoutHeader = ({
         },
       }}
     >
-      <Stack
-        direction={{
-          xs: "column",
-          md: "row",
+      {/* =====================================================
+          MAIN HEADER ROW
+      ===================================================== */}
+
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: {
+            xs: "column",
+            md: "row",
+          },
+          alignItems: {
+            xs: "stretch",
+            md: "center",
+          },
+          justifyContent: "space-between",
+          gap: {
+            xs: 2,
+            md: 0,
+          },
         }}
-        spacing={{
-          xs: 2,
-          md: 0,
-        }}
-        alignItems={{
-          xs: "stretch",
-          md: "center",
-        }}
-        justifyContent="space-between"
       >
-        {/* LEFT */}
+        {/* ===================================================
+            LEFT SIDE
+        =================================================== */}
+
         <Stack spacing={0.7}>
           <Typography
             sx={{
@@ -87,12 +97,17 @@ const WorkoutHeader = ({
             {dayName}
           </Typography>
 
-          <Stack
-            direction="row"
-            spacing={2}
-            alignItems="center"
-            flexWrap="wrap"
-            useFlexGap
+          {/* ===============================================
+              WORKOUT STATS
+          =============================================== */}
+
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              flexWrap: "wrap",
+              gap: 2,
+            }}
           >
             <Typography
               sx={{
@@ -126,22 +141,27 @@ const WorkoutHeader = ({
               <strong>{completedSets}</strong>{" "}
               done
             </Typography>
-          </Stack>
+          </Box>
         </Stack>
 
-        {/* RIGHT */}
-        <Stack
-          direction="row"
-          spacing={2}
+        {/* ===================================================
+            RIGHT SIDE
+        =================================================== */}
+
+        <Box
           sx={{
+            display: "flex",
             alignItems: "center",
             justifyContent: {
               xs: "space-between",
               md: "flex-end",
-            }
+            },
+            gap: 2,
           }}
         >
-          {/* CIRCULAR PROGRESS */}
+          {/* ===============================================
+              CIRCULAR PROGRESS
+          =============================================== */}
 
           <Box
             sx={{
@@ -154,10 +174,12 @@ const WorkoutHeader = ({
                 md: 72,
               },
               borderRadius: "50%",
+
               background: `conic-gradient(
                 #ff5c35 ${progress}%,
                 #eee9e3 ${progress}% 100%
               )`,
+
               display: "grid",
               placeItems: "center",
               flexShrink: 0,
@@ -168,7 +190,9 @@ const WorkoutHeader = ({
                 width: "calc(100% - 7px)",
                 height: "calc(100% - 7px)",
                 borderRadius: "50%",
+
                 backgroundColor: "#fff",
+
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -198,25 +222,33 @@ const WorkoutHeader = ({
             </Box>
           </Box>
 
-          {/* RESET */}
+          {/* ===============================================
+              RESET BUTTON
+          =============================================== */}
 
           <Button
             variant="outlined"
             onClick={onReset}
             startIcon={
               <RestartAltOutlinedIcon
-                sx={{ fontSize: 15 }}
+                sx={{
+                  fontSize: 15,
+                }}
               />
             }
             sx={{
               minWidth: "auto",
               height: 32,
               px: 1.3,
+
               borderRadius: "8px",
+
               borderColor: "#ddd7d0",
               color: "#6b6560",
+
               fontSize: 10,
               fontWeight: 700,
+
               textTransform: "none",
               whiteSpace: "nowrap",
 
@@ -230,8 +262,8 @@ const WorkoutHeader = ({
           >
             Reset Day
           </Button>
-        </Stack>
-      </Stack>
+        </Box>
+      </Box>
     </Box>
   );
 };

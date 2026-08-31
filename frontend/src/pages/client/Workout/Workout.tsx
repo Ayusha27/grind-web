@@ -1,14 +1,11 @@
 import { useMemo, useState } from "react";
 import {
   Box,
-  Button,
   Container,
-  MenuItem,
-  Select,
   Stack,
   Typography,
 } from "@mui/material";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 
 import WorkoutHeader from "../../../components/workout/WorkoutHeader";
@@ -17,68 +14,175 @@ import ExerciseCard from "../../../components/workout/ExerciseCard";
 import CalorieBanner from "../../../components/workout/CalorieBanner";
 import SessionProgress from "../../../components/workout/SessionProgress";
 
-import { workoutDays } from "./workoutMockData";
+import DashboardHeader from "../../../components/workout/DashboardHeader";
+import WorkoutPeriodBar from "../../../components/workout/WorkoutPeriodBar";
+import WorkoutTabs from "../../../components/workout/WorkoutTabs";
+
+import { workoutDays } from "../workout/workoutMockData";
 
 // @ts-expect-error CSS imports are handled by the bundler.
 import "./Workout.css";
 
 const Workout = () => {
+  /* =========================================================
+     PERIOD / DAY STATE
+  ========================================================= */
+
   const [selectedDay, setSelectedDay] = useState(0);
-  const [month, setMonth] = useState("Month 1");
-  const [week, setWeek] = useState("Week 3");
+
+  const [month, setMonth] = useState(1);
+  const [week, setWeek] = useState(3);
+
+  /* =========================================================
+     SET / WARMUP STATE
+  ========================================================= */
 
   const [completedSets, setCompletedSets] = useState<
     Record<string, boolean[]>
   >({});
 
   const [completedWarmups, setCompletedWarmups] = useState<
-    Record<string, boolean>
+  Record<number, Record<string, boolean>>
   >({});
 
   const [expandedExercise, setExpandedExercise] =
     useState<number | null>(0);
 
+  /* =========================================================
+     CURRENT DAY
+  ========================================================= */
+
   const currentDay = workoutDays[selectedDay];
 
-  const totalSets = useMemo(
-    () =>
-      currentDay.exercises.reduce(
-        (total, exercise) => total + exercise.sets,
-        0
-      ),
-    [currentDay]
-  );
+  /* =========================================================
+     CURRENT DAY TOTAL SETS
+  ========================================================= */
 
-  const completedSetCount = useMemo(
-    () =>
-      Object.entries(completedSets).reduce(
-        (total, [key, sets]) => {
-          if (!key.startsWith(`${selectedDay}-`)) {
-            return total;
-          }
+  const totalSets = useMemo(() => {
+    return currentDay.exercises.reduce(
+      (total, exercise) => total + exercise.sets,
+      0
+    );
+  }, [currentDay]);
 
-          return total + sets.filter(Boolean).length;
-        },
-        0
-      ),
-    [completedSets, selectedDay]
-  );
+  /* =========================================================
+     CURRENT DAY COMPLETED SETS
+  ========================================================= */
+
+  const completedSetCount = useMemo(() => {
+    return Object.entries(completedSets).reduce(
+      (total, [key, sets]) => {
+        if (!key.startsWith(`${selectedDay}-`)) {
+          return total;
+        }
+
+        return (
+          total +
+          sets.filter(Boolean).length
+        );
+      },
+      0
+    );
+  }, [completedSets, selectedDay]);
+
+  /* =========================================================
+     TOTAL SETS ACROSS ALL 5 DAYS
+     Used by DashboardHeader
+  ========================================================= */
+
+  const totalProgramSets = useMemo(() => {
+    return workoutDays.reduce(
+      (total, day) =>
+        total +
+        day.exercises.reduce(
+          (dayTotal, exercise) =>
+            dayTotal + exercise.sets,
+          0
+        ),
+      0
+    );
+  }, []);
+
+  /* =========================================================
+     COMPLETED SETS ACROSS ALL 5 DAYS
+  ========================================================= */
+
+  const completedProgramSets = useMemo(() => {
+    return Object.values(completedSets).reduce(
+      (total, sets) =>
+        total + sets.filter(Boolean).length,
+      0
+    );
+  }, [completedSets]);
+
+  /* =========================================================
+     COMPLETED DAYS
+  ========================================================= */
+
+  const completedDays = useMemo(() => {
+    return workoutDays.reduce(
+      (count, day, dayIndex) => {
+        const dayTotal = day.exercises.reduce(
+          (total, exercise) =>
+            total + exercise.sets,
+          0
+        );
+
+        const dayCompleted = Object.entries(
+          completedSets
+        ).reduce(
+          (total, [key, sets]) => {
+            if (
+              !key.startsWith(`${dayIndex}-`)
+            ) {
+              return total;
+            }
+
+            return (
+              total +
+              sets.filter(Boolean).length
+            );
+          },
+          0
+        );
+
+        return dayCompleted >= dayTotal
+          ? count + 1
+          : count;
+      },
+      0
+    );
+  }, [completedSets]);
+
+  /* =========================================================
+     CURRENT DAY PROGRESS
+  ========================================================= */
 
   const progressPercentage =
     totalSets === 0
       ? 0
       : Math.round(
-          (completedSetCount / totalSets) * 100
+          (completedSetCount / totalSets) *
+            100
         );
 
-  const earnedCalories = useMemo(() => {
-    if (totalSets === 0) return 0;
+  /* =========================================================
+     CALORIES
+  ========================================================= */
 
-    const ratio = completedSetCount / totalSets;
+  const earnedCalories = useMemo(() => {
+    if (totalSets === 0) {
+      return 0;
+    }
+
+    const ratio =
+      completedSetCount / totalSets;
 
     return Math.round(
       (currentDay.calMin +
-        (currentDay.calMax - currentDay.calMin) * ratio) *
+        (currentDay.calMax -
+          currentDay.calMin) *
+          ratio) *
         ratio
     );
   }, [
@@ -86,6 +190,10 @@ const Workout = () => {
     totalSets,
     currentDay,
   ]);
+
+  /* =========================================================
+     TOGGLE SET
+  ========================================================= */
 
   const toggleSet = (
     exerciseIndex: number,
@@ -111,16 +219,34 @@ const Workout = () => {
     });
   };
 
+  /* =========================================================
+     TOGGLE WARMUP
+  ========================================================= */
+
   const toggleWarmup = (name: string) => {
-    setCompletedWarmups((previous) => ({
+  setCompletedWarmups((previous) => {
+    const currentDayWarmups =
+      previous[selectedDay] ?? {};
+
+    return {
       ...previous,
-      [name]: !previous[name],
-    }));
-  };
+      [selectedDay]: {
+        ...currentDayWarmups,
+        [name]: !currentDayWarmups[name],
+      },
+    };
+  });
+};
+
+  /* =========================================================
+     RESET CURRENT DAY
+  ========================================================= */
 
   const resetDay = () => {
     setCompletedSets((previous) => {
-      const updated = { ...previous };
+      const updated = {
+        ...previous,
+      };
 
       currentDay.exercises.forEach(
         (_, index) => {
@@ -133,180 +259,157 @@ const Workout = () => {
       return updated;
     });
 
-    setCompletedWarmups({});
+    setCompletedWarmups((previous) => {
+    const updated = {
+      ...previous,
+    };
+
+    delete updated[selectedDay];
+
+    return updated;
+  });
+    setExpandedExercise(0);
   };
+
+  /* =========================================================
+     CHANGE DAY
+  ========================================================= */
 
   const changeDay = (index: number) => {
     setSelectedDay(index);
     setExpandedExercise(0);
   };
 
+  /* =========================================================
+     DAY TAB LABEL
+  ========================================================= */
+
+  const getDayLabels = (
+    dayName: string
+  ) => {
+    const parts =
+      dayName.split(" - ");
+
+    return {
+      dayTitle: parts[0] ?? "",
+      workoutTitle:
+        parts.slice(1).join(" - "),
+    };
+  };
+
+  /* =========================================================
+     RENDER
+  ========================================================= */
+
   return (
     <Box className="workout-page">
       {/* =====================================================
-          LOGGING CONTEXT
+          1. DASHBOARD HEADER
+          
+          GRIND logo
+          6/96 sets done
+          0/5 days done
+          kcal today
       ===================================================== */}
 
-      <Container
-        maxWidth={false}
-        className="workout-container"
-      >
-        <Box className="logging-context">
-          <Stack
-            direction="row"
-            sx={{
-              alignItems: "center",
-            }}
-            spacing={0.8}
-          >
-            <LocationOnOutlinedIcon
-              className="logging-icon"
-            />
-
-            <Typography className="logging-label">
-              Logging to
-            </Typography>
-
-            <Typography className="logging-value">
-              {month} · {week}
-            </Typography>
-
-            <Typography className="logging-change">
-              — change in the bar above
-            </Typography>
-          </Stack>
-
-          <Box className="sync-badge">
-            AUTO-SYNC
-          </Box>
-        </Box>
-      </Container>
+      <DashboardHeader
+        completedSets={completedProgramSets}
+        totalSets={totalProgramSets}
+        completedDays={completedDays}
+        totalDays={5}
+        calories={earnedCalories}
+      />
 
       {/* =====================================================
-          MONTH / WEEK / DAY NAVIGATION
+          2. MONTH / WEEK BAR
+
+          Logging to
+          Month 1
+          Week 3
+          Auto-syncing to Progress
       ===================================================== */}
 
-      <Box className="workout-navigation">
+      <WorkoutPeriodBar
+        month={month}
+        week={week}
+        onMonthChange={setMonth}
+        onWeekChange={setWeek}
+      />
+ 
+      {/* =====================================================
+          3. MAIN TABS
+
+          WORKOUT
+          DIET
+          PROGRESS
+      ===================================================== */}
+
+      <WorkoutTabs activeTab="workout" />
+
+      {/* =====================================================
+          4. DAY TABS
+
+          1 MONDAY
+          2 TUESDAY
+          3 WEDNESDAY
+          4 THURSDAY
+          5 FRIDAY
+      ===================================================== */}
+
+      <Box className="workout-day-navigation">
         <Container
           maxWidth={false}
-          className="workout-nav-container"
+          className="workout-container"
         >
-          <Box className="selector-row">
-            <Stack
-              direction="row"
-              sx={{
-                alignItems: "center",
-              }}
-              spacing={1}
-            >
-              <Typography className="selector-label">
-                Logging to
-              </Typography>
-
-              <Select
-                value={month}
-                onChange={(event) =>
-                  setMonth(event.target.value)
-                }
-                size="small"
-                IconComponent={
-                  KeyboardArrowDownIcon
-                }
-                className="dark-select"
-              >
-                <MenuItem value="Month 1">
-                  Month 1
-                </MenuItem>
-
-                <MenuItem value="Month 2">
-                  Month 2
-                </MenuItem>
-
-                <MenuItem value="Month 3">
-                  Month 3
-                </MenuItem>
-              </Select>
-
-              <Select
-                value={week}
-                onChange={(event) =>
-                  setWeek(event.target.value)
-                }
-                size="small"
-                IconComponent={
-                  KeyboardArrowDownIcon
-                }
-                className="dark-select"
-              >
-                <MenuItem value="Week 1">
-                  Week 1
-                </MenuItem>
-
-                <MenuItem value="Week 2">
-                  Week 2
-                </MenuItem>
-
-                <MenuItem value="Week 3">
-                  Week 3
-                </MenuItem>
-
-                <MenuItem value="Week 4">
-                  Week 4
-                </MenuItem>
-              </Select>
-            </Stack>
-
-            <Typography className="auto-sync-text">
-              • Auto-syncing to Progress
-            </Typography>
-          </Box>
-
-          {/* DAY TABS */}
-
           <Box className="day-tabs">
-            {workoutDays.map((day, index) => {
-              const active =
-                index === selectedDay;
+            {workoutDays.map(
+              (day, index) => {
+                const active =
+                  index === selectedDay;
 
-              const parts =
-                day.dayName.split(" - ");
+                const {
+                  dayTitle,
+                  workoutTitle,
+                } =
+                  getDayLabels(
+                    day.dayName
+                  );
 
-              const dayTitle = parts[0];
-              const workoutTitle =
-                parts.slice(1).join(" - ");
+                return (
+                  <Box
+                    key={day.id}
+                    className={`day-tab ${
+                      active
+                        ? "active"
+                        : ""
+                    }`}
+                    onClick={() =>
+                      changeDay(index)
+                    }
+                  >
+                    <Typography className="day-number">
+                      {day.dayNumber}
+                    </Typography>
 
-              return (
-                <Box
-                  key={day.id}
-                  className={`day-tab ${
-                    active ? "active" : ""
-                  }`}
-                  onClick={() =>
-                    changeDay(index)
-                  }
-                >
-                  <Typography className="day-number">
-                    {day.dayNumber}
-                  </Typography>
+                    <Typography className="day-name">
+                      {dayTitle}
+                    </Typography>
 
-                  <Typography className="day-name">
-                    {dayTitle}
-                  </Typography>
+                    <Typography className="day-workout">
+                      {workoutTitle}
+                    </Typography>
 
-                  <Typography className="day-workout">
-                    {workoutTitle}
-                  </Typography>
-
-                  <Box className="day-dot" />
-                </Box>
-              );
-            })}
+                    <Box className="day-dot" />
+                  </Box>
+                );
+              }
+            )}
           </Box>
         </Container>
       </Box>
 
       {/* =====================================================
-          MAIN CONTENT
+          5. MAIN CONTENT
       ===================================================== */}
 
       <Container
@@ -314,18 +417,67 @@ const Workout = () => {
         className="workout-container workout-content"
       >
         <Stack spacing={1.25}>
+          {/* =================================================
+              LOGGING CONTEXT
+          ================================================= */}
+
+          <Box className="logging-context">
+            <Stack
+              direction="row"
+              spacing={0.8}
+              sx={{
+                alignItems: "center",
+              }}
+            >
+              <LocationOnOutlinedIcon
+                className="logging-icon"
+              />
+
+              <Typography className="logging-label">
+                Logging to
+              </Typography>
+
+              <Typography className="logging-value">
+                {month} · {week}
+              </Typography>
+
+              <Typography className="logging-change">
+                — change in the bar above
+              </Typography>
+            </Stack>
+
+            <Box className="sync-badge">
+              AUTO-SYNC
+            </Box>
+          </Box>
+
+          {/* =================================================
+              WORKOUT HEADER
+          ================================================= */}
 
           <WorkoutHeader
-            dayNumber={currentDay.dayNumber}
-            dayName={currentDay.dayName}
+            dayNumber={
+              currentDay.dayNumber
+            }
+            dayName={
+              currentDay.dayName
+            }
             exerciseCount={
               currentDay.exercises.length
             }
             totalSets={totalSets}
-            completedSets={completedSetCount}
-            progress={progressPercentage}
+            completedSets={
+              completedSetCount
+            }
+            progress={
+              progressPercentage
+            }
             onReset={resetDay}
           />
+
+          {/* =================================================
+              CALORIE BANNER
+          ================================================= */}
 
           <CalorieBanner
             min={currentDay.calMin}
@@ -334,16 +486,32 @@ const Workout = () => {
             note={currentDay.calNote}
           />
 
+          {/* =================================================
+              SESSION PROGRESS
+          ================================================= */}
+
           <SessionProgress
-            completed={completedSetCount}
+            completed={
+              completedSetCount
+            }
             total={totalSets}
           />
 
+          {/* =================================================
+              WARM UP
+          ================================================= */}
+
           <WarmupSection
             exercises={currentDay.warmups}
-            completed={completedWarmups}
+            completed={
+              completedWarmups[selectedDay] ?? {}
+            }
             onToggle={toggleWarmup}
           />
+
+          {/* =================================================
+              EXERCISES
+          ================================================= */}
 
           <Stack spacing={0.75}>
             {currentDay.exercises.map(
@@ -352,28 +520,42 @@ const Workout = () => {
 
                 const sets =
                   completedSets[key] ??
-                  Array(exercise.sets).fill(false);
+                  Array(
+                    exercise.sets
+                  ).fill(false);
 
                 return (
                   <ExerciseCard
                     key={key}
                     index={index}
-                    name={exercise.name}
-                    setsCount={exercise.sets}
-                    reps={exercise.reps}
-                    youtubeUrl={exercise.youtube}
+                    name={
+                      exercise.name
+                    }
+                    setsCount={
+                      exercise.sets
+                    }
+                    reps={
+                      exercise.reps
+                    }
+                    youtubeUrl={
+                      exercise.youtube
+                    }
                     completedSets={sets}
                     expanded={
-                      expandedExercise === index
+                      expandedExercise ===
+                      index
                     }
                     onExpand={() =>
                       setExpandedExercise(
-                        expandedExercise === index
+                        expandedExercise ===
+                          index
                           ? null
                           : index
                       )
                     }
-                    onToggleSet={(setIndex) =>
+                    onToggleSet={(
+                      setIndex
+                    ) =>
                       toggleSet(
                         index,
                         setIndex,

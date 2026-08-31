@@ -1,281 +1,359 @@
-import { useState } from "react";
-import { Box } from "@mui/material";
+import {
+  Box,
+  Button,
+  Stack,
+  Typography,
+} from "@mui/material";
+import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
+import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 
 interface ExerciseCardProps {
   index: number;
   name: string;
-  sets: number;
+  setsCount: number;
   reps: string;
-  youtube?: string;
+  youtubeUrl?: string;
   completedSets: boolean[];
-  onToggleSet: (index: number) => void;
+  expanded: boolean;
+  onExpand: () => void;
+  onToggleSet: (setIndex: number) => void;
 }
 
 const ExerciseCard = ({
   index,
   name,
-  sets,
+  setsCount,
   reps,
-  youtube,
+  youtubeUrl,
   completedSets,
+  expanded,
+  onExpand,
   onToggleSet,
 }: ExerciseCardProps) => {
-  const [open, setOpen] = useState(false);
+  const completedCount =
+    completedSets.filter(Boolean).length;
 
-  const watchUrl = youtube
-    ? `https://www.youtube.com/results?search_query=${encodeURIComponent(
-        youtube
-      )}`
-    : "#";
+  const isComplete =
+    completedCount === setsCount &&
+    setsCount > 0;
+
+  const openYoutube = () => {
+    if (!youtubeUrl) return;
+
+    window.open(
+      `https://www.youtube.com/results?search_query=${encodeURIComponent(
+        youtubeUrl
+      )}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  };
 
   return (
     <Box
       sx={{
-        background: "#fff",
-        border: "1px solid #ded9d3",
-        borderRadius: 2,
+        backgroundColor: isComplete
+          ? "#f0fdf4"
+          : "#fff",
+
+        border: "1.5px solid",
+        borderColor: isComplete
+          ? "#86efac"
+          : "#e0dbd4",
+
+        borderRadius: "14px",
         overflow: "hidden",
+
+        boxShadow:
+          "0 2px 12px rgba(26,23,20,.08)",
+
+        transition:
+          "border-color .15s ease, background-color .15s ease",
       }}
     >
-      {/* HEADER */}
+      {/* =====================================================
+          ACCORDION HEADER
+      ===================================================== */}
 
       <Box
-        onClick={() => setOpen((value) => !value)}
+        onClick={onExpand}
         sx={{
-          minHeight: {
-            xs: 62,
-            md: 58,
-          },
+          minHeight: 57,
           px: {
-            xs: 1.5,
-            md: 1.25,
+            xs: 1.25,
+            md: 1.75,
           },
+
           display: "flex",
           alignItems: "center",
+
           cursor: "pointer",
-          gap: 1.25,
+
+          "&:hover": {
+            backgroundColor: isComplete
+              ? "#ecfdf3"
+              : "#fcfbfa",
+          },
         }}
       >
         {/* NUMBER */}
 
         <Box
           sx={{
-            width: 26,
-            height: 26,
+            width: 28,
+            height: 28,
+            mr: 1.25,
+
             flexShrink: 0,
-            borderRadius: 1,
-            background: "#e9e6e2",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "#666",
+
+            display: "grid",
+            placeItems: "center",
+
+            borderRadius: "8px",
+
+            backgroundColor: isComplete
+              ? "#dcfce7"
+              : "#f1ede8",
+
+            color: isComplete
+              ? "#15803d"
+              : "#6b6560",
+
             fontSize: 11,
-            fontWeight: 700,
+            fontWeight: 900,
           }}
         >
           {index + 1}
         </Box>
 
-        {/* NAME */}
+        {/* EXERCISE NAME */}
 
         <Box
           sx={{
-            minWidth: 0,
             flex: 1,
+            minWidth: 0,
           }}
         >
-          <Box
+          <Typography
             sx={{
-              fontSize: {
-                xs: 13,
-                md: 12,
-              },
-              fontWeight: 800,
+              fontSize: 12,
               lineHeight: 1.2,
-              color: "#252525",
+              fontWeight: 800,
+
+              color: isComplete
+                ? "#15803d"
+                : "#1a1714",
+
+              textDecoration:
+                isComplete
+                  ? "line-through"
+                  : "none",
             }}
           >
             {name}
-          </Box>
+          </Typography>
 
-          <Box
+          <Typography
             sx={{
               mt: 0.35,
-              color: "#777",
-              fontSize: 10,
-              fontFamily: "monospace",
+              fontSize: 9,
+              color: "#77716b",
             }}
           >
-            {sets} × {reps}
-          </Box>
+            {setsCount} × {reps}
+          </Typography>
         </Box>
 
         {/* WATCH */}
 
-        <Box
-          component="a"
-          href={watchUrl}
-          target="_blank"
-          rel="noreferrer"
-          onClick={(event) =>
-            event.stopPropagation()
+        <Button
+          variant="outlined"
+          size="small"
+          startIcon={
+            <PlayArrowRoundedIcon
+              sx={{
+                fontSize:
+                  "14px !important",
+              }}
+            />
           }
+          onClick={(event) => {
+            event.stopPropagation();
+            openYoutube();
+          }}
           sx={{
-            width: {
-              xs: 75,
-              md: 65,
+            minWidth: 67,
+            height: 28,
+
+            px: 0.8,
+            mr: 0.75,
+
+            borderRadius: "7px",
+
+            borderColor: "#ded8d1",
+            color: "#59534e",
+
+            fontSize: 9,
+            fontWeight: 700,
+            textTransform: "none",
+
+            "&:hover": {
+              borderColor: "#ff5c35",
+              color: "#ff5c35",
+              backgroundColor:
+                "rgba(255,92,53,.03)",
             },
-            height: {
-              xs: 38,
-              md: 34,
-            },
-            flexShrink: 0,
-            borderRadius: 1.5,
-            background: "#ff0505",
-            color: "#fff",
-            textDecoration: "none",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: 0.7,
-            fontSize: 10,
-            fontWeight: 800,
           }}
         >
-          <span>▶</span>
           Watch
-        </Box>
+        </Button>
+
+        {/* COMPLETION */}
+
+        {completedCount > 0 && (
+          <Typography
+            sx={{
+              minWidth: 31,
+              mr: 0.5,
+
+              textAlign: "right",
+
+              fontSize: 8,
+              fontWeight: 800,
+
+              color: isComplete
+                ? "#15803d"
+                : "#ff5c35",
+            }}
+          >
+            {completedCount}/{setsCount}
+          </Typography>
+        )}
 
         {/* CHEVRON */}
 
-        <Box
+        <KeyboardArrowDownRoundedIcon
           sx={{
-            width: 20,
-            textAlign: "center",
-            color: "#777",
-            fontSize: 15,
-            transform: open
+            fontSize: 20,
+            color: "#77716b",
+
+            transform: expanded
               ? "rotate(180deg)"
-              : "none",
-            transition: "transform .15s",
+              : "rotate(0deg)",
+
+            transition:
+              "transform .15s ease",
           }}
-        >
-         ⌄
-        </Box>
+        />
       </Box>
 
-      {/* CONTENT */}
+      {/* =====================================================
+          EXPANDED CONTENT
+      ===================================================== */}
 
-      {open && (
+      {expanded && (
         <Box
           sx={{
-            borderTop: "1px solid #ebe7e2",
             px: {
-              xs: 1.5,
-              md: 1.25,
+              xs: 1.25,
+              md: 1.75,
             },
-            py: 1,
+
+            pt: 1.1,
+            pb: 1.35,
+
+            borderTop:
+              "1px solid #eee9e3",
           }}
         >
-          <Box
+          <Typography
             sx={{
-              mb: 0.8,
-              fontSize: 9,
-              letterSpacing: 1.5,
-              color: "#777",
+              mb: 0.9,
+
+              fontSize: 8,
+              fontWeight: 900,
+              letterSpacing: 1,
+
+              textTransform: "uppercase",
+
+              color: "#77716b",
             }}
           >
-            TRACK YOUR SETS
-          </Box>
+            Track Your Sets
+          </Typography>
 
-          <Box
+          <Stack
+            direction="row"
+            spacing={0.7}
             sx={{
-              display: "flex",
               flexWrap: "wrap",
-              gap: 0.7,
+              rowGap: 0.7,
             }}
           >
-            {Array.from({ length: sets }).map(
-              (_, setIndex) => {
-                const completed =
-                  completedSets[setIndex] ?? false;
+            {Array.from({
+              length: setsCount,
+            }).map((_, setIndex) => {
+              const done =
+                completedSets[setIndex];
 
-                return (
-                  <Box
-                    key={setIndex}
-                    onClick={() =>
-                      onToggleSet(setIndex)
-                    }
-                    sx={{
-                      width: 82,
-                      minHeight: 42,
-                      px: 0.8,
-                      borderRadius: 1.2,
-                      border: completed
-                        ? "1px solid #20c56a"
-                        : "1px solid #ddd8d2",
-                      background: completed
-                        ? "#effcf5"
-                        : "#faf9f7",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 0.8,
-                      cursor: "pointer",
-                    }}
-                  >
-                    {/* CHECK */}
+              return (
+                <Box
+                  key={setIndex}
+                  onClick={() =>
+                    onToggleSet(setIndex)
+                  }
+                  sx={{
+                    minWidth: {
+                      xs: 67,
+                      sm: 75,
+                    },
 
-                    <Box
-                      sx={{
-                        width: 17,
-                        height: 17,
-                        borderRadius: 0.7,
-                        flexShrink: 0,
-                        background: completed
-                          ? "#20c56a"
-                          : "#fff",
-                        border: completed
-                          ? "1px solid #20c56a"
-                          : "1px solid #d5d0ca",
-                        color: "#fff",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: 11,
-                        fontWeight: 900,
-                      }}
-                    >
-                      {completed ? "✓" : ""}
-                    </Box>
+                    height: 34,
 
-                    <Box>
-                      <Box
-                        sx={{
-                          fontSize: 7,
-                          color: "#888",
-                          lineHeight: 1,
-                        }}
-                      >
-                        SET {setIndex + 1}
-                      </Box>
+                    px: 1,
 
-                      <Box
-                        sx={{
-                          mt: 0.35,
-                          fontSize: 10,
-                          fontWeight: 800,
-                          color: "#333",
-                          lineHeight: 1,
-                        }}
-                      >
-                        {reps}
-                      </Box>
-                    </Box>
-                  </Box>
-                );
-              }
-            )}
-          </Box>
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+
+                    borderRadius: "8px",
+
+                    border: "1px solid",
+                    borderColor: done
+                      ? "#86efac"
+                      : "#ded8d1",
+
+                    backgroundColor: done
+                      ? "#dcfce7"
+                      : "#fff",
+
+                    color: done
+                      ? "#15803d"
+                      : "#6b6560",
+
+                    fontSize: 9,
+                    fontWeight: 800,
+
+                    cursor: "pointer",
+
+                    userSelect: "none",
+
+                    transition:
+                      "all .15s ease",
+
+                    "&:hover": {
+                      borderColor: done
+                        ? "#4ade80"
+                        : "#ff5c35",
+                    },
+                  }}
+                >
+                  {done ? "✓ " : ""}
+                  SET {setIndex + 1}
+                </Box>
+              );
+            })}
+          </Stack>
         </Box>
       )}
     </Box>

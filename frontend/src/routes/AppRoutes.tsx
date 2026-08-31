@@ -5,12 +5,17 @@ import PublicLayout from "../layouts/PublicLayout";
 import MembershipGuide from "../pages/public/MembershipGuide/MembershipGuide";
 import ScrollToHash from "../components/common/ScrollToHash";
 import StartYourJourney from "../pages/public/StartYourJourney/StartYourJourney";
+import Workout from "../pages/client/Workout/Workout";
+
+
 
 const AppRoutes = () => {
   return (
     <BrowserRouter>
-    <ScrollToHash />
+      <ScrollToHash />
+
       <Routes>
+        {/* ================= PUBLIC ================= */}
 
         <Route
           path="/"
@@ -20,6 +25,7 @@ const AppRoutes = () => {
             </PublicLayout>
           }
         />
+
         <Route
           path="/membership-guide"
           element={
@@ -30,11 +36,16 @@ const AppRoutes = () => {
         />
 
         <Route
-            path="/start-your-journey"
-            element={<StartYourJourney />}
+          path="/start-your-journey"
+          element={<StartYourJourney />}
         />
 
-        <Route path="/login" element={<div>Login</div>} />
+        <Route
+          path="/login"
+          element={<div>Login</div>}
+        />
+
+        {/* ================= CLIENT ================= */}
 
         <Route
           path="/client/dashboard"
@@ -43,7 +54,7 @@ const AppRoutes = () => {
 
         <Route
           path="/client/workout"
-          element={<div>Workout</div>}
+          element={<Workout />}
         />
 
         <Route
@@ -56,6 +67,8 @@ const AppRoutes = () => {
           element={<div>Progress</div>}
         />
 
+        {/* ================= ADMIN ================= */}
+
         <Route
           path="/admin/login"
           element={<div>Admin Login</div>}
@@ -65,7 +78,6 @@ const AppRoutes = () => {
           path="/admin/dashboard"
           element={<div>Admin Dashboard</div>}
         />
-
       </Routes>
     </BrowserRouter>
   );

@@ -1,26 +1,45 @@
-import { Box } from "@mui/material";
-import type { WarmupExercise } from "../../pages/client/Workout/workoutMockData";
+import {
+  Box,
+  Button,
+  Checkbox,
+  Stack,
+  Typography,
+} from "@mui/material";
+import LocalFireDepartmentOutlinedIcon from "@mui/icons-material/LocalFireDepartmentOutlined";
+import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
+
+import type { WarmupExercise } from "../../pages/client/workout/workoutMockData";
 
 interface WarmupSectionProps {
   exercises: WarmupExercise[];
   completed: Record<string, boolean>;
-  dayId: number;
   onToggle: (name: string) => void;
 }
 
 const WarmupSection = ({
   exercises,
   completed,
-  dayId,
   onToggle,
 }: WarmupSectionProps) => {
+  const openYoutube = (query?: string) => {
+    if (!query) return;
+
+    window.open(
+      `https://www.youtube.com/results?search_query=${encodeURIComponent(
+        query
+      )}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
+  };
+
   return (
     <Box
       sx={{
-        mt: 1.5,
-        background: "#fff",
-        border: "1px solid #ffb39f",
-        borderRadius: 2,
+        backgroundColor: "#fff",
+        border: "1.5px solid #e0dbd4",
+        borderRadius: "14px",
+        boxShadow: "0 2px 12px rgba(26,23,20,.08)",
         overflow: "hidden",
       }}
     >
@@ -28,199 +47,205 @@ const WarmupSection = ({
 
       <Box
         sx={{
-          minHeight: 65,
           px: {
-            xs: 1.5,
-            md: 2,
+            xs: 1.75,
+            md: 2.25,
           },
-          display: "flex",
-          alignItems: "center",
-          gap: 1.2,
-          borderBottom:
-            "1px solid #eee8e2",
+          py: 1.6,
+          borderBottom: "1px solid #eee9e3",
         }}
       >
         <Box
           sx={{
-            width: 34,
-            height: 34,
-            flexShrink: 0,
-            borderRadius: 1.5,
-            background: "#fff0eb",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            fontSize: 18,
+            gap: 1,
           }}
         >
-          🔥
-        </Box>
-
-        <Box>
-          <Box
+          <LocalFireDepartmentOutlinedIcon
             sx={{
-              fontSize: 14,
-              fontWeight: 800,
+              fontSize: 18,
+              color: "#ff5c35",
+            }}
+          />
+
+          <Typography
+            sx={{
+              fontSize: 13,
+              fontWeight: 900,
+              color: "#1a1714",
             }}
           >
             Warm-Up First
-          </Box>
-
-          <Box
-            sx={{
-              mt: 0.3,
-              fontSize: 9,
-              color: "#777",
-              lineHeight: 1.4,
-            }}
-          >
-            A proper warm-up gradually raises your heart
-            rate, improves blood flow and prepares your
-            joints and muscles for the workout. It can
-            improve movement quality and reduce the risk
-            of strain. Complete these before starting your
-            working sets.
-          </Box>
+          </Typography>
         </Box>
+
+        <Typography
+          sx={{
+            mt: 0.65,
+            maxWidth: 720,
+            fontSize: 10,
+            lineHeight: 1.55,
+            color: "#77716b",
+          }}
+        >
+          A proper warm-up gradually raises your heart
+          rate, prepares your joints and muscles, and
+          helps you move better during your workout.
+        </Typography>
       </Box>
 
-      {/* ITEMS */}
+      {/* WARMUP ROWS */}
 
-      {exercises.map((exercise) => {
-        const key = `${dayId}-${exercise.name}`;
-        const isDone = !!completed[key];
+      <Box>
+        {exercises.map((exercise, index) => {
+          const isCompleted =
+            Boolean(completed[exercise.name]);
 
-        const watchUrl = exercise.youtube
-          ? `https://www.youtube.com/results?search_query=${encodeURIComponent(
-              exercise.youtube
-            )}`
-          : "#";
-
-        return (
-          <Box
-            key={exercise.name}
-            sx={{
-              minHeight: 48,
-              px: {
-                xs: 1.5,
-                md: 2,
-              },
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-              borderBottom:
-                "1px solid #eeeae5",
-            }}
-          >
-            {/* CHECK */}
-
+          return (
             <Box
-              onClick={() =>
-                onToggle(exercise.name)
-              }
+              key={exercise.name}
               sx={{
-                width: 18,
-                height: 18,
-                flexShrink: 0,
-                borderRadius: 0.7,
-                cursor: "pointer",
-                border: isDone
-                  ? "1px solid #20c56a"
-                  : "2px solid #ddd8d2",
-                background: isDone
-                  ? "#20c56a"
-                  : "#fff",
-                color: "#fff",
+                minHeight: 53,
+                px: {
+                  xs: 1.25,
+                  md: 1.75,
+                },
                 display: "flex",
                 alignItems: "center",
-                justifyContent: "center",
-                fontSize: 11,
-                fontWeight: 900,
+                borderBottom:
+                  index === exercises.length - 1
+                    ? "none"
+                    : "1px solid #eee9e3",
               }}
             >
-              {isDone ? "✓" : ""}
-            </Box>
+              {/* CHECKBOX */}
 
-            {/* TEXT */}
+              <Checkbox
+                checked={isCompleted}
+                onChange={() =>
+                  onToggle(exercise.name)
+                }
+                disableRipple
+                sx={{
+                  p: 0.5,
+                  mr: 0.75,
 
-            <Box
-              sx={{
-                minWidth: 0,
-                flex: 1,
-              }}
-            >
+                  "& .MuiSvgIcon-root": {
+                    fontSize: 19,
+                  },
+
+                  color: "#cfc8c0",
+
+                  "&.Mui-checked": {
+                    color: "#15803d",
+                  },
+                }}
+              />
+
+              {/* NAME + DURATION */}
+
               <Box
                 sx={{
-                  fontSize: 10,
+                  flex: 1,
+                  minWidth: 0,
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: 11,
+                    fontWeight: 700,
+                    lineHeight: 1.2,
+                    color: isCompleted
+                      ? "#8b8a86"
+                      : "#1a1714",
+
+                    textDecoration:
+                      isCompleted
+                        ? "line-through"
+                        : "none",
+                  }}
+                >
+                  {exercise.name}
+                </Typography>
+
+                <Typography
+                  sx={{
+                    mt: 0.25,
+                    fontSize: 9,
+                    lineHeight: 1.2,
+                    color: "#8b857f",
+                  }}
+                >
+                  {exercise.duration}
+                </Typography>
+              </Box>
+
+              {/* WATCH */}
+
+              <Button
+                variant="outlined"
+                size="small"
+                startIcon={
+                  <PlayArrowRoundedIcon
+                    sx={{
+                      fontSize:
+                        "14px !important",
+                    }}
+                  />
+                }
+                onClick={() =>
+                  openYoutube(exercise.youtube)
+                }
+                sx={{
+                  minWidth: 67,
+                  height: 27,
+                  px: 0.8,
+                  mr: 1,
+
+                  borderRadius: "7px",
+                  borderColor: "#ded8d1",
+
+                  color: "#59534e",
+                  fontSize: 9,
                   fontWeight: 700,
-                  textDecoration: isDone
-                    ? "line-through"
-                    : "none",
-                  color: isDone
-                    ? "#777"
-                    : "#252525",
+                  textTransform: "none",
+
+                  "&:hover": {
+                    borderColor: "#ff5c35",
+                    color: "#ff5c35",
+                    backgroundColor:
+                      "rgba(255,92,53,.03)",
+                  },
                 }}
               >
-                {exercise.name}
-              </Box>
+                Watch
+              </Button>
 
-              <Box
+              {/* STATUS */}
+
+              <Typography
                 sx={{
-                  mt: 0.2,
+                  width: 48,
+                  textAlign: "right",
+
                   fontSize: 8,
-                  color: "#777",
-                  fontFamily: "monospace",
+                  fontWeight: 900,
+                  letterSpacing: 0.5,
+
+                  color: isCompleted
+                    ? "#15803d"
+                    : "#ff5c35",
                 }}
               >
-                {exercise.duration}
-              </Box>
+                {isCompleted
+                  ? "DONE"
+                  : "WARM UP"}
+              </Typography>
             </Box>
-
-            {/* WATCH */}
-
-            <Box
-              component="a"
-              href={watchUrl}
-              target="_blank"
-              rel="noreferrer"
-              sx={{
-                width: 56,
-                height: 27,
-                flexShrink: 0,
-                borderRadius: 1,
-                background: "#ff0505",
-                color: "#fff",
-                textDecoration: "none",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 0.5,
-                fontSize: 8,
-                fontWeight: 800,
-              }}
-            >
-              ▶ Watch
-            </Box>
-
-            {/* STATUS */}
-
-            <Box
-              sx={{
-                width: 48,
-                flexShrink: 0,
-                textAlign: "right",
-                fontSize: 8,
-                fontWeight: 700,
-                color: isDone
-                  ? "#159447"
-                  : "#159447",
-              }}
-            >
-              {isDone ? "DONE" : "WARM UP"}
-            </Box>
-          </Box>
-        );
-      })}
+          );
+        })}
+      </Box>
     </Box>
   );
 };
