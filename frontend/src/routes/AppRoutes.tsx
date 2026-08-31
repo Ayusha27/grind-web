@@ -13,7 +13,7 @@ import StartYourJourney from "../pages/public/StartYourJourney/StartYourJourney"
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import Workout from "../pages/client/dashboard/Workout";
 import Diet from "../pages/client/diet/Diet";
-import Progress from "../pages/client/dashboard/Progress";
+import Progress from "../pages/client/progress/Progress";
 
 const AppRoutes = () => {
   return (
