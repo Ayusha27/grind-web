@@ -1,4 +1,9 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
 import Home from "../pages/public/Home/Home";
 import PublicLayout from "../layouts/PublicLayout";
@@ -6,12 +11,19 @@ import MembershipGuide from "../pages/public/MembershipGuide/MembershipGuide";
 import ScrollToHash from "../components/common/ScrollToHash";
 import StartYourJourney from "../pages/public/StartYourJourney/StartYourJourney";
 
+import DashboardLayout from "../components/dashboard/DashboardLayout";
+
+import Workout from "../pages/client/dashboard/Workout";
+import Diet from "../pages/client/dashboard/Diet";
+import Progress from "../pages/client/dashboard/Progress";
+
 const AppRoutes = () => {
   return (
     <BrowserRouter>
-    <ScrollToHash />
-      <Routes>
+      <ScrollToHash />
 
+      <Routes>
+        {/* Public */}
         <Route
           path="/"
           element={
@@ -20,6 +32,7 @@ const AppRoutes = () => {
             </PublicLayout>
           }
         />
+
         <Route
           path="/membership-guide"
           element={
@@ -30,32 +43,42 @@ const AppRoutes = () => {
         />
 
         <Route
-            path="/start-your-journey"
-            element={<StartYourJourney />}
+          path="/start-your-journey"
+          element={<StartYourJourney />}
         />
 
-        <Route path="/login" element={<div>Login</div>} />
+        <Route
+          path="/login"
+          element={<div>Login</div>}
+        />
 
+        {/* Client Dashboard */}
         <Route
           path="/client/dashboard"
-          element={<div>Client Dashboard</div>}
-        />
+          element={<DashboardLayout />}
+        >
+          <Route
+            index
+            element={<Navigate to="workout" replace />}
+          />
 
-        <Route
-          path="/client/workout"
-          element={<div>Workout</div>}
-        />
+          <Route
+            path="workout"
+            element={<Workout />}
+          />
 
-        <Route
-          path="/client/diet"
-          element={<div>Diet</div>}
-        />
+          <Route
+            path="diet"
+            element={<Diet />}
+          />
 
-        <Route
-          path="/client/progress"
-          element={<div>Progress</div>}
-        />
+          <Route
+            path="progress"
+            element={<Progress />}
+          />
+        </Route>
 
+        {/* Admin */}
         <Route
           path="/admin/login"
           element={<div>Admin Login</div>}
@@ -65,7 +88,6 @@ const AppRoutes = () => {
           path="/admin/dashboard"
           element={<div>Admin Dashboard</div>}
         />
-
       </Routes>
     </BrowserRouter>
   );

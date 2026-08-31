@@ -1,6 +1,125 @@
 import { Box, Container, Typography } from "@mui/material";
 
-const Footer = () => {
+interface FooterProps {
+  variant?: "public" | "dashboard";
+}
+
+const Footer = ({
+  variant = "public",
+}: FooterProps) => {
+  if (variant === "dashboard") {
+    return <DashboardFooter />;
+  }
+
+  return <PublicFooter />;
+};
+
+const DashboardFooter = () => {
+  return (
+    <Box
+      component="footer"
+      sx={{
+        backgroundColor: "#ffffff",
+        borderTop: "1px solid #ddd8d2",
+        py: {
+          xs: 3,
+          md: 3.5,
+        },
+      }}
+    >
+      <Container
+        maxWidth={false}
+        sx={{
+          maxWidth: 1100,
+          mx: "auto",
+          px: {
+            xs: 2,
+            sm: 3,
+            md: 4,
+          },
+        }}
+      >
+        <Box
+          sx={{
+            textAlign: "center",
+          }}
+        >
+          {/* Instagram */}
+          <Typography
+            component="a"
+            href="#"
+            sx={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 1,
+
+              color: "#ff5738",
+
+              fontSize: {
+                xs: 14,
+                md: 16,
+              },
+
+              fontWeight: 700,
+
+              textDecoration: "none",
+
+              "&:hover": {
+                textDecoration: "underline",
+              },
+            }}
+          >
+            <span
+              style={{
+                fontSize: "22px",
+                lineHeight: 1,
+              }}
+            >
+              ◎
+            </span>
+
+            Follow us on Instagram
+          </Typography>
+
+          {/* Support */}
+          <Typography
+            sx={{
+              mt: 1.5,
+
+              color: "#6f6964",
+
+              fontSize: {
+                xs: 13,
+                md: 15,
+              },
+
+              fontWeight: 500,
+            }}
+          >
+            Need support?{" "}
+            <Box
+              component="a"
+              href="mailto:support.grindfit.ai@trenddma.com"
+              sx={{
+                color: "#ff5738",
+                textDecoration: "none",
+                fontWeight: 600,
+
+                "&:hover": {
+                  textDecoration: "underline",
+                },
+              }}
+            >
+              support.grindfit.ai@trenddma.com
+            </Box>
+          </Typography>
+        </Box>
+      </Container>
+    </Box>
+  );
+};
+
+const PublicFooter = () => {
   return (
     <Box
       component="footer"
@@ -30,7 +149,6 @@ const Footer = () => {
             textAlign: "center",
           }}
         >
-          {/* Logo */}
           <Typography
             sx={{
               fontFamily: '"Bebas Neue", sans-serif',
@@ -52,7 +170,6 @@ const Footer = () => {
             GRIND
           </Typography>
 
-          {/* Tagline */}
           <Typography
             sx={{
               color: "text.secondary",
@@ -66,7 +183,6 @@ const Footer = () => {
             Making Personalized Fitness Accessible To All
           </Typography>
 
-          {/* Divider */}
           <Box
             sx={{
               width: 120,
@@ -77,7 +193,6 @@ const Footer = () => {
             }}
           />
 
-          {/* Copyright */}
           <Typography
             sx={{
               color: "text.secondary",
