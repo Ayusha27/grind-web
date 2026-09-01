@@ -1,20 +1,17 @@
 import { Box, Typography } from "@mui/material";
+import { useDashboard } from "../../context/DashboardContext";
 
-interface DashboardHeaderProps {
-  completedSets: number;
-  totalSets: number;
-  completedDays: number;
-  totalDays: number;
-  calories: number;
-}
+const DashboardHeader = () => {
+  const { stats } = useDashboard();
 
-const DashboardHeader = ({
-  completedSets,
-  totalSets,
-  completedDays,
-  totalDays,
-  calories,
-}: DashboardHeaderProps) => {
+  const {
+    completedSets,
+    totalSets,
+    completedDays,
+    totalDays,
+    calories,
+  } = stats;
+
   return (
     <Box
       sx={{

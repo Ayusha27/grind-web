@@ -52,6 +52,8 @@ const ExerciseCard = ({
   return (
     <Box
       sx={{
+        width: "100%",
+        boxSizing: "border-box",
         backgroundColor: isComplete
           ? "#f0fdf4"
           : "#fff",

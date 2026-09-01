@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Box } from "@mui/material";
 
 import DayNavigation from "../../../components/workout/DayNavigation";
@@ -15,12 +15,17 @@ import {
   WORKOUT_EXERCISES,
 } from "../../../constants/workout";
 
+import { useDashboard } from "../../../context/DashboardContext";
+
 const Workout = () => {
+  const { setStats } = useDashboard();
+
   /* ---------------------------------------------
    * Day selection
    * --------------------------------------------- */
 
-  const [selectedDay, setSelectedDay] = useState(1);
+  const [selectedDay, setSelectedDay] =
+    useState(1);
 
   /* ---------------------------------------------
    * Warm-up state
@@ -46,10 +51,17 @@ const Workout = () => {
     useState<number | null>(1);
 
   /* ---------------------------------------------
-   * Derived workout data
-   *
-   * Don't store these separately.
-   * They can be calculated from exercises.
+   * Current workout day
+   * --------------------------------------------- */
+
+  const selectedWorkout =
+    WORKOUT_DAYS.find(
+      (day) =>
+        day.dayNumber === selectedDay
+    );
+
+  /* ---------------------------------------------
+   * Current day's total sets
    * --------------------------------------------- */
 
   const totalSets = useMemo(() => {
@@ -59,6 +71,10 @@ const Workout = () => {
       0
     );
   }, [exercises]);
+
+  /* ---------------------------------------------
+   * Current day's completed sets
+   * --------------------------------------------- */
 
   const completedSets = useMemo(() => {
     return exercises.reduce(
@@ -71,89 +87,210 @@ const Workout = () => {
     );
   }, [exercises]);
 
+
+  useEffect(() => {
+  setStats({
+    completedSets,
+    totalSets,
+    completedDays: completedSets === totalSets ? 1 : 0,
+    totalDays: WORKOUT_DAYS.length,
+    calories: 84,
+  });
+}, [completedSets, totalSets, setStats]);
   /* ---------------------------------------------
-   * Selected workout day
+   * Total sets across the complete program
    * --------------------------------------------- */
 
-  const selectedWorkout = WORKOUT_DAYS.find(
-  (day) => day.dayNumber === selectedDay
-);
+//   const totalProgramSets = useMemo(() => {
+//     return WORKOUT_DAYS.reduce(
+//       (total, day) => {
+//         return (
+//           total +
+//           day.exercises.reduce(
+//             (
+//               dayTotal,
+//               exercise
+//             ) =>
+//               dayTotal +
+//               exercise.sets.length,
+//             0
+//           )
+//         );
+//       },
+//       0
+//     );
+//   }, []);
 
   /* ---------------------------------------------
-   * Handlers
+   * Completed program sets
+   *
+   * Current page stores workout completion
+   * in the selected workout state.
+   * --------------------------------------------- */
+
+  const completedProgramSets =
+    completedSets;
+
+  /* ---------------------------------------------
+   * Completed days
+   * --------------------------------------------- */
+
+  const completedDays =
+    completedSets === totalSets &&
+    totalSets > 0
+      ? 1
+      : 0;
+
+  /* ---------------------------------------------
+   * Sync stats with DashboardContext
+   * --------------------------------------------- */
+
+//   useEffect(() => {
+//     console.log("🔥 DASHBOARD STATS", {
+//       completedSets:
+//         completedProgramSets,
+
+//       totalSets:
+//         totalProgramSets,
+
+//       completedDays,
+
+//       totalDays:
+//         WORKOUT_DAYS.length,
+//     });
+
+//     setStats({
+//       completedSets:
+//         completedProgramSets,
+
+//       totalSets:
+//         totalProgramSets,
+
+//       completedDays,
+
+//       totalDays:
+//         WORKOUT_DAYS.length,
+
+//       calories: 0,
+//     });
+//   }, [
+//     completedProgramSets,
+//     totalProgramSets,
+//     completedDays,
+//     setStats,
+//   ]);
+
+  /* ---------------------------------------------
+   * Reset current day
    * --------------------------------------------- */
 
   const handleResetDay = () => {
     setExercises(
-      WORKOUT_EXERCISES.map((exercise) => ({
-        ...exercise,
-        sets: exercise.sets.map((set) => ({
-          ...set,
-          completed: false,
-        })),
-      }))
+      WORKOUT_EXERCISES.map(
+        (exercise) => ({
+          ...exercise,
+
+          sets: exercise.sets.map(
+            (set) => ({
+              ...set,
+              completed: false,
+            })
+          ),
+        })
+      )
     );
 
     setWarmUpExercises(
-      WARM_UP_EXERCISES.map((exercise) => ({
-        ...exercise,
-        completed: false,
-      }))
+      WARM_UP_EXERCISES.map(
+        (exercise) => ({
+          ...exercise,
+          completed: false,
+        })
+      )
     );
 
     setOpenExerciseId(1);
   };
 
+  /* ---------------------------------------------
+   * Warm-up toggle
+   * --------------------------------------------- */
+
   const handleWarmUpToggle = (
     exerciseId: number
   ) => {
-    setWarmUpExercises((current) =>
-      current.map((exercise) =>
-        exercise.id === exerciseId
-          ? {
-              ...exercise,
-              completed: !exercise.completed,
-            }
-          : exercise
-      )
+    setWarmUpExercises(
+      (current) =>
+        current.map(
+          (exercise) =>
+            exercise.id ===
+            exerciseId
+              ? {
+                  ...exercise,
+                  completed:
+                    !exercise.completed,
+                }
+              : exercise
+        )
     );
   };
+
+  /* ---------------------------------------------
+   * Exercise accordion toggle
+   * --------------------------------------------- */
 
   const handleExerciseToggle = (
     exerciseId: number
   ) => {
-    setOpenExerciseId((currentId) =>
-      currentId === exerciseId
-        ? null
-        : exerciseId
+    setOpenExerciseId(
+      (currentId) =>
+        currentId === exerciseId
+          ? null
+          : exerciseId
     );
   };
+
+  /* ---------------------------------------------
+   * Set toggle
+   * --------------------------------------------- */
 
   const handleSetToggle = (
     exerciseId: number,
     setId: number
   ) => {
-    setExercises((currentExercises) =>
-      currentExercises.map((exercise) => {
-        if (exercise.id !== exerciseId) {
-          return exercise;
-        }
+    setExercises(
+      (currentExercises) =>
+        currentExercises.map(
+          (exercise) => {
+            if (
+              exercise.id !==
+              exerciseId
+            ) {
+              return exercise;
+            }
 
-        return {
-          ...exercise,
+            return {
+              ...exercise,
 
-          sets: exercise.sets.map((set) =>
-            set.id === setId
-              ? {
-                  ...set,
-                  completed: !set.completed,
-                }
-              : set
-          ),
-        };
-      })
+              sets: exercise.sets.map(
+                (set) =>
+                  set.id === setId
+                    ? {
+                        ...set,
+                        completed:
+                          !set.completed,
+                      }
+                    : set
+              ),
+            };
+          }
+        )
     );
   };
+
+  /* ---------------------------------------------
+   * Watch exercise video
+   * --------------------------------------------- */
 
   const handleWatch = (
     videoUrl?: string
@@ -176,28 +313,27 @@ const Workout = () => {
   return (
     <Box
       sx={{
-        minHeight: "calc(100vh - 194px)",
-        backgroundColor: "#f5f2ed",
+        minHeight:
+          "calc(100vh - 194px)",
+        backgroundColor:
+          "#f5f2ed",
       }}
     >
-      {/* -----------------------------------------
-       * Day navigation
-       * ----------------------------------------- */}
+      {/* Day navigation */}
 
       <DayNavigation
         days={WORKOUT_DAYS}
         selectedDay={selectedDay}
-        onDayChange={setSelectedDay}
+        onDayChange={
+          setSelectedDay
+        }
       />
 
-      {/* -----------------------------------------
-       * Main workout content
-       * ----------------------------------------- */}
+      {/* Main content */}
 
       <Box
         sx={{
           width: "100%",
-          maxWidth: 1500,
           mx: "auto",
 
           px: {
@@ -213,7 +349,8 @@ const Workout = () => {
           },
 
           display: "flex",
-          flexDirection: "column",
+          flexDirection:
+            "column",
 
           gap: {
             xs: 2,
@@ -236,10 +373,16 @@ const Workout = () => {
             selectedWorkout?.label ??
             "Workout"
           }
-          exerciseCount={exercises.length}
+          exerciseCount={
+            exercises.length
+          }
           totalSets={totalSets}
-          completedSets={completedSets}
-          onReset={handleResetDay}
+          completedSets={
+            completedSets
+          }
+          onReset={
+            handleResetDay
+          }
         />
 
         {/* Calories */}
@@ -253,56 +396,72 @@ const Workout = () => {
         {/* Session progress */}
 
         <SessionProgress
-          completed={completedSets}
+          completed={
+            completedSets
+          }
           total={totalSets}
         />
 
         {/* Warm-up */}
 
         <WarmUpSection
-          exercises={warmUpExercises}
-          onToggle={handleWarmUpToggle}
+          exercises={
+            warmUpExercises
+          }
+          onToggle={
+            handleWarmUpToggle
+          }
           onWatch={(exercise) =>
-            handleWatch(exercise.videoUrl)
+            handleWatch(
+              exercise.videoUrl
+            )
           }
         />
 
-        {/* ---------------------------------------
-         * Working exercises
-         * --------------------------------------- */}
+        {/* Exercises */}
 
         <Box
           sx={{
             display: "flex",
-            flexDirection: "column",
+            flexDirection:
+              "column",
             gap: 1.5,
           }}
         >
-          {exercises.map((exercise) => (
-            <ExerciseAccordion
-              key={exercise.id}
-              exercise={exercise}
-              isOpen={
-                openExerciseId === exercise.id
-              }
-              onToggle={() =>
-                handleExerciseToggle(
+          {exercises.map(
+            (exercise) => (
+              <ExerciseAccordion
+                key={exercise.id}
+                exercise={
+                  exercise
+                }
+                isOpen={
+                  openExerciseId ===
                   exercise.id
-                )
-              }
-              onSetToggle={(setId) =>
-                handleSetToggle(
-                  exercise.id,
+                }
+                onToggle={() =>
+                  handleExerciseToggle(
+                    exercise.id
+                  )
+                }
+                onSetToggle={(
                   setId
-                )
-              }
-              onWatch={(exercise) =>
-                handleWatch(
-                  exercise.videoUrl
-                )
-              }
-            />
-          ))}
+                ) =>
+                  handleSetToggle(
+                    exercise.id,
+                    setId
+                  )
+                }
+                onWatch={(
+                  exercise
+                ) =>
+                  handleWatch(
+                    exercise.videoUrl
+                  )
+                }
+              />
+            )
+          )}
         </Box>
       </Box>
     </Box>

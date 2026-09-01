@@ -28,6 +28,8 @@ const WorkoutHeader = ({
   return (
     <Box
       sx={{
+        width: "100%",
+        boxSizing: "border-box",
         backgroundColor: "#ffffff",
         border: "1.5px solid #e0dbd4",
         borderRadius: "14px",

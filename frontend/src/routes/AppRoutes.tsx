@@ -16,6 +16,7 @@ import Diet from "../pages/client/diet/Diet";
 import Progress from "../pages/client/progress/Progress";
 
 const AppRoutes = () => {
+    console.log("🔥 APP ROUTES IS RENDERING");
   return (
     <BrowserRouter>
       <ScrollToHash />
