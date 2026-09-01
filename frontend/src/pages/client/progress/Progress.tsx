@@ -16,9 +16,25 @@ const Progress = () => {
   const [selectedMonth, setSelectedMonth] = useState(1);
   const [selectedWeek, setSelectedWeek] = useState(1);
 
+  /*
+   * Weekly weights entered by the user.
+   *
+   * Example:
+   *
+   * {
+   *   1: 93,
+   *   2: 91,
+   *   3: 92,
+   *   4: null
+   * }
+   */
   const [weights, setWeights] = useState<
     Record<number, number | null>
   >(progressMockData.weeklyWeights);
+
+  /* =========================================================
+     SELECTED MONTH
+  ========================================================= */
 
   const selectedMonthData = useMemo(() => {
     return (
@@ -27,6 +43,10 @@ const Progress = () => {
       ) ?? progressMockData.months[0]
     );
   }, [selectedMonth]);
+
+  /* =========================================================
+     SELECTED WEEK
+  ========================================================= */
 
   const selectedWeekData = useMemo(() => {
     return (
@@ -44,10 +64,20 @@ const Progress = () => {
     );
   }, [selectedMonthData, selectedWeek]);
 
-  const handleMonthChange = (month: number) => {
+  /* =========================================================
+     MONTH CHANGE
+  ========================================================= */
+
+  const handleMonthChange = (
+    month: number
+  ) => {
     setSelectedMonth(month);
     setSelectedWeek(1);
   };
+
+  /* =========================================================
+     WEIGHT CHANGE
+  ========================================================= */
 
   const handleWeightChange = (
     week: number,
@@ -59,42 +89,128 @@ const Progress = () => {
     }));
   };
 
+  /* =========================================================
+     CURRENT WEIGHT
+
+     The current weight is always the latest
+     week for which the user has entered a value.
+
+     Example:
+
+     Week 1 = 93
+     Week 2 = 91
+     Week 3 = 92
+     Week 4 = empty
+
+     Current weight = 92 kg
+  ========================================================= */
+
+  const currentWeight = useMemo(() => {
+    const enteredWeeks = Object.entries(
+      weights
+    )
+      .filter(
+        ([, weight]) =>
+          weight !== null &&
+          weight !== undefined &&
+          Number.isFinite(weight)
+      )
+      .map(
+        ([week, weight]) => ({
+          week: Number(week),
+          weight: weight as number,
+        })
+      )
+      .sort(
+        (a, b) => b.week - a.week
+      );
+
+    return (
+      enteredWeeks[0]?.weight ??
+      progressMockData.startingWeight
+    );
+  }, [weights]);
+
+  /* =========================================================
+     TOTAL WEIGHT CHANGE
+
+     IMPORTANT:
+
+     This is ALWAYS calculated against the
+     user's starting weight.
+
+     currentWeight - startingWeight
+
+     Example:
+
+     Starting = 95
+     Current  = 91
+
+     91 - 95 = -4 kg
+
+     Therefore:
+
+     -4 kg = lost 4 kg
+  ========================================================= */
+
+  const weightChange = useMemo(() => {
+    return (
+      currentWeight -
+      progressMockData.startingWeight
+    );
+  }, [currentWeight]);
+
   return (
     <Box
       sx={{
+        width: "100%",
+        minWidth: 0,
         minHeight: "100%",
-        backgroundColor: "#f5f2ed",
+
+        backgroundColor:
+          "#f5f2ed",
       }}
     >
       <Container
         maxWidth={false}
         sx={{
+          width: "100%",
           maxWidth: "none",
+
           px: {
             xs: 2,
             sm: 2.5,
             md: 4,
           },
+
           py: {
             xs: 2.5,
             md: 3,
           },
+
+          boxSizing:
+            "border-box",
         }}
       >
         <Stack spacing={2.5}>
+
           {/* =================================================
               TOP WEIGHT STATS
+
+              These values are now dynamic.
           ================================================= */}
 
           <ProgressStats
             startingWeight={
               progressMockData.startingWeight
             }
+
             currentWeight={
-              progressMockData.currentWeight
+              currentWeight
             }
+
             weightChange={
-              progressMockData.weightChange
+              weightChange
             }
           />
 
@@ -104,7 +220,9 @@ const Progress = () => {
 
           <ProgressTrackerHeader
             month={selectedMonth}
-            onMonthChange={handleMonthChange}
+            onMonthChange={
+              handleMonthChange
+            }
           />
 
           {/* =================================================
@@ -115,21 +233,27 @@ const Progress = () => {
             monthScore={
               selectedMonthData.monthScore
             }
+
             sessionsCompleted={
               selectedMonthData.sessionsCompleted
             }
+
             totalSessions={
               selectedMonthData.totalSessions
             }
+
             caloriesBurned={
               selectedMonthData.caloriesBurned
             }
+
             activeWeeks={
               selectedMonthData.activeWeeks
             }
+
             totalWeeks={
               selectedMonthData.totalWeeks
             }
+
             bestWeekScore={
               selectedMonthData.bestWeekScore
             }
@@ -141,7 +265,9 @@ const Progress = () => {
 
           <WeeklyDetail
             week={selectedWeek}
-            onWeekChange={setSelectedWeek}
+            onWeekChange={
+              setSelectedWeek
+            }
           />
 
           {/* =================================================
@@ -150,7 +276,9 @@ const Progress = () => {
 
           <DayBreakdown
             week={selectedWeek}
-            days={selectedWeekData.days}
+            days={
+              selectedWeekData.days
+            }
           />
 
           {/* =================================================
@@ -161,24 +289,32 @@ const Progress = () => {
             sessionsCompleted={
               selectedWeekData.sessionsCompleted
             }
+
             totalSessions={
               selectedWeekData.totalSessions
             }
+
             caloriesBurned={
               selectedWeekData.caloriesBurned
             }
+
             weekScore={
               selectedWeekData.weekScore
             }
           />
 
           {/* =================================================
-              WEEKLY WEIGHT
+              WEEKLY WEIGHT TRACKER
+
+              User enters weight here.
+              ProgressStats automatically updates.
           ================================================= */}
 
           <WeeklyWeightTracker
             weights={weights}
-            onChange={handleWeightChange}
+            onChange={
+              handleWeightChange
+            }
           />
 
           {/* =================================================
@@ -190,6 +326,7 @@ const Progress = () => {
               progressMockData.monthlyOverview
             }
           />
+
         </Stack>
       </Container>
     </Box>

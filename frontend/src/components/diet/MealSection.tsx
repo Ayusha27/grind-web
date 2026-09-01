@@ -1,45 +1,78 @@
-import { Box, Typography } from "@mui/material";
+import {
+  Box,
+  Typography,
+} from "@mui/material";
+
 import RestaurantMenuOutlinedIcon from "@mui/icons-material/RestaurantMenuOutlined";
 
-import type { MealOption } from "../../pages/client/diet/dietMockData";
+import type {
+  MealOption,
+} from "../../pages/client/diet/dietMockData";
+
 import MealCard from "./MealCard";
 
 interface MealSectionProps {
   meal: string;
+
   options: MealOption[];
-  selectedMeals: string[];
-  onToggleMeal: (key: string) => void;
+
+  /*
+   * Index of the selected option.
+   *
+   * undefined = nothing selected.
+   */
+  selectedMeal:
+    | number
+    | undefined;
+
+  /*
+   * Receives the option index.
+   */
+  onToggleMeal: (
+    optionIndex: number
+  ) => void;
 }
 
 const MealSection = ({
   meal,
   options,
-  selectedMeals,
+  selectedMeal,
   onToggleMeal,
 }: MealSectionProps) => {
   return (
     <Box
       sx={{
+        width: "100%",
+        minWidth: 0,
+
         mb: {
           xs: 2,
           md: 2.5,
         },
       }}
     >
-      {/* MEAL HEADER */}
+      {/* =====================================================
+          MEAL HEADER
+      ===================================================== */}
 
       <Box
         sx={{
           display: "flex",
           alignItems: "center",
+
           gap: 0.75,
+
           mb: 1,
+
+          minWidth: 0,
         }}
       >
         <RestaurantMenuOutlinedIcon
           sx={{
             fontSize: 16,
             color: "#ff5c35",
+
+            flexShrink: 0,
           }}
         />
 
@@ -48,7 +81,11 @@ const MealSection = ({
           sx={{
             fontSize: 13,
             fontWeight: 900,
+
             color: "#211e1b",
+
+            whiteSpace:
+              "nowrap",
           }}
         >
           {meal}
@@ -57,27 +94,47 @@ const MealSection = ({
         <Typography
           sx={{
             ml: 0.5,
+
             fontSize: 8,
+
             color: "#8a837d",
-            textTransform: "uppercase",
+
+            textTransform:
+              "uppercase",
+
+            whiteSpace:
+              "nowrap",
           }}
         >
           Choose one
         </Typography>
       </Box>
 
-      {options.map((option, index) => {
-        const key = `${meal}-${index}`;
+      {/* =====================================================
+          OPTIONS
+      ===================================================== */}
 
-        return (
-          <MealCard
-            key={key}
-            option={option}
-            selected={selectedMeals.includes(key)}
-            onToggle={() => onToggleMeal(key)}
-          />
-        );
-      })}
+      {options.map(
+        (option, index) => {
+          const isSelected =
+            selectedMeal === index;
+
+          return (
+            <MealCard
+              key={`${meal}-${index}`}
+              option={option}
+              selected={
+                isSelected
+              }
+              onToggle={() =>
+                onToggleMeal(
+                  index
+                )
+              }
+            />
+          );
+        }
+      )}
     </Box>
   );
 };

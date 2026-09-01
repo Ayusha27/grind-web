@@ -14,80 +14,237 @@ import MealSection from "../../../components/diet/MealSection";
 import { dietMockData } from "./dietMockData";
 
 const Diet = () => {
-  /*
-   * Initial state mirrors the production screenshot:
-   * 540 / 2350 kcal
-   *
-   * Paneer Vegetable Breakfast = 540 kcal
-   */
-  const [selectedMeals, setSelectedMeals] =
-    useState<string[]>([
-      "Breakfast-1",
-    ]);
+  /* =========================================================
+     SELECTED MEALS
 
-  const toggleMeal = (key: string) => {
+     We store one selected option for each meal.
+
+     Example:
+
+     {
+       Breakfast: 1,
+       Lunch: 0,
+       Snack: 1,
+       Dinner: 0
+     }
+
+     undefined means nothing selected.
+  ========================================================= */
+
+  const [selectedMeals, setSelectedMeals] =
+    useState<
+      Record<string, number | undefined>
+    >({
+      Breakfast: 0,
+    });
+
+  /* =========================================================
+     TOGGLE MEAL
+
+     Only ONE option can be selected
+     inside each meal category.
+
+     Selecting another option replaces
+     the previous selection.
+
+     Clicking the already-selected option
+     deselects it.
+  ========================================================= */
+
+  const toggleMeal = (
+    meal: string,
+    optionIndex: number
+  ) => {
     setSelectedMeals((previous) => {
-      if (previous.includes(key)) {
-        return previous.filter(
-          (item) => item !== key
-        );
+      const current =
+        previous[meal];
+
+      /*
+       * Clicking the currently selected
+       * meal removes it.
+       */
+      if (
+        current === optionIndex
+      ) {
+        return {
+          ...previous,
+          [meal]: undefined,
+        };
       }
 
-      return [...previous, key];
+      /*
+       * Selecting another option
+       * automatically replaces the
+       * previous option for this meal.
+       */
+      return {
+        ...previous,
+        [meal]: optionIndex,
+      };
     });
   };
 
-  const consumedCalories = useMemo(() => {
-    let total = 0;
+  /* =========================================================
+     NUTRITION CALCULATION
+  ========================================================= */
+
+  const nutrition = useMemo(() => {
+    let calories = 0;
+    let protein = 0;
+    let carbs = 0;
+    let fat = 0;
+    let fibre = 0;
 
     dietMockData.meals.forEach(
       (mealSection) => {
-        mealSection.options.forEach(
-          (option, optionIndex) => {
-            const key = `${mealSection.meal}-${optionIndex}`;
+        const selectedIndex =
+          selectedMeals[
+            mealSection.meal
+          ];
 
-            if (selectedMeals.includes(key)) {
-              const calories = Number(
-                option.calories.replace(
-                  /[^0-9.]/g,
-                  ""
-                )
-              );
+        /*
+         * Nothing selected for this meal.
+         */
+        if (
+          selectedIndex === undefined
+        ) {
+          return;
+        }
 
-              total += calories;
-            }
-          }
+        const selectedOption =
+          mealSection.options[
+            selectedIndex
+          ];
+
+        if (!selectedOption) {
+          return;
+        }
+
+        /* =====================================================
+           CALORIES
+        ===================================================== */
+
+        calories += Number(
+          selectedOption.calories.replace(
+            /[^0-9.]/g,
+            ""
+          )
+        );
+
+        /* =====================================================
+           PROTEIN
+        ===================================================== */
+
+        protein += Number(
+          selectedOption.protein.replace(
+            /[^0-9.]/g,
+            ""
+          )
+        );
+
+        /* =====================================================
+           CARBS
+        ===================================================== */
+
+        carbs += Number(
+          selectedOption.carbs.replace(
+            /[^0-9.]/g,
+            ""
+          )
+        );
+
+        /* =====================================================
+           FAT
+        ===================================================== */
+
+        fat += Number(
+          selectedOption.fat.replace(
+            /[^0-9.]/g,
+            ""
+          )
+        );
+
+        /* =====================================================
+           FIBRE
+        ===================================================== */
+
+        fibre += Number(
+          selectedOption.fibre.replace(
+            /[^0-9.]/g,
+            ""
+          )
         );
       }
     );
 
-    return total;
+    return {
+      calories,
+      protein,
+      carbs,
+      fat,
+      fibre,
+    };
   }, [selectedMeals]);
 
+  /* =========================================================
+     RESET
+  ========================================================= */
+
   const resetDiet = () => {
-    setSelectedMeals([]);
+    setSelectedMeals({});
   };
+
+  /* =========================================================
+     TARGET VALUES
+
+     These remain dynamic from dietMockData.
+  ========================================================= */
+
+  const targetProtein =
+    dietMockData.dailyProtein;
+
+  const targetCarbs =
+    dietMockData.dailyCarbs;
+
+  const targetFat =
+    dietMockData.dailyFat;
+
+  const targetFibre =
+    dietMockData.dailyFibre;
+
+  /* =========================================================
+     RENDER
+  ========================================================= */
 
   return (
     <Box
       sx={{
+        width: "100%",
+        minWidth: 0,
         minHeight: "100%",
-        backgroundColor: "#f5f3ef",
+
+        backgroundColor:
+          "#f5f3ef",
       }}
     >
       <Container
         maxWidth={false}
         sx={{
+          width: "100%",
           maxWidth: "none",
+
           px: {
             xs: 2,
             sm: 2.5,
             md: 4,
           },
+
           py: {
             xs: 2.5,
             md: 3,
           },
+
+          boxSizing: "border-box",
         }}
       >
         {/* =====================================================
@@ -101,54 +258,158 @@ const Diet = () => {
         ===================================================== */}
 
         <NutritionSummary
-          consumedCalories={consumedCalories}
-          targetCalories={dietMockData.dailyCalories}
-          protein={dietMockData.dailyProtein}
-          carbs={dietMockData.dailyCarbs}
-          fat={dietMockData.dailyFat}
-          fibre={dietMockData.dailyFibre}
-          onReset={resetDiet}
+          consumedCalories={
+            nutrition.calories
+          }
+
+          targetCalories={
+            dietMockData.dailyCalories
+          }
+
+          consumedProtein={
+            nutrition.protein
+          }
+
+          targetProtein={
+            targetProtein
+          }
+
+          consumedCarbs={
+            nutrition.carbs
+          }
+
+          targetCarbs={
+            targetCarbs
+          }
+
+          consumedFat={
+            nutrition.fat
+          }
+
+          targetFat={
+            targetFat
+          }
+
+          consumedFibre={
+            nutrition.fibre
+          }
+
+          targetFibre={
+            targetFibre
+          }
+
+          onReset={
+            resetDiet
+          }
         />
 
         {/* =====================================================
-            STATS
+            PERSONAL STATS
         ===================================================== */}
 
         <NutritionStats
-          weight={dietMockData.stats.weight}
-          goalWeight={dietMockData.stats.goalWeight}
-          height={dietMockData.stats.height}
-          bmi={dietMockData.stats.bmi}
-          bmiStatus={dietMockData.stats.bmiStatus}
-          calories={dietMockData.stats.calories}
-          protein={dietMockData.stats.protein}
-          carbs={dietMockData.stats.carbs}
-          fat={dietMockData.stats.fat}
-          fibre={dietMockData.stats.fibre}
-          water={dietMockData.stats.water}
+          weight={
+            dietMockData.stats.weight
+          }
+
+          goalWeight={
+            dietMockData.stats.goalWeight
+          }
+
+          height={
+            dietMockData.stats.height
+          }
+
+          bmi={
+            dietMockData.stats.bmi
+          }
+
+          bmiStatus={
+            dietMockData.stats.bmiStatus
+          }
+
+          calories={
+            dietMockData.stats.calories
+          }
+
+          protein={
+            dietMockData.stats.protein
+          }
+
+          carbs={
+            dietMockData.stats.carbs
+          }
+
+          fat={
+            dietMockData.stats.fat
+          }
+
+          fibre={
+            dietMockData.stats.fibre
+          }
+
+          water={
+            dietMockData.stats.water
+          }
         />
 
         {/* =====================================================
-            PLAN INFORMATION
+            DIET PLAN INFORMATION
         ===================================================== */}
 
         <DietPlanInfo
-          planName={dietMockData.planName}
-          description={dietMockData.notes}
+          planName={
+            dietMockData.planName
+          }
+
+          description={
+            dietMockData.notes
+          }
         />
 
         {/* =====================================================
             MEALS
+
+            Each MealSection manages one meal category.
+
+            Example:
+
+            Breakfast
+              ├── Option 1
+              └── Option 2
+
+            Only one can be selected.
         ===================================================== */}
 
         {dietMockData.meals.map(
           (mealSection) => (
             <MealSection
-              key={mealSection.meal}
-              meal={mealSection.meal}
-              options={mealSection.options}
-              selectedMeals={selectedMeals}
-              onToggleMeal={toggleMeal}
+              key={
+                mealSection.meal
+              }
+
+              meal={
+                mealSection.meal
+              }
+
+              options={
+                mealSection.options
+              }
+
+              selectedMeal={
+                selectedMeals[
+                  mealSection.meal
+                ]
+              }
+
+              onToggleMeal={(
+                optionIndex
+              ) =>
+                toggleMeal(
+                  mealSection.meal,
+                  optionIndex
+                )
+              }
             />
           )
         )}
@@ -161,6 +422,7 @@ const Diet = () => {
           sx={{
             pt: 1,
             pb: 2,
+
             textAlign: "center",
           }}
         >
@@ -170,7 +432,8 @@ const Diet = () => {
               color: "#99928b",
             }}
           >
-            Personalized nutrition plan powered by GRIND AI
+            Personalized nutrition
+            plan powered by GRIND AI
           </Typography>
         </Box>
       </Container>
