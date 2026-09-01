@@ -22,8 +22,6 @@ const WarmUpSection = ({
   return (
     <Box
       sx={{
-        width: "100%",
-        boxSizing: "border-box",
         overflow: "hidden",
         backgroundColor: "#ffffff",
         border: "2px solid #ffd0c3",
