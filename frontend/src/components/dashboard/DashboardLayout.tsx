@@ -6,12 +6,16 @@ import DashboardHeader from "./DashboardHeader";
 import DashboardNavigation from "./DashboardNavigation";
 import DashboardPeriodBar from "./DashboardPeriodBar";
 import Footer from "../layout/Footer";
+import { DashboardProvider } from "../../context/DashboardContext";
+
 
 const DashboardLayout = () => {
+    console.log("🔥 DASHBOARD LAYOUT IS RENDERING");
   const [month, setMonth] = useState(1);
   const [week, setWeek] = useState(1);
 
   return (
+     <DashboardProvider>
     <Box
       sx={{
         minHeight: "100vh",
@@ -41,6 +45,7 @@ const DashboardLayout = () => {
       {/* Dashboard footer */}
       <Footer variant="dashboard" />
     </Box>
+    </DashboardProvider>
   );
 };
 

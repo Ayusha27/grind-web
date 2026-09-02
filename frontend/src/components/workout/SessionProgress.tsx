@@ -15,9 +15,11 @@ const SessionProgress = ({
       : 0;
 
   return (
-    <Box>
+    <Box sx={{ width: "100%", boxSizing: "border-box" }}>
       <Box
         sx={{
+          width: "100%",
+          boxSizing: "border-box",
           mb: 0.7,
           display: "flex",
           alignItems: "center",

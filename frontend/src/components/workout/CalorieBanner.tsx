@@ -17,6 +17,8 @@ const CalorieBanner = ({
   return (
     <Box
       sx={{
+        width: "100%",
+        boxSizing: "border-box",
         minHeight: 62,
         px: {
           xs: 1.75,

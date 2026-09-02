@@ -1,9 +1,10 @@
-export interface WarmupExercise {
+export interface WarmUpExercise {
+  id: number;
   name: string;
-  duration: string;
-  youtube?: string;
+  instruction: string;
+  completed: boolean;
+  videoUrl?: string;
 }
-
 export interface WorkoutExercise {
   id: number;
   name: string;
@@ -17,38 +18,20 @@ export interface WorkoutDay {
   id: number;
   dayNumber: number;
   dayName: string;
-  warmups: WarmupExercise[];
+  warmups: WarmUpExercise[];
   exercises: WorkoutExercise[];
   calMin: number;
   calMax: number;
   calNote: string;
 }
 
-const warmups: WarmupExercise[] = [
+const warmups: WarmUpExercise[] = [
   {
+    id: 1,
     name: "Arm Circles",
-    duration: "30 sec forward + 30 sec backward",
-    youtube: "arm circles proper form warm up",
-  },
-  {
-    name: "Shoulder Rolls",
-    duration: "10 reps each direction",
-    youtube: "shoulder rolls proper form warm up",
-  },
-  {
-    name: "Bodyweight Squats",
-    duration: "12-15 controlled reps",
-    youtube: "bodyweight squat proper form",
-  },
-  {
-    name: "Hip Circles",
-    duration: "10 reps each direction",
-    youtube: "hip circles proper form warm up",
-  },
-  {
-    name: "Jumping Jacks or March in Place",
-    duration: "60 sec",
-    youtube: "jumping jacks proper form",
+    instruction: "30 sec forward + 30 sec backward",
+    completed: false,
+    videoUrl: "arm circles proper form warm up",
   },
 ];
 
@@ -302,3 +285,11 @@ export const workoutDays: WorkoutDay[] = [
     ],
   },
 ];
+
+
+// salesforce free learning
+
+// hiring 
+
+// 2-3
+
