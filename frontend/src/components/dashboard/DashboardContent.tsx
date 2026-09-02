@@ -1,16 +1,12 @@
-import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
+import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
-
-import DashboardHeader from "./DashboardHeader";
-import DashboardPeriodBar from "./DashboardPeriodBar";
-import DashboardNavigation from "./DashboardNavigation";
-import Footer from "../layout/Footer";
-import {
-  DashboardProvider,
-  useDashboard,
-} from "../../context/DashboardContext";
 import { getDashboard } from "../../api/dashboardApi";
+import { useDashboard } from "../../context/DashboardContext";
+import Footer from "../layout/Footer";
+import DashboardHeader from "./DashboardHeader";
+import DashboardNavigation from "./DashboardNavigation";
+import DashboardPeriodBar from "./DashboardPeriodBar";
 
 interface DashboardContentProps {
   month: number;
@@ -61,20 +57,4 @@ const DashboardContent = ({
   );
 };
 
-const DashboardLayout = () => {
-  const [month, setMonth] = useState(1);
-  const [week, setWeek] = useState(1);
-
-  return (
-    <DashboardProvider>
-      <DashboardContent
-        month={month}
-        week={week}
-        onMonthChange={setMonth}
-        onWeekChange={setWeek}
-      />
-    </DashboardProvider>
-  );
-};
-
-export default DashboardLayout;
+export default DashboardContent;
