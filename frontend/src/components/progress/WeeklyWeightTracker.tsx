@@ -93,50 +93,52 @@ const WeeklyWeightTracker = ({
               /* Input container */
               "& .MuiInputBase-root": {
                 height: 36,
-                borderRadius: 0,
-                fontSize: 12,
-                color: "#000000",
+                borderRadius: 1,
                 backgroundColor:
                   "#ffffff",
+
+                color: "#000000",
+
+                fontSize: 12,
               },
 
               /* Normal border */
               "& .MuiOutlinedInput-notchedOutline":
                 {
-                  borderColor:
-                    "#000000",
-                  borderWidth: "1px",
+                  border:
+                    "1px solid #000000 !important",
                 },
 
               /* Hover border */
               "&:hover .MuiOutlinedInput-notchedOutline":
                 {
-                  borderColor:
-                    "#000000",
-                  borderWidth: "1px",
+                  border:
+                    "1px solid #ff5c35 !important",
                 },
 
               /* Focused border */
               "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
                 {
-                  borderColor:
-                    "#000000",
-                  borderWidth: "1px",
+                  border:
+                    "1px solid #ff5c35 !important",
                 },
+ 
+              "& .MuiOutlinedInput-input":
+                {
+                  color:
+                    "#000000 !important",
 
-              /* Entered text */
-              "& input": {
-                fontFamily:
-                  "monospace",
-                color: "#000000",
-                WebkitTextFillColor:
-                  "#000000",
-              },
+                  WebkitTextFillColor:
+                    "#000000 !important",
+
+                  fontFamily:
+                    "monospace",
+                },
 
               /* Placeholder */
               "& input::placeholder":
                 {
-                  color: "#000000",
+                  color: "#000000 !important",
                   opacity: 0.5,
                 },
 
