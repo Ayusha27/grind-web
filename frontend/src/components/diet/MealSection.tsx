@@ -5,11 +5,9 @@ import {
 
 import RestaurantMenuOutlinedIcon from "@mui/icons-material/RestaurantMenuOutlined";
 
-import type {
-  MealOption,
-} from "../../pages/client/diet/dietMockData";
-
-import MealCard from "./MealCard";
+import MealCard, {
+  type MealOption,
+} from "./MealCard";
 
 interface MealSectionProps {
   meal: string;
@@ -25,9 +23,6 @@ interface MealSectionProps {
     | number
     | undefined;
 
-  /*
-   * Receives the option index.
-   */
   onToggleMeal: (
     optionIndex: number
   ) => void;
@@ -51,19 +46,16 @@ const MealSection = ({
         },
       }}
     >
-      {/* =====================================================
+      {/* =================================================
           MEAL HEADER
-      ===================================================== */}
+      ================================================= */}
 
       <Box
         sx={{
           display: "flex",
           alignItems: "center",
-
           gap: 0.75,
-
           mb: 1,
-
           minWidth: 0,
         }}
       >
@@ -71,7 +63,6 @@ const MealSection = ({
           sx={{
             fontSize: 16,
             color: "#ff5c35",
-
             flexShrink: 0,
           }}
         />
@@ -81,9 +72,7 @@ const MealSection = ({
           sx={{
             fontSize: 13,
             fontWeight: 900,
-
             color: "#211e1b",
-
             whiteSpace:
               "nowrap",
           }}
@@ -94,14 +83,10 @@ const MealSection = ({
         <Typography
           sx={{
             ml: 0.5,
-
             fontSize: 8,
-
             color: "#8a837d",
-
             textTransform:
               "uppercase",
-
             whiteSpace:
               "nowrap",
           }}
@@ -110,30 +95,23 @@ const MealSection = ({
         </Typography>
       </Box>
 
-      {/* =====================================================
+      {/* =================================================
           OPTIONS
-      ===================================================== */}
+      ================================================= */}
 
       {options.map(
-        (option, index) => {
-          const isSelected =
-            selectedMeal === index;
-
-          return (
-            <MealCard
-              key={`${meal}-${index}`}
-              option={option}
-              selected={
-                isSelected
-              }
-              onToggle={() =>
-                onToggleMeal(
-                  index
-                )
-              }
-            />
-          );
-        }
+        (option, index) => (
+          <MealCard
+            key={`${meal}-${index}`}
+            option={option}
+            selected={
+              selectedMeal === index
+            }
+            onToggle={() =>
+              onToggleMeal(index)
+            }
+          />
+        )
       )}
     </Box>
   );
