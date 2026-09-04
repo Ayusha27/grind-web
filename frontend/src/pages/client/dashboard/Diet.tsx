@@ -309,21 +309,21 @@ const normalizedMeals = useMemo(() => {
           bmiStatus={
             diet.bmi_status ?? "-"
           }
-          calories={
-            diet.daily_calories ?? "-"
-          }
-          protein={
-            diet.daily_protein ?? "-"
-          }
-          carbs={
-            diet.daily_carbs ?? "-"
-          }
-          fat={
-            diet.daily_fat ?? "-"
-          }
-          fibre={
-            diet.daily_fibre ?? "-"
-          }
+        //   calories={
+        //     diet.daily_calories ?? "-"
+        //   }
+        //   protein={
+        //     diet.daily_protein ?? "-"
+        //   }
+        //   carbs={
+        //     diet.daily_carbs ?? "-"
+        //   }
+        //   fat={
+        //     diet.daily_fat ?? "-"
+        //   }
+        //   fibre={
+        //     diet.daily_fibre ?? "-"
+        //   }
           water={
             diet.daily_water_intake ?? "-"
           }
