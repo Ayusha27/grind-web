@@ -24,7 +24,25 @@ const Diet = () => {
    * Diet information now comes from the same dashboard
    * response used by Workout.
    */
-  const diet = dashboard?.diet;
+const diet = dashboard?.diet;
+
+const normalizedMeals = useMemo(() => {
+  if (!diet?.meals) {
+    return [];
+  }
+
+  return diet.meals.map((mealSection) => ({
+    ...mealSection,
+    options: mealSection.options.map((option) => ({
+      ...option,
+      items:
+        option.items ??
+        (option.ingredients
+          ? [option.ingredients]
+          : []),
+    })),
+  }));
+}, [diet]);
 
   /*
    * =========================================================
@@ -93,8 +111,8 @@ const Diet = () => {
     let carbs = 0;
     let fat = 0;
     let fibre = 0;
-
-    diet?.meals?.forEach((mealSection) => {
+   
+    normalizedMeals.forEach((mealSection) => {
       const selectedIndex =
         selectedMeals[mealSection.meal];
 
@@ -137,7 +155,7 @@ const Diet = () => {
       fat,
       fibre,
     };
-  }, [diet, selectedMeals]);
+  }, [normalizedMeals, selectedMeals]);
 
   /*
    * =========================================================
@@ -328,8 +346,8 @@ const Diet = () => {
             MEALS
         ================================================= */}
 
-        {diet.meals?.map(
-          (mealSection) => (
+        {normalizedMeals.map(
+            (mealSection) => (
             <MealSection
               key={mealSection.meal}
               meal={mealSection.meal}
