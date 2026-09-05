@@ -1,4 +1,8 @@
-import { Box, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  TextField,
+  Typography,
+} from "@mui/material";
 
 interface WeeklyWeightTrackerProps {
   weights: Record<number, number | null>;
@@ -16,12 +20,25 @@ const WeeklyWeightTracker = ({
     <Box
       sx={{
         width: "100%",
-        backgroundColor: "#ffffff",
-        border: "1px solid #e0dbd4",
+
+        backgroundColor:
+          "#ffffff",
+
+        border:
+          "1px solid #e0dbd4",
+
         borderRadius: "12px",
-        p: 1.5,
+
+        p: {
+          xs: 1.5,
+          sm: 1.8,
+          md: 2,
+        },
+
         boxShadow:
           "0 4px 14px rgba(26,23,20,.05)",
+
+        boxSizing: "border-box",
       }}
     >
       {/* =====================================================
@@ -30,10 +47,21 @@ const WeeklyWeightTracker = ({
 
       <Typography
         sx={{
-          fontSize: 13,
+          fontSize: {
+            xs: 13,
+            sm: 14,
+            md: 15,
+          },
+
           fontWeight: 900,
+
           color: "#1a1714",
-          mb: 2,
+
+          mb: {
+            xs: 1.5,
+            sm: 1.8,
+            md: 2,
+          },
         }}
       >
         Weekly Weight Tracker
@@ -43,128 +71,186 @@ const WeeklyWeightTracker = ({
           WEEKLY WEIGHT INPUTS
       ===================================================== */}
 
-      {[1, 2, 3, 4].map((week) => (
-        <Box
-          key={week}
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            mb: 1,
+      <Box
+        sx={{
+          display: "grid",
 
-            "&:last-child": {
-              mb: 0,
-            },
-          }}
-        >
-          {/* WEEK LABEL */}
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "repeat(2, 1fr)",
+            md: "repeat(4, 1fr)",
+          },
 
-          <Typography
-            sx={{
-              width: 105,
-              fontSize: 13,
-              color: "#1a1714",
-              fontWeight: 500,
-            }}
-          >
-            Week {week}
-          </Typography>
+          gap: {
+            xs: 1,
+            sm: 1.2,
+            md: 1.5,
+          },
+        }}
+      >
+        {[1, 2, 3, 4].map(
+          (week) => (
+            <Box
+              key={week}
+              sx={{
+                display: "flex",
 
-          {/* WEIGHT INPUT */}
+                alignItems:
+                  "center",
 
-          <TextField
-            value={weights[week] ?? ""}
-            placeholder="kg"
-            type="number"
-            onChange={(event) => {
-              const value =
-                event.target.value;
-
-              onChange(
-                week,
-                value === ""
-                  ? null
-                  : Number(value)
-              );
-            }}
-            size="small"
-            sx={{
-              width: 120,
-
-              /* Input container */
-              "& .MuiInputBase-root": {
-                height: 36,
-                borderRadius: 1,
-                backgroundColor:
-                  "#ffffff",
-
-                color: "#000000",
-
-                fontSize: 12,
-              },
-
-              /* Normal border */
-              "& .MuiOutlinedInput-notchedOutline":
-                {
-                  border:
-                    "1px solid #000000 !important",
+                gap: {
+                  xs: 1,
+                  sm: 1.2,
                 },
 
-              /* Hover border */
-              "&:hover .MuiOutlinedInput-notchedOutline":
-                {
-                  border:
-                    "1px solid #ff5c35 !important",
-                },
+                minWidth: 0,
+              }}
+            >
+              {/* WEEK LABEL */}
 
-              /* Focused border */
-              "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  border:
-                    "1px solid #ff5c35 !important",
-                },
- 
-              "& .MuiOutlinedInput-input":
-                {
-                  color:
-                    "#000000 !important",
+              <Typography
+                sx={{
+                  flexShrink: 0,
 
-                  WebkitTextFillColor:
-                    "#000000 !important",
+                  fontSize: {
+                    xs: 11,
+                    sm: 12,
+                    md: 13,
+                  },
 
-                  fontFamily:
-                    "monospace",
-                },
+                  color: "#1a1714",
 
-              /* Placeholder */
-              "& input::placeholder":
-                {
-                  color: "#000000 !important",
-                  opacity: 0.5,
-                },
+                  fontWeight: 700,
+                }}
+              >
+                Week {week}
+              </Typography>
 
-              /* Remove number spinner appearance */
-              "& input::-webkit-outer-spin-button":
-                {
-                  WebkitAppearance:
-                    "none",
-                  margin: 0,
-                },
+              {/* WEIGHT INPUT */}
 
-              "& input::-webkit-inner-spin-button":
-                {
-                  WebkitAppearance:
-                    "none",
-                  margin: 0,
-                },
+              <TextField
+                fullWidth
+                value={
+                  weights[week] ?? ""
+                }
+                placeholder="kg"
+                type="number"
+                onChange={(
+                  event
+                ) => {
+                  const value =
+                    event.target.value;
 
-              "& input[type=number]": {
-                MozAppearance:
-                  "textfield",
-              },
-            }}
-          />
-        </Box>
-      ))}
+                  onChange(
+                    week,
+                    value === ""
+                      ? null
+                      : Number(value)
+                  );
+                }}
+                size="small"
+                sx={{
+                  minWidth: 0,
+
+                  "& .MuiInputBase-root":
+                  {
+                    height: {
+                      xs: 36,
+                      sm: 38,
+                      md: 40,
+                    },
+
+                    borderRadius:
+                      "6px",
+
+                    backgroundColor:
+                      "#ffffff",
+
+                    color:
+                      "#000000",
+
+                    fontSize: 12,
+                  },
+
+                  /* Normal border */
+
+                  "& .MuiOutlinedInput-notchedOutline":
+                  {
+                    border:
+                      "1px solid #d5d9df !important",
+                  },
+
+                  /* Hover border */
+
+                  "&:hover .MuiOutlinedInput-notchedOutline":
+                  {
+                    border:
+                      "1px solid #c8cdd4 !important",
+                  },
+
+                  /* Focus border */
+
+                  "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                  {
+                    border:
+                      "1px solid #ff5c35 !important",
+                  },
+
+                  /* Input */
+
+                  "& .MuiOutlinedInput-input":
+                  {
+                    color:
+                      "#000000 !important",
+
+                    WebkitTextFillColor:
+                      "#000000 !important",
+
+                    fontFamily:
+                      "monospace",
+
+                    fontSize: 12,
+                  },
+
+                  /* Placeholder */
+
+                  "& input::placeholder":
+                  {
+                    color:
+                      "#77716b !important",
+
+                    opacity: 1,
+                  },
+
+                  /* Remove number spinner */
+
+                  "& input::-webkit-outer-spin-button":
+                  {
+                    WebkitAppearance:
+                      "none",
+
+                    margin: 0,
+                  },
+
+                  "& input::-webkit-inner-spin-button":
+                  {
+                    WebkitAppearance:
+                      "none",
+
+                    margin: 0,
+                  },
+
+                  "& input[type=number]":
+                  {
+                    MozAppearance:
+                      "textfield",
+                  },
+                }}
+              />
+            </Box>
+          )
+        )}
+      </Box>
     </Box>
   );
 };
