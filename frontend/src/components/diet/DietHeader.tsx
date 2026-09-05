@@ -1,44 +1,79 @@
-import { Box, Typography } from "@mui/material";
+import React from "react";
+import {
+  Box,
+  Typography,
+} from "@mui/material";
+import WaterDropIcon from "@mui/icons-material/WaterDrop";
 
-const DietHeader = () => {
+interface DietHeaderProps {
+  water?: string | number;
+}
+
+const DietHeader: React.FC<DietHeaderProps> = ({
+  water,
+}) => {
   return (
     <Box
       sx={{
-        mb: {
-          xs: 2.5,
-          md: 3,
-        },
+        mb: { xs: 2.5, md: 3 },
+        px: "10px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: "100%",
       }}
     >
-      <Typography
-        component="h1"
-        sx={{
-          fontSize: {
-            xs: 24,
-            sm: 27,
-            md: 29,
-          },
-          lineHeight: 1.1,
-          fontWeight: 900,
-          color: "#1a1714",
-          letterSpacing: "-0.5px",
-        }}
-      >
-        AI Nutrition Plan
-      </Typography>
+      {/* =================================================
+          AI NUTRITION PLAN
+      ================================================= */}
 
-      <Typography
+      <Box>
+        <Typography
+          component="h1"
+          sx={{
+            color: "#211e1b",
+          }}
+        >
+          AI Nutrition Plan
+        </Typography>
+
+        <Typography
+          sx={{
+            color: "#6f6963",
+          }}
+        >
+          Personalized by GRIND AI
+        </Typography>
+      </Box>
+
+      {/* =================================================
+          DAILY WATER INTAKE
+      ================================================= */}
+
+      <Box
         sx={{
-          mt: 0.45,
-          fontSize: {
-            xs: 10,
-            md: 11,
-          },
-          color: "#77716b",
+          display: "flex",
+          alignItems: "center",
+          gap: 0.5,
+          flexShrink: 0,
         }}
       >
-        Personalized by GRIND AI
-      </Typography>
+        <WaterDropIcon
+          sx={{
+            fontSize: 21,
+            color: "#5DACD4",
+          }}
+        />
+
+        <Typography
+          sx={{
+            color: "#211e1b",
+            fontWeight: 700,
+          }}
+        >
+          {water ?? "-"}
+        </Typography>
+      </Box>
     </Box>
   );
 };

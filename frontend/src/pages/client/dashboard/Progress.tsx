@@ -38,9 +38,10 @@ const Progress = () => {
    * WEEKLY WEIGHTS
    * =========================================================
    *
-   * This is user-entered UI state for now.
+   * User-entered weight tracking.
    *
-   * We will connect this to the backend progress API later.
+   * The latest entered weight becomes the Current Weight.
+   * BMI is then calculated from this weight + backend height.
    */
   const [weights, setWeights] = useState<
     Record<number, number | null>
@@ -65,6 +66,7 @@ const Progress = () => {
    * TOTAL SETS PER DAY
    * =========================================================
    */
+
   const getDayTotalSets = (
     day: typeof backendDays[number]
   ) => {
@@ -84,12 +86,11 @@ const Progress = () => {
    * DAY BREAKDOWN
    * =========================================================
    *
-   * For now the completion value comes from the dashboard
-   * workout state only when available.
-   *
-   * The actual live set completion will be connected after
-   * we move completedSetsByDay into DashboardContext.
+   * Actual live completion data will be connected once the
+   * completed workout state is available through the
+   * DashboardContext/backend progress response.
    */
+
   const selectedWeekDays = useMemo<
     ProgressDay[]
   >(() => {
@@ -108,14 +109,8 @@ const Progress = () => {
    * =========================================================
    * MONTH SUMMARY
    * =========================================================
-   *
-   * The backend currently gives overall progress, not a
-   * complete month/week hierarchy.
-   *
-   * Therefore we derive what can honestly be derived from
-   * dashboard.days and leave unavailable historical values
-   * at zero.
    */
+
   const totalSessions =
     backendDays.length;
 
@@ -139,8 +134,18 @@ const Progress = () => {
    * CURRENT WEIGHT
    * =========================================================
    *
-   * Use the latest user-entered weekly value.
+   * The latest entered weekly weight is treated as the
+   * current weight.
+   *
+   * Example:
+   *
+   * Week 1 = 75 kg
+   * Week 2 = 73.8 kg
+   * Week 3 = 72.9 kg
+   *
+   * Current Weight = 72.9 kg
    */
+
   const currentWeight = useMemo(() => {
     const enteredWeeks =
       Object.entries(weights)
@@ -172,15 +177,11 @@ const Progress = () => {
    * STARTING WEIGHT
    * =========================================================
    *
-   * We currently don't have a dedicated starting_weight
-   * field in the dashboard response.
-   *
-   * Do NOT pretend current_weight is a historical
-   * starting weight.
-   *
-   * Until backend exposes starting_weight, display the
-   * current diet weight as the available reference.
+   * Until a dedicated starting_weight field is exposed by
+   * the backend, use the diet plan's current_weight as the
+   * initial/reference weight.
    */
+
   const startingWeight = useMemo(() => {
     const value =
       dashboard?.diet?.current_weight;
@@ -201,14 +202,139 @@ const Progress = () => {
 
   /*
    * =========================================================
+   * HEIGHT
+   * =========================================================
+   *
+   * Height comes directly from the backend diet data.
+   *
+   * Backend may return:
+   *
+   * "175 cm"
+   * "5 ft 10 in"
+   * "5'10"
+   *
+   * ProgressStats expects height in centimeters.
+   */
+
+  const height = useMemo(() => {
+    const value =
+      dashboard?.diet?.height;
+
+    if (
+      value === null ||
+      value === undefined ||
+      value === ""
+    ) {
+      return null;
+    }
+
+    const heightString =
+      String(value)
+        .trim()
+        .toLowerCase();
+
+    /*
+     * ---------------------------------------------------------
+     * Format: centimeters
+     * Example: "175 cm"
+     * ---------------------------------------------------------
+     */
+
+    const cmMatch =
+      heightString.match(
+        /(\d+(?:\.\d+)?)\s*cm/
+      );
+
+    if (cmMatch) {
+      return Number(cmMatch[1]);
+    }
+
+    /*
+     * ---------------------------------------------------------
+     * Format: feet + inches
+     * Example: "5 ft 10 in"
+     * ---------------------------------------------------------
+     */
+
+    const feetInchesMatch =
+      heightString.match(
+        /(\d+(?:\.\d+)?)\s*(?:ft|feet|')\s*(\d+(?:\.\d+)?)?\s*(?:in|inch|inches|")?/
+      );
+
+    if (feetInchesMatch) {
+      const feet =
+        Number(feetInchesMatch[1]);
+
+      const inches =
+        feetInchesMatch[2]
+          ? Number(feetInchesMatch[2])
+          : 0;
+
+      return (
+        feet * 30.48 +
+        inches * 2.54
+      );
+    }
+
+    /*
+     * ---------------------------------------------------------
+     * Format: decimal feet
+     * Example: "5.83 ft"
+     * ---------------------------------------------------------
+     */
+
+    const decimalFeetMatch =
+      heightString.match(
+        /(\d+(?:\.\d+)?)\s*(?:ft|feet)/
+      );
+
+    if (decimalFeetMatch) {
+      return (
+        Number(decimalFeetMatch[1]) *
+        30.48
+      );
+    }
+
+    /*
+     * ---------------------------------------------------------
+     * Fallback:
+     *
+     * If backend gives a plain number, assume centimeters.
+     * ---------------------------------------------------------
+     */
+
+    const numericMatch =
+      heightString.match(
+        /^\d+(?:\.\d+)?$/
+      );
+
+    if (numericMatch) {
+      return Number(numericMatch[0]);
+    }
+
+    return null;
+  }, [dashboard]);
+
+  /*
+   * =========================================================
    * WEIGHT CHANGE
    * =========================================================
+   *
+   * Current tracked weight - starting weight.
+   *
+   * Example:
+   *
+   * Starting = 75 kg
+   * Current  = 72 kg
+   *
+   * Change = -3 kg
    */
+
   const weightChange =
     startingWeight !== null &&
-    currentWeight !== null
+      currentWeight !== null
       ? currentWeight -
-        startingWeight
+      startingWeight
       : null;
 
   /*
@@ -216,6 +342,7 @@ const Progress = () => {
    * MONTH CHANGE
    * =========================================================
    */
+
   const handleMonthChange = (
     month: number
   ) => {
@@ -228,6 +355,7 @@ const Progress = () => {
    * WEIGHT CHANGE
    * =========================================================
    */
+
   const handleWeightChange = (
     week: number,
     value: number | null
@@ -243,6 +371,7 @@ const Progress = () => {
    * LOADING
    * =========================================================
    */
+
   if (!dashboard) {
     return (
       <Box
@@ -297,7 +426,13 @@ const Progress = () => {
         <Stack spacing={2.5}>
 
           {/* =================================================
-              WEIGHT STATS
+              PROGRESS STATS
+              
+              Starting Weight
+              Current Weight
+              Weight Change
+              Height
+              BMI
           ================================================= */}
 
           <ProgressStats
@@ -312,6 +447,7 @@ const Progress = () => {
             weightChange={
               weightChange ?? 0
             }
+            height={height}
           />
 
           {/* =================================================

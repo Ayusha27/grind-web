@@ -1,262 +1,266 @@
-import {
-  Box,
-  Grid,
-  Typography,
-} from "@mui/material";
+import React from "react";
+import { Box, Grid, Typography } from "@mui/material";
 
 interface ProgressStatsProps {
   startingWeight: number;
   currentWeight: number;
   weightChange: number;
+  height: number | null;
 }
 
-const ProgressStats = ({
+const ProgressStats: React.FC<ProgressStatsProps> = ({
   startingWeight,
   currentWeight,
   weightChange,
-}: ProgressStatsProps) => {
+  height,
+}) => {
   /*
-   * Negative means weight was lost.
-   * Positive means weight was gained.
+   * =========================================================
+   * BMI
+   * =========================================================
+   *
+   * BMI = weight / height²
+   *
+   * Height is received from backend in centimeters.
+   * Current weight comes from the latest weekly weight entry.
    */
-  const hasLostWeight =
-    weightChange < 0;
 
-  const hasGainedWeight =
-    weightChange > 0;
+  const bmi =
+    height &&
+      height > 0 &&
+      currentWeight > 0
+      ? currentWeight /
+      Math.pow(height / 100, 2)
+      : null;
 
-  const changeColor =
-    hasLostWeight
-      ? "#16b85a"
-      : hasGainedWeight
-        ? "#ef2b2b"
-        : "#77716b";
+  const stats = [
+    {
+      label: "Starting Weight",
+      value:
+        startingWeight > 0
+          ? `${startingWeight.toFixed(1)} kg`
+          : "-",
+      icon: "⚖",
+    },
+    {
+      label: "Current Weight",
+      value:
+        currentWeight > 0
+          ? `${currentWeight.toFixed(1)} kg`
+          : "-",
+      icon: "⚖",
+    },
+    {
+      label: "Weight Change",
+      value:
+        `${weightChange > 0 ? "+" : ""}${weightChange.toFixed(1)} kg`,
+      icon: "↗",
+      valueColor:
+        weightChange > 0
+          ? "#c62828"
+          : weightChange < 0
+            ? "#16803d"
+            : "#1a1714",
+    },
+    {
+      label: "Height",
+      value:
+        height !== null &&
+          height > 0
+          ? `${height.toFixed(2)} cm`
+          : "-",
+      icon: "♙",
+    },
+    {
+      label: "BMI",
+      value:
+        bmi !== null
+          ? bmi.toFixed(1)
+          : "-",
+      icon: "▥",
+    },
+  ];
 
   return (
-    <Grid container spacing={1.5}>
-
-      {/* =====================================================
-          STARTING WEIGHT
-      ===================================================== */}
-
+    <Box
+      sx={{
+        width: "100%",
+      }}
+    >
       <Grid
-        size={{
-          xs: 12,
-          md: 4,
+        container
+        spacing={{
+          xs: 0.8,
+          sm: 1,
+          md: 1.2,
         }}
       >
-        <Box
-          sx={{
-            height: 78,
-
-            backgroundColor:
-              "#ffffff",
-
-            border:
-              "1px solid #e0dbd4",
-
-            borderRadius: "12px",
-
-            px: 2,
-
-            display: "flex",
-
-            flexDirection:
-              "column",
-
-            justifyContent:
-              "center",
-
-            boxShadow:
-              "0 4px 14px rgba(26,23,20,.06)",
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: 22,
-
-              lineHeight: 1,
-
-              fontWeight: 900,
-
-              fontFamily:
-                "monospace",
-
-              color: "#1a1714",
+        {stats.map((stat) => (
+          <Grid
+            key={stat.label}
+            size={{
+              xs: 6,
+              sm: 6,
+              md: 2.4,
             }}
           >
-            {startingWeight} kg
-          </Typography>
+            <Box
+              sx={{
+                width: "100%",
+                minHeight: {
+                  xs: 72,
+                  sm: 78,
+                  md: 82,
+                },
 
-          <Typography
-            sx={{
-              mt: 0.7,
+                px: {
+                  xs: 0.8,
+                  sm: 1.2,
+                  md: 1.4,
+                },
 
-              fontSize: 10,
+                py: {
+                  xs: 1,
+                  sm: 1.1,
+                  md: 1.2,
+                },
 
-              letterSpacing: 1.2,
+                boxSizing: "border-box",
 
-              color: "#77716b",
+                backgroundColor: "#ffffff",
 
-              fontWeight: 700,
-            }}
-          >
-            STARTING WEIGHT
-          </Typography>
-        </Box>
+                border:
+                  "1px solid #e0dbd4",
+
+                borderRadius: "10px",
+
+                boxShadow:
+                  "0 4px 14px rgba(26,23,20,.05)",
+
+                display: "flex",
+
+                alignItems: "center",
+
+                gap: {
+                  xs: 0.7,
+                  sm: 1,
+                },
+
+                overflow: "hidden",
+              }}
+            >
+              {/* ICON */}
+
+              <Box
+                sx={{
+                  flexShrink: 0,
+
+                  width: {
+                    xs: 30,
+                    sm: 34,
+                    md: 36,
+                  },
+
+                  height: {
+                    xs: 30,
+                    sm: 34,
+                    md: 36,
+                  },
+
+                  borderRadius: "50%",
+
+                  backgroundColor:
+                    "#fff3ee",
+
+                  display: "flex",
+
+                  alignItems: "center",
+
+                  justifyContent: "center",
+
+                  fontSize: {
+                    xs: 15,
+                    sm: 17,
+                    md: 18,
+                  },
+
+                  color: "#ff5c35",
+                }}
+              >
+                {stat.icon}
+              </Box>
+
+              {/* CONTENT */}
+
+              <Box
+                sx={{
+                  minWidth: 0,
+                  flex: 1,
+                }}
+              >
+                <Typography
+                  sx={{
+                    fontSize: {
+                      xs: 14,
+                      sm: 16,
+                      md: 17,
+                    },
+
+                    lineHeight: 1.05,
+
+                    fontWeight: 900,
+
+                    fontFamily: "monospace",
+
+                    color:
+                      stat.valueColor ??
+                      "#1a1714",
+
+                    whiteSpace:
+                      "nowrap",
+
+                    overflow: "hidden",
+
+                    textOverflow:
+                      "ellipsis",
+                  }}
+                >
+                  {stat.value}
+                </Typography>
+
+                <Typography
+                  sx={{
+                    mt: 0.45,
+
+                    fontSize: {
+                      xs: 8,
+                      sm: 9,
+                      md: 9.5,
+                    },
+
+                    lineHeight: 1.15,
+
+                    color: "#77716b",
+
+                    fontWeight: 500,
+
+                    whiteSpace:
+                      "nowrap",
+
+                    overflow: "hidden",
+
+                    textOverflow:
+                      "ellipsis",
+                  }}
+                >
+                  {stat.label}
+                </Typography>
+              </Box>
+            </Box>
+          </Grid>
+        ))}
       </Grid>
-
-      {/* =====================================================
-          CURRENT WEIGHT
-      ===================================================== */}
-
-      <Grid
-        size={{
-          xs: 12,
-          md: 4,
-        }}
-      >
-        <Box
-          sx={{
-            height: 78,
-
-            backgroundColor:
-              "#ffffff",
-
-            border:
-              "1px solid #e0dbd4",
-
-            borderRadius: "12px",
-
-            px: 2,
-
-            display: "flex",
-
-            flexDirection:
-              "column",
-
-            justifyContent:
-              "center",
-
-            boxShadow:
-              "0 4px 14px rgba(26,23,20,.06)",
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: 22,
-
-              lineHeight: 1,
-
-              fontWeight: 900,
-
-              fontFamily:
-                "monospace",
-
-              color: "#1a1714",
-            }}
-          >
-            {currentWeight} kg
-          </Typography>
-
-          <Typography
-            sx={{
-              mt: 0.7,
-
-              fontSize: 10,
-
-              letterSpacing: 1.2,
-
-              color: "#77716b",
-
-              fontWeight: 700,
-            }}
-          >
-            CURRENT WEIGHT
-          </Typography>
-        </Box>
-      </Grid>
-
-      {/* =====================================================
-          WEIGHT CHANGE
-      ===================================================== */}
-
-      <Grid
-        size={{
-          xs: 12,
-          md: 4,
-        }}
-      >
-        <Box
-          sx={{
-            height: 78,
-
-            backgroundColor:
-              "#ffffff",
-
-            border:
-              "1px solid #e0dbd4",
-
-            borderRadius: "12px",
-
-            px: 2,
-
-            display: "flex",
-
-            flexDirection:
-              "column",
-
-            justifyContent:
-              "center",
-
-            boxShadow:
-              "0 4px 14px rgba(26,23,20,.06)",
-          }}
-        >
-          <Typography
-            sx={{
-              fontSize: 22,
-
-              lineHeight: 1,
-
-              fontWeight: 900,
-
-              fontFamily:
-                "monospace",
-
-              color:
-                changeColor,
-            }}
-          >
-            {weightChange > 0
-              ? "+"
-              : ""}
-
-            {weightChange.toFixed(
-              1
-            )}{" "}
-            kg
-          </Typography>
-
-          <Typography
-            sx={{
-              mt: 0.7,
-
-              fontSize: 10,
-
-              letterSpacing: 1.2,
-
-              color: "#77716b",
-
-              fontWeight: 700,
-            }}
-          >
-            WEIGHT CHANGE
-          </Typography>
-        </Box>
-      </Grid>
-
-    </Grid>
+    </Box>
   );
 };
 
