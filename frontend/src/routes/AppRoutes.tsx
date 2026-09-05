@@ -10,13 +10,15 @@ import PublicLayout from "../layouts/PublicLayout";
 import MembershipGuide from "../pages/public/MembershipGuide/MembershipGuide";
 import ScrollToHash from "../components/common/ScrollToHash";
 import StartYourJourney from "../pages/public/StartYourJourney/StartYourJourney";
+import SubmissionSuccess from "../pages/public/StartYourJourney/SubmissionSuccess";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 import Workout from "../pages/client/dashboard/Workout";
 import Diet from "../pages/client/dashboard/Diet";
 import Progress from "../pages/client/dashboard/Progress";
+import GrindWalkthrough from "../pages/public/GrindWalkthrough/GrindWalkthrough";
 
 const AppRoutes = () => {
-    console.log("🔥 APP ROUTES IS RENDERING");
+  console.log("🔥 APP ROUTES IS RENDERING");
   return (
     <BrowserRouter>
       <ScrollToHash />
@@ -44,6 +46,12 @@ const AppRoutes = () => {
         <Route
           path="/start-your-journey"
           element={<StartYourJourney />}
+        />
+
+        {/* Submission Success */}
+        <Route
+          path="/submission-success"
+          element={<SubmissionSuccess />}
         />
 
         <Route
@@ -76,6 +84,10 @@ const AppRoutes = () => {
             element={<Progress />}
           />
         </Route>
+        <Route
+          path="/grind-walkthrough"
+          element={<GrindWalkthrough />}
+        />
 
         {/* Admin */}
         <Route

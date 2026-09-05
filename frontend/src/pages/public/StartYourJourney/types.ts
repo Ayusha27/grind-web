@@ -7,8 +7,11 @@ export interface IntakeFormData {
 
   weightUnit: string;
   weight: string;
+
   heightUnit: string;
   height: string;
+  heightFt: string;
+  heightIn: string;
 
   fitnessLevel: string;
   trainingDays: string;
@@ -37,8 +40,11 @@ export const initialFormData: IntakeFormData = {
 
   weightUnit: "kg",
   weight: "",
+
   heightUnit: "cm",
   height: "",
+  heightFt: "",
+  heightIn: "",
 
   fitnessLevel: "",
   trainingDays: "",

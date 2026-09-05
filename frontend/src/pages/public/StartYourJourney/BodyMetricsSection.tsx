@@ -243,16 +243,62 @@ const BodyMetricsSection = ({
           </Button>
         </Box>
 
-        <TextField
-          fullWidth
-          size="small"
-          value={data.height}
-          placeholder="178"
-          onChange={(event) =>
-            onChange("height", event.target.value)
-          }
-          sx={inputStyles}
-        />
+        {/* CM height input */}
+        {data.heightUnit === "cm" ? (
+          <TextField
+            fullWidth
+            size="small"
+            type="number"
+            value={data.height}
+            placeholder="178"
+            onChange={(event) =>
+              onChange(
+                "height",
+                event.target.value
+              )
+            }
+            sx={inputStyles}
+          />
+        ) : (
+          /* FT / IN height inputs */
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: 1,
+            }}
+          >
+            <TextField
+              fullWidth
+              size="small"
+              type="number"
+              value={data.heightFt}
+              placeholder="5"
+              onChange={(event) =>
+                onChange(
+                  "heightFt",
+                  event.target.value
+                )
+              }
+              sx={inputStyles}
+            />
+
+            <TextField
+              fullWidth
+              size="small"
+              type="number"
+              value={data.heightIn}
+              placeholder="10"
+              onChange={(event) =>
+                onChange(
+                  "heightIn",
+                  event.target.value
+                )
+              }
+              sx={inputStyles}
+            />
+          </Box>
+        )}
       </Box>
 
       {/* Fitness level */}
@@ -277,7 +323,10 @@ const BodyMetricsSection = ({
             <Button
               key={level}
               onClick={() =>
-                onChange("fitnessLevel", level)
+                onChange(
+                  "fitnessLevel",
+                  level
+                )
               }
               sx={{
                 ...toggleStyles,
@@ -320,12 +369,29 @@ const BodyMetricsSection = ({
         >
           <option value="">Select</option>
 
-          <option value="2 days">2 days</option>
-          <option value="3 days">3 days</option>
-          <option value="4 days">4 days</option>
-          <option value="5 days">5 days</option>
-          <option value="6 days">6 days</option>
-          <option value="7 days">7 days</option>
+          <option value="2 days">
+            2 days
+          </option>
+
+          <option value="3 days">
+            3 days
+          </option>
+
+          <option value="4 days">
+            4 days
+          </option>
+
+          <option value="5 days">
+            5 days
+          </option>
+
+          <option value="6 days">
+            6 days
+          </option>
+
+          <option value="7 days">
+            7 days
+          </option>
         </Box>
       </Box>
 
@@ -350,11 +416,26 @@ const BodyMetricsSection = ({
           }}
         >
           <option value="">Select</option>
-          <option value="30 mins">30 mins</option>
-          <option value="45 mins">45 mins</option>
-          <option value="60 mins">60 mins</option>
-          <option value="75 mins">75 mins</option>
-          <option value="90 mins">90 mins</option>
+
+          <option value="30 mins">
+            30 mins
+          </option>
+
+          <option value="45 mins">
+            45 mins
+          </option>
+
+          <option value="60 mins">
+            60 mins
+          </option>
+
+          <option value="75 mins">
+            75 mins
+          </option>
+
+          <option value="90 mins">
+            90 mins
+          </option>
         </Box>
       </Box>
     </Box>
