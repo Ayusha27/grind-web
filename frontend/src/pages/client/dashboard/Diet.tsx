@@ -7,7 +7,7 @@ import {
 
 import DietHeader from "../../../components/diet/DietHeader";
 import NutritionSummary from "../../../components/diet/NutritionSummary";
-import NutritionStats from "../../../components/diet/NutritionStats";
+// import NutritionStats from "../../../components/diet/NutritionStats";
 import DietPlanInfo from "../../../components/diet/DietPlanInfo";
 import MealSection from "../../../components/diet/MealSection";
 
@@ -24,25 +24,25 @@ const Diet = () => {
    * Diet information now comes from the same dashboard
    * response used by Workout.
    */
-const diet = dashboard?.diet;
+  const diet = dashboard?.diet;
 
-const normalizedMeals = useMemo(() => {
-  if (!diet?.meals) {
-    return [];
-  }
+  const normalizedMeals = useMemo(() => {
+    if (!diet?.meals) {
+      return [];
+    }
 
-  return diet.meals.map((mealSection) => ({
-    ...mealSection,
-    options: mealSection.options.map((option) => ({
-      ...option,
-      items:
-        option.items ??
-        (option.ingredients
-          ? [option.ingredients]
-          : []),
-    })),
-  }));
-}, [diet]);
+    return diet.meals.map((mealSection) => ({
+      ...mealSection,
+      options: mealSection.options.map((option) => ({
+        ...option,
+        items:
+          option.items ??
+          (option.ingredients
+            ? [option.ingredients]
+            : []),
+      })),
+    }));
+  }, [diet]);
 
   /*
    * =========================================================
@@ -111,7 +111,7 @@ const normalizedMeals = useMemo(() => {
     let carbs = 0;
     let fat = 0;
     let fibre = 0;
-   
+
     normalizedMeals.forEach((mealSection) => {
       const selectedIndex =
         selectedMeals[mealSection.meal];
@@ -249,7 +249,9 @@ const normalizedMeals = useMemo(() => {
             HEADER
         ================================================= */}
 
-        <DietHeader />
+        <DietHeader
+          water={diet.daily_water_intake}
+        />
 
         {/* =================================================
             TODAY'S NUTRITION
@@ -293,41 +295,11 @@ const normalizedMeals = useMemo(() => {
             PERSONAL STATS
         ================================================= */}
 
-        <NutritionStats
-          weight={
-            diet.current_weight ?? "-"
-          }
-          goalWeight={
-            diet.goal_weight ?? "-"
-          }
-          height={
-            diet.height ?? "-"
-          }
-          bmi={
-            diet.bmi ?? "-"
-          }
-          bmiStatus={
-            diet.bmi_status ?? "-"
-          }
-        //   calories={
-        //     diet.daily_calories ?? "-"
-        //   }
-        //   protein={
-        //     diet.daily_protein ?? "-"
-        //   }
-        //   carbs={
-        //     diet.daily_carbs ?? "-"
-        //   }
-        //   fat={
-        //     diet.daily_fat ?? "-"
-        //   }
-        //   fibre={
-        //     diet.daily_fibre ?? "-"
-        //   }
+        {/* <NutritionStats
           water={
             diet.daily_water_intake ?? "-"
           }
-        />
+        /> */}
 
         {/* =================================================
             DIET PLAN INFORMATION
@@ -347,7 +319,7 @@ const normalizedMeals = useMemo(() => {
         ================================================= */}
 
         {normalizedMeals.map(
-            (mealSection) => (
+          (mealSection) => (
             <MealSection
               key={mealSection.meal}
               meal={mealSection.meal}
@@ -356,7 +328,7 @@ const normalizedMeals = useMemo(() => {
               }
               selectedMeal={
                 selectedMeals[
-                  mealSection.meal
+                mealSection.meal
                 ]
               }
               onToggleMeal={(

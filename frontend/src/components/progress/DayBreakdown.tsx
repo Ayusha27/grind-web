@@ -1,6 +1,6 @@
+import { useEffect, useRef } from "react";
 import {
   Box,
-  Grid,
   Typography,
 } from "@mui/material";
 
@@ -9,11 +9,11 @@ export interface ProgressDay {
   name: string;
   type: string;
   completion:
-    | number
-    | null;
+  | number
+  | null;
   calories:
-    | number
-    | null;
+  | number
+  | null;
 }
 
 interface DayBreakdownProps {
@@ -34,6 +34,31 @@ const DayBreakdown = ({
   week,
   days,
 }: DayBreakdownProps) => {
+  /*
+   * =====================================================
+   * CAROUSEL REF
+   * =====================================================
+   */
+
+  const carouselRef =
+    useRef<HTMLDivElement>(null);
+
+  /*
+   * =====================================================
+   * RESET CAROUSEL WHEN WEEK CHANGES
+   * =====================================================
+   *
+   * Whenever the user selects another week,
+   * start the day cards from the first tile.
+   */
+
+  useEffect(() => {
+    carouselRef.current?.scrollTo({
+      left: 0,
+      behavior: "smooth",
+    });
+  }, [week]);
+
   return (
     <Box>
       <Typography
@@ -44,23 +69,92 @@ const DayBreakdown = ({
           color: "#1a1714",
         }}
       >
-        Week {week} —
-        Day Breakdown
+        Week {week} — Day Breakdown
       </Typography>
 
-      <Grid
-        container
-        spacing={1.2}
+      {/* =====================================================
+          DAY CARDS
+
+          Mobile:
+          Horizontal swipe / carousel
+
+          Desktop:
+          Normal multi-column layout
+      ===================================================== */}
+
+      <Box
+        ref={carouselRef}
+        sx={{
+          display: "flex",
+          gap: 1.2,
+
+          /*
+           * Mobile carousel
+           */
+          overflowX: {
+            xs: "auto",
+            md: "visible",
+          },
+
+          /*
+           * Mobile = one horizontal row
+           * Desktop = normal wrapping
+           */
+          flexWrap: {
+            xs: "nowrap",
+            md: "wrap",
+          },
+
+          /*
+           * Bottom spacing for mobile
+           */
+          pb: {
+            xs: 1,
+            md: 0,
+          },
+
+          /*
+           * Hide scrollbar while preserving swipe
+           */
+          scrollbarWidth: "none",
+
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+
+          /*
+           * Prevent accidental page-level horizontal overflow
+           */
+          width: "100%",
+
+          minWidth: 0,
+        }}
       >
         {days.map(
           (day, index) => (
-            <Grid
+            <Box
               key={day.day}
-              size={{
-                xs: 12,
-                sm: 6,
-                md: 4,
-                lg: 2,
+              sx={{
+                /*
+                 * =================================================
+                 * MOBILE
+                 * =================================================
+                 *
+                 * Cards have a fixed width so they remain readable
+                 * and can be swiped horizontally.
+                 */
+                flex: {
+                  xs: "0 0 150px",
+                  sm: "0 0 190px",
+                  md: "1 1 calc(33.333% - 8px)",
+                  lg: "1 1 calc(16.666% - 10px)",
+                },
+
+                minWidth: {
+                  xs: 150,
+                  sm: 190,
+                  md: 0,
+                },
               }}
             >
               <Box
@@ -91,9 +185,16 @@ const DayBreakdown = ({
 
                   boxShadow:
                     "0 4px 14px rgba(26,23,20,.05)",
+
+                  boxSizing:
+                    "border-box",
+
+                  width: "100%",
                 }}
               >
-                {/* STATUS */}
+                {/* =================================================
+                    STATUS
+                ================================================= */}
 
                 <Typography
                   sx={{
@@ -101,19 +202,21 @@ const DayBreakdown = ({
                     lineHeight: 1,
                     color:
                       day.completion ===
-                      100
+                        100
                         ? "#16b85a"
                         : "#77716b",
                     fontWeight: 400,
                   }}
                 >
                   {day.completion ===
-                  100
+                    100
                     ? "✓"
                     : "—"}
                 </Typography>
 
-                {/* DAY */}
+                {/* =================================================
+                    DAY
+                ================================================= */}
 
                 <Typography
                   sx={{
@@ -127,7 +230,9 @@ const DayBreakdown = ({
                   Day {day.day}
                 </Typography>
 
-                {/* NAME */}
+                {/* =================================================
+                    NAME
+                ================================================= */}
 
                 <Typography
                   sx={{
@@ -140,15 +245,17 @@ const DayBreakdown = ({
                       0.4,
                     color:
                       DAY_COLORS[
-                        index %
-                          DAY_COLORS.length
+                      index %
+                      DAY_COLORS.length
                       ],
                   }}
                 >
                   {day.name}
                 </Typography>
 
-                {/* COMPLETION */}
+                {/* =================================================
+                    COMPLETION
+                ================================================= */}
 
                 <Typography
                   sx={{
@@ -162,12 +269,14 @@ const DayBreakdown = ({
                 >
                   Completion:{" "}
                   {day.completion !==
-                  null
+                    null
                     ? `${day.completion}%`
                     : "-"}
                 </Typography>
 
-                {/* CALORIES */}
+                {/* =================================================
+                    CALORIES
+                ================================================= */}
 
                 <Typography
                   sx={{
@@ -181,12 +290,14 @@ const DayBreakdown = ({
                 >
                   Calories:{" "}
                   {day.calories !==
-                  null
+                    null
                     ? day.calories
                     : "-"}
                 </Typography>
 
-                {/* PROGRESS BAR */}
+                {/* =================================================
+                    PROGRESS BAR
+                ================================================= */}
 
                 <Box
                   sx={{
@@ -208,7 +319,7 @@ const DayBreakdown = ({
                           Math.max(
                             0,
                             day.completion ??
-                              0
+                            0
                           )
                         )}%`,
                       height: "100%",
@@ -221,10 +332,10 @@ const DayBreakdown = ({
                   />
                 </Box>
               </Box>
-            </Grid>
+            </Box>
           )
         )}
-      </Grid>
+      </Box>
     </Box>
   );
 };
