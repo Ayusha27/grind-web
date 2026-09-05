@@ -26,37 +26,144 @@ const SubmissionSuccess = () => {
       <Box
         component="header"
         sx={{
-          pt: {
-            xs: 3,
-            md: 4,
+          height: {
+            xs: 64,
+            md: 72,
           },
-          textAlign: "center",
+          borderBottom: "1px solid #222",
+          display: "flex",
+          alignItems: "center",
+          px: {
+            xs: 2.5,
+            sm: 3,
+            md: 6,
+          },
         }}
       >
-        <Typography
-          component={RouterLink}
-          to="/"
+        <Box
           sx={{
-            textDecoration: "none",
-            color: "#f5f5f0",
-            fontFamily: '"Bebas Neue", sans-serif',
-            fontSize: {
-              xs: 34,
-              md: 40,
-            },
-            lineHeight: 1,
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 2,
           }}
         >
-          GRIND
-          <Box
-            component="span"
+          <Typography
+            component={RouterLink}
+            to="/"
             sx={{
-              color: "primary.main",
+              textDecoration: "none",
+              color: "#f5f5f0",
+              fontFamily: '"Bebas Neue", sans-serif',
+              fontSize: {
+                xs: 34,
+                md: 42,
+              },
+              lineHeight: 1,
+              flexShrink: 0,
             }}
           >
-            .
+            GRIND
+            <Box
+              component="span"
+              sx={{
+                color: "primary.main",
+              }}
+            >
+              .
+            </Box>
+          </Typography>
+
+          {/* =====================================================
+              RIGHT — NAVIGATION
+          ===================================================== */}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: {
+                xs: 0.75,
+                sm: 1,
+                md: 1.5,
+              },
+            }}
+          >
+            {/* Explore GRIND */}
+            <Button
+              component={RouterLink}
+              to="/grind-walkthrough"
+              variant="text"
+              sx={{
+                minWidth: "auto",
+                height: {
+                  xs: 30,
+                  md: 34,
+                },
+                px: {
+                  xs: 1,
+                  sm: 1.5,
+                  md: 2,
+                },
+                borderRadius: 0,
+                color: "#777",
+                fontSize: {
+                  xs: 8,
+                  sm: 9,
+                  md: 10,
+                },
+                fontWeight: 700,
+                letterSpacing: "0.7px",
+                whiteSpace: "nowrap",
+
+                "&:hover": {
+                  backgroundColor: "transparent",
+                  color: "#f5f5f0",
+                },
+              }}
+            >
+              EXPLORE GRIND
+            </Button>
+
+            {/* Membership Guide */}
+            <Button
+              component={RouterLink}
+              to="/membership-guide"
+              variant="outlined"
+              sx={{
+                minWidth: "auto",
+                height: {
+                  xs: 30,
+                  md: 34,
+                },
+                px: {
+                  xs: 1,
+                  sm: 1.5,
+                  md: 2,
+                },
+                borderRadius: 0,
+                borderColor: "#292929",
+                color: "#f5f5f0",
+                fontSize: {
+                  xs: 8,
+                  sm: 9,
+                  md: 10,
+                },
+                fontWeight: 700,
+                letterSpacing: "0.7px",
+                whiteSpace: "nowrap",
+
+                "&:hover": {
+                  borderColor: "primary.main",
+                  backgroundColor:
+                    "rgba(255, 92, 53, 0.06)",
+                },
+              }}
+            >
+              MEMBERSHIP GUIDE
+            </Button>
           </Box>
-        </Typography>
+        </Box>
       </Box>
 
       {/* =========================================================

@@ -49,11 +49,11 @@ const getMealTheme = (
 
   if (normalizedMeal === "breakfast") {
     return {
-      background: "#fff0e8",
-      border: "#ffd8c9",
+      background: "#fff3ee",
+      border: "#f3d5ca",
       accent: "#ff5c35",
-      text: "#7c2d12",
-      buttonBackground: "#ffe0d3",
+      text: "#211e1b",
+      buttonBackground: "#ffe4dc",
       icon: (
         <BreakfastDiningOutlinedIcon />
       ),
@@ -64,11 +64,11 @@ const getMealTheme = (
 
   if (normalizedMeal === "lunch") {
     return {
-      background: "#edf8ed",
-      border: "#d0ead0",
-      accent: "#16a34a",
-      text: "#166534",
-      buttonBackground: "#dcefdc",
+      background: "#696969",
+      border: "#d9d4ce",
+      accent: "#211e1b",
+      text: "white",
+      buttonBackground: "#e4e0db",
       icon: (
         <LunchDiningOutlinedIcon />
       ),
@@ -82,11 +82,11 @@ const getMealTheme = (
     normalizedMeal === "snacks"
   ) {
     return {
-      background: "#f3eaff",
-      border: "#e3d1ff",
-      accent: "#7c3aed",
-      text: "#5b21b6",
-      buttonBackground: "#e8d8ff",
+      background: "#fff3ee",
+      border: "#f3d5ca",
+      accent: "#ff5c35",
+      text: "#211e1b",
+      buttonBackground: "#ffe4dc",
       icon: (
         <RestaurantMenuOutlinedIcon />
       ),
@@ -97,11 +97,11 @@ const getMealTheme = (
 
   if (normalizedMeal === "dinner") {
     return {
-      background: "#edf5ff",
-      border: "#d3e5ff",
-      accent: "#2563eb",
-      text: "#1e40af",
-      buttonBackground: "#dceaff",
+      background: "#696969",
+      border: "#d9d4ce",
+      accent: "#211e1b",
+      text: "white",
+      buttonBackground: "#e4e0db",
       icon: (
         <DinnerDiningOutlinedIcon />
       ),
@@ -109,6 +109,10 @@ const getMealTheme = (
         "Choose one meal to complete your day",
     };
   }
+
+  // =================================================
+  // DEFAULT THEME
+  // =================================================
 
   return {
     background: "#f5f3ef",
@@ -300,7 +304,7 @@ const MealSection = ({
                 ? theme.buttonBackground
                 : "rgba(255,255,255,.55)",
 
-            color: theme.text,
+            color: "black",
 
             border:
               selectedMeal !== undefined
