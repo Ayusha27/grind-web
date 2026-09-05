@@ -1,4 +1,9 @@
-import { useMemo, useState } from "react";
+import {
+  useMemo,
+  useState,
+  useEffect,
+} from "react";
+
 import {
   Box,
   Container,
@@ -15,6 +20,9 @@ import WeeklyWeightTracker from "../../../components/progress/WeeklyWeightTracke
 import ThreeMonthOverview from "../../../components/progress/ThreeMonthOverview";
 
 import { useDashboard } from "../../../context/DashboardContext";
+import { getProgress } from "../../../api/dashboardApi";
+
+import type { ProgressResponse } from "../../../types/progress";
 
 interface ProgressDay {
   day: number;
@@ -26,6 +34,12 @@ interface ProgressDay {
 
 const Progress = () => {
   const { dashboard } = useDashboard();
+
+  /*
+   * =========================================================
+   * MONTH / WEEK
+   * =========================================================
+   */
 
   const [selectedMonth, setSelectedMonth] =
     useState(1);
@@ -39,10 +53,8 @@ const Progress = () => {
    * =========================================================
    *
    * User-entered weight tracking.
-   *
-   * The latest entered weight becomes the Current Weight.
-   * BMI is then calculated from this weight + backend height.
    */
+
   const [weights, setWeights] = useState<
     Record<number, number | null>
   >({
@@ -54,8 +66,72 @@ const Progress = () => {
 
   /*
    * =========================================================
+   * BACKEND PROGRESS
+   * =========================================================
+   */
+
+  const [progress, setProgress] =
+    useState<ProgressResponse | null>(null);
+
+  const [progressLoading, setProgressLoading] =
+    useState(true);
+
+  /*
+   * =========================================================
+   * LOAD PROGRESS
+   * =========================================================
+   *
+   * GET /api/v1/portal/progress
+   *
+   * This is separate from /portal/my-plan because
+   * progress is not cached by the backend.
+   */
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadProgress = async () => {
+      try {
+        setProgressLoading(true);
+
+        const response =
+          await getProgress();
+
+        if (!mounted) {
+          return;
+        }
+
+        if (response.success) {
+          setProgress(response);
+        }
+      } catch (error) {
+        console.error(
+          "Failed to load progress:",
+          error
+        );
+      } finally {
+        if (mounted) {
+          setProgressLoading(false);
+        }
+      }
+    };
+
+    void loadProgress();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  /*
+   * =========================================================
    * BACKEND DAYS
    * =========================================================
+   *
+   * These provide the workout day structure.
+   *
+   * The progress API currently does NOT return individual
+   * days, so the day names still come from my-plan.
    */
 
   const backendDays =
@@ -83,42 +159,70 @@ const Progress = () => {
 
   /*
    * =========================================================
+   * OVERALL PROGRESS FROM BACKEND
+   * =========================================================
+   *
+   * API:
+   *
+   * data.exercises.total
+   * data.exercises.completed
+   * data.exercises.percent
+   */
+
+  const totalExercises =
+    progress?.data?.exercises?.total ?? 0;
+
+  const completedExercises =
+    progress?.data?.exercises?.completed ?? 0;
+
+  const overallProgress =
+    progress?.data?.exercises?.percent ?? 0;
+
+  /*
+   * =========================================================
    * DAY BREAKDOWN
    * =========================================================
    *
-   * Actual live completion data will be connected once the
-   * completed workout state is available through the
-   * DashboardContext/backend progress response.
+   * The current progress API does not expose individual
+   * day completion/calorie values.
+   *
+   * Therefore:
+   *
+   * - Day/name/type come from dashboard days.
+   * - Completion remains unavailable at day level.
+   * - Calories remain unavailable at day level.
+   *
+   * We deliberately do NOT copy the overall progress
+   * percentage onto every day because that would be
+   * misleading.
    */
 
   const selectedWeekDays = useMemo<
     ProgressDay[]
   >(() => {
-    return backendDays.map(
-      (day) => ({
-        day: day.id,
-        name: day.label,
-        type: day.label,
-        completion: 0,
-        calories: null,
-      })
-    );
+    return backendDays.map((day) => ({
+      day: day.id,
+      name: day.label,
+      type: day.label,
+      completion: null,
+      calories: null,
+    }));
   }, [backendDays]);
 
   /*
    * =========================================================
-   * MONTH SUMMARY
+   * TOTAL WORKOUT DAYS
    * =========================================================
    */
 
   const totalSessions =
     backendDays.length;
 
-  const completedSessions =
-    dashboard?.progress?.completed ?? 0;
-
-  const overallProgress =
-    dashboard?.progress?.percent ?? 0;
+  /*
+   * =========================================================
+   * TOTAL SETS
+   * =========================================================
+   */
 
   const totalSets = useMemo(() => {
     return backendDays.reduce(
@@ -134,16 +238,7 @@ const Progress = () => {
    * CURRENT WEIGHT
    * =========================================================
    *
-   * The latest entered weekly weight is treated as the
-   * current weight.
-   *
-   * Example:
-   *
-   * Week 1 = 75 kg
-   * Week 2 = 73.8 kg
-   * Week 3 = 72.9 kg
-   *
-   * Current Weight = 72.9 kg
+   * Latest entered weekly weight.
    */
 
   const currentWeight = useMemo(() => {
@@ -177,9 +272,8 @@ const Progress = () => {
    * STARTING WEIGHT
    * =========================================================
    *
-   * Until a dedicated starting_weight field is exposed by
-   * the backend, use the diet plan's current_weight as the
-   * initial/reference weight.
+   * Until a dedicated starting_weight field is available,
+   * use the backend diet current_weight.
    */
 
   const startingWeight = useMemo(() => {
@@ -204,137 +298,25 @@ const Progress = () => {
    * =========================================================
    * HEIGHT
    * =========================================================
-   *
-   * Height comes directly from the backend diet data.
-   *
-   * Backend may return:
-   *
-   * "175 cm"
-   * "5 ft 10 in"
-   * "5'10"
-   *
-   * ProgressStats expects height in centimeters.
    */
 
-  const height = useMemo(() => {
-    const value =
-      dashboard?.diet?.height;
+ const height =
+  dashboard?.diet?.height ?? null;
 
-    if (
-      value === null ||
-      value === undefined ||
-      value === ""
-    ) {
-      return null;
-    }
-
-    const heightString =
-      String(value)
-        .trim()
-        .toLowerCase();
-
-    /*
-     * ---------------------------------------------------------
-     * Format: centimeters
-     * Example: "175 cm"
-     * ---------------------------------------------------------
-     */
-
-    const cmMatch =
-      heightString.match(
-        /(\d+(?:\.\d+)?)\s*cm/
-      );
-
-    if (cmMatch) {
-      return Number(cmMatch[1]);
-    }
-
-    /*
-     * ---------------------------------------------------------
-     * Format: feet + inches
-     * Example: "5 ft 10 in"
-     * ---------------------------------------------------------
-     */
-
-    const feetInchesMatch =
-      heightString.match(
-        /(\d+(?:\.\d+)?)\s*(?:ft|feet|')\s*(\d+(?:\.\d+)?)?\s*(?:in|inch|inches|")?/
-      );
-
-    if (feetInchesMatch) {
-      const feet =
-        Number(feetInchesMatch[1]);
-
-      const inches =
-        feetInchesMatch[2]
-          ? Number(feetInchesMatch[2])
-          : 0;
-
-      return (
-        feet * 30.48 +
-        inches * 2.54
-      );
-    }
-
-    /*
-     * ---------------------------------------------------------
-     * Format: decimal feet
-     * Example: "5.83 ft"
-     * ---------------------------------------------------------
-     */
-
-    const decimalFeetMatch =
-      heightString.match(
-        /(\d+(?:\.\d+)?)\s*(?:ft|feet)/
-      );
-
-    if (decimalFeetMatch) {
-      return (
-        Number(decimalFeetMatch[1]) *
-        30.48
-      );
-    }
-
-    /*
-     * ---------------------------------------------------------
-     * Fallback:
-     *
-     * If backend gives a plain number, assume centimeters.
-     * ---------------------------------------------------------
-     */
-
-    const numericMatch =
-      heightString.match(
-        /^\d+(?:\.\d+)?$/
-      );
-
-    if (numericMatch) {
-      return Number(numericMatch[0]);
-    }
-
-    return null;
-  }, [dashboard]);
+const bmi =
+  dashboard?.diet?.bmi ?? null;
 
   /*
    * =========================================================
    * WEIGHT CHANGE
    * =========================================================
-   *
-   * Current tracked weight - starting weight.
-   *
-   * Example:
-   *
-   * Starting = 75 kg
-   * Current  = 72 kg
-   *
-   * Change = -3 kg
    */
 
   const weightChange =
     startingWeight !== null &&
       currentWeight !== null
       ? currentWeight -
-      startingWeight
+        startingWeight
       : null;
 
   /*
@@ -372,17 +354,23 @@ const Progress = () => {
    * =========================================================
    */
 
-  if (!dashboard) {
+  if (!dashboard || progressLoading) {
     return (
       <Box
         sx={{
           minHeight:
             "calc(100vh - 194px)",
+
           backgroundColor:
             "#f5f2ed",
+
           display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+
+          alignItems:
+            "center",
+
+          justifyContent:
+            "center",
         }}
       >
         <Box>
@@ -427,65 +415,73 @@ const Progress = () => {
 
           {/* =================================================
               PROGRESS STATS
-              
-              Starting Weight
-              Current Weight
-              Weight Change
-              Height
-              BMI
           ================================================= */}
 
           <ProgressStats
             startingWeight={
-              startingWeight ?? 0
+                startingWeight ?? 0
             }
             currentWeight={
-              currentWeight ??
-              startingWeight ??
-              0
+                currentWeight ??
+                startingWeight ??
+                0
             }
             weightChange={
-              weightChange ?? 0
+                weightChange ?? 0
             }
             height={height}
-          />
+            bmi={bmi}
+            />
 
-          {/* =================================================
-              MONTH SELECTOR
-          ================================================= */}
+       {/* =================================================
+    PROGRESS TRACKER
+================================================= */}
 
-          <ProgressTrackerHeader
-            month={selectedMonth}
-            onMonthChange={
-              handleMonthChange
-            }
-          />
+<Box
+  sx={{
+    width: "100%",
+    minWidth: 0,
+  }}
+>
+  <ProgressTrackerHeader
+    month={selectedMonth}
+    onMonthChange={
+      handleMonthChange
+    }
+  />
 
-          {/* =================================================
-              MONTH SUMMARY
-          ================================================= */}
-
-          <ProgressSummaryCards
-            monthScore={
-              overallProgress
-            }
-            sessionsCompleted={
-              completedSessions
-            }
-            totalSessions={
-              totalSessions
-            }
-            caloriesBurned={0}
-            activeWeeks={
-              completedSessions > 0
-                ? 1
-                : 0
-            }
-            totalWeeks={4}
-            bestWeekScore={
-              overallProgress
-            }
-          />
+  <Box
+    sx={{
+      mt: {
+        xs: 1.5,
+        sm: 1.7,
+        md: 2,
+      },
+    }}
+  >
+    <ProgressSummaryCards
+      monthScore={
+        overallProgress
+      }
+      sessionsCompleted={
+        completedExercises
+      }
+      totalSessions={
+        totalExercises
+      }
+      caloriesBurned={0}
+      activeWeeks={
+        completedExercises > 0
+          ? 1
+          : 0
+      }
+      totalWeeks={4}
+      bestWeekScore={
+        overallProgress
+      }
+    />
+  </Box>
+</Box>
 
           {/* =================================================
               WEEK SELECTOR
@@ -515,12 +511,15 @@ const Progress = () => {
 
           <WeeklySummary
             sessionsCompleted={
-              completedSessions
+              completedExercises
             }
+
             totalSessions={
-              totalSessions
+              totalExercises
             }
+
             caloriesBurned={0}
+
             weekScore={
               overallProgress
             }
@@ -545,22 +544,33 @@ const Progress = () => {
             data={[
               {
                 month: "M1",
+
                 workouts:
-                  completedSessions,
+                  completedExercises,
+
                 calories: 0,
+
                 score:
                   overallProgress,
               },
+
               {
                 month: "M2",
+
                 workouts: 0,
+
                 calories: 0,
+
                 score: 0,
               },
+
               {
                 month: "M3",
+
                 workouts: 0,
+
                 calories: 0,
+
                 score: 0,
               },
             ]}

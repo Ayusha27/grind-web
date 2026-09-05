@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 
 interface ProgressTrackerHeaderProps {
   month: number;
@@ -10,51 +10,134 @@ const ProgressTrackerHeader = ({
   onMonthChange,
 }: ProgressTrackerHeaderProps) => {
   return (
-    <Box>
+    <Box
+      sx={{
+        width: "100%",
+        minWidth: 0,
+      }}
+    >
+      {/* TITLE */}
+
       <Typography
+        component="h2"
         sx={{
-          fontSize: 21,
+          fontSize: {
+            xs: 18,
+            sm: 20,
+            md: 22,
+          },
+          lineHeight: 1.15,
           fontWeight: 900,
           color: "#1a1714",
+          mb: {
+            xs: 1.4,
+            sm: 1.5,
+            md: 1.8,
+          },
         }}
       >
         Progress Tracker
       </Typography>
 
-      <Typography
+      {/* MONTH SELECTOR */}
+
+      <Box
         sx={{
-          mt: 0.3,
-          fontSize: 11,
-          color: "#77716b",
+          display: "flex",
+          gap: {
+            xs: 0.8,
+            sm: 1,
+          },
+
+          width: "100%",
+
+          overflowX: "auto",
+
+          scrollbarWidth: "none",
+
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
         }}
       >
-        All data flows automatically from your workout check-ins — no manual
-        entry needed.
-      </Typography>
-
-      <Stack direction="row" spacing={0.8} sx={{ mt: 2 }}>
         {[1, 2, 3].map((item) => {
           const active = month === item;
 
           return (
             <Button
               key={item}
-              onClick={() => onMonthChange(item)}
+              onClick={() =>
+                onMonthChange(item)
+              }
               sx={{
-                minWidth: 0,
-                height: 30,
-                px: 2,
-                borderRadius: "16px",
+                flex: {
+                  xs: "1 1 0",
+                  sm: "0 0 auto",
+                },
+
+                minWidth: {
+                  xs: 0,
+                  sm: 120,
+                  md: 145,
+                },
+
+                height: {
+                  xs: 36,
+                  sm: 40,
+                  md: 44,
+                },
+
+                px: {
+                  xs: 1.5,
+                  sm: 2.5,
+                  md: 3,
+                },
+
+                borderRadius: "999px",
+
                 border: "1px solid",
-                borderColor: active ? "#1a1714" : "#ddd7d0",
-                backgroundColor: active ? "#1a1714" : "#ffffff",
-                color: active ? "#ffffff" : "#77716b",
-                fontSize: 10,
-                fontWeight: 800,
+
+                borderColor: active
+                  ? "#ff5c35"
+                  : "#e1ddd8",
+
+                backgroundColor: active
+                  ? "#ff5c35"
+                  : "#ffffff",
+
+                color: active
+                  ? "#ffffff"
+                  : "#211e1b",
+
+                fontSize: {
+                  xs: 11,
+                  sm: 12,
+                  md: 13,
+                },
+
+                fontWeight: active
+                  ? 800
+                  : 700,
+
                 textTransform: "none",
 
+                whiteSpace: "nowrap",
+
+                boxShadow: active
+                  ? "0 3px 10px rgba(255,92,53,.16)"
+                  : "0 2px 8px rgba(26,23,20,.03)",
+
+                transition:
+                  "all 180ms ease",
+
                 "&:hover": {
-                  backgroundColor: active ? "#1a1714" : "#f5f2ed",
+                  backgroundColor: active
+                    ? "#ff5c35"
+                    : "#f8f6f3",
+
+                  borderColor: active
+                    ? "#ff5c35"
+                    : "#d5d0ca",
                 },
               }}
             >
@@ -62,7 +145,7 @@ const ProgressTrackerHeader = ({
             </Button>
           );
         })}
-      </Stack>
+      </Box>
     </Box>
   );
 };

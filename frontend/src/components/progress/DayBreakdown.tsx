@@ -8,12 +8,8 @@ export interface ProgressDay {
   day: number;
   name: string;
   type: string;
-  completion:
-  | number
-  | null;
-  calories:
-  | number
-  | null;
+  completion: number | null;
+  calories: number | null;
 }
 
 interface DayBreakdownProps {
@@ -34,24 +30,13 @@ const DayBreakdown = ({
   week,
   days,
 }: DayBreakdownProps) => {
-  /*
-   * =====================================================
-   * CAROUSEL REF
-   * =====================================================
-   */
-
   const carouselRef =
     useRef<HTMLDivElement>(null);
 
   /*
-   * =====================================================
-   * RESET CAROUSEL WHEN WEEK CHANGES
-   * =====================================================
-   *
-   * Whenever the user selects another week,
-   * start the day cards from the first tile.
+   * Reset the carousel position whenever
+   * the selected week changes.
    */
-
   useEffect(() => {
     carouselRef.current?.scrollTo({
       left: 0,
@@ -72,77 +57,50 @@ const DayBreakdown = ({
         Week {week} — Day Breakdown
       </Typography>
 
-      {/* =====================================================
-          DAY CARDS
-
-          Mobile:
-          Horizontal swipe / carousel
-
-          Desktop:
-          Normal multi-column layout
-      ===================================================== */}
-
       <Box
         ref={carouselRef}
         sx={{
           display: "flex",
           gap: 1.2,
 
-          /*
-           * Mobile carousel
-           */
           overflowX: {
             xs: "auto",
             md: "visible",
           },
 
-          /*
-           * Mobile = one horizontal row
-           * Desktop = normal wrapping
-           */
           flexWrap: {
             xs: "nowrap",
             md: "wrap",
           },
 
-          /*
-           * Bottom spacing for mobile
-           */
           pb: {
             xs: 1,
             md: 0,
           },
 
-          /*
-           * Hide scrollbar while preserving swipe
-           */
           scrollbarWidth: "none",
 
           "&::-webkit-scrollbar": {
             display: "none",
           },
 
-          /*
-           * Prevent accidental page-level horizontal overflow
-           */
           width: "100%",
-
           minWidth: 0,
         }}
       >
-        {days.map(
-          (day, index) => (
+        {days.map((day, index) => {
+          const completion = Math.min(
+            100,
+            Math.max(0, day.completion ?? 0)
+          );
+
+          const isComplete =
+            day.completion === 100;
+
+          return (
             <Box
               key={day.day}
               sx={{
-                /*
-                 * =================================================
-                 * MOBILE
-                 * =================================================
-                 *
-                 * Cards have a fixed width so they remain readable
-                 * and can be swiped horizontally.
-                 */
                 flex: {
                   xs: "0 0 150px",
                   sm: "0 0 190px",
@@ -161,78 +119,60 @@ const DayBreakdown = ({
                 sx={{
                   minHeight: 136,
 
-                  backgroundColor:
-                    "#ffffff",
+                  backgroundColor: "#ffffff",
 
                   border:
                     "1px solid #e0dbd4",
 
-                  borderRadius:
-                    "12px",
+                  borderRadius: "12px",
 
                   p: 1.2,
 
-                  textAlign:
-                    "center",
+                  textAlign: "center",
 
                   display: "flex",
 
-                  flexDirection:
-                    "column",
+                  flexDirection: "column",
 
-                  alignItems:
-                    "center",
+                  alignItems: "center",
 
                   boxShadow:
                     "0 4px 14px rgba(26,23,20,.05)",
 
-                  boxSizing:
-                    "border-box",
+                  boxSizing: "border-box",
 
                   width: "100%",
                 }}
               >
-                {/* =================================================
-                    STATUS
-                ================================================= */}
+                {/* STATUS */}
 
                 <Typography
                   sx={{
                     fontSize: 22,
                     lineHeight: 1,
-                    color:
-                      day.completion ===
-                        100
-                        ? "#16b85a"
-                        : "#77716b",
+                    color: isComplete
+                      ? "#16b85a"
+                      : "#77716b",
                     fontWeight: 400,
                   }}
                 >
-                  {day.completion ===
-                    100
-                    ? "✓"
-                    : "—"}
+                  {isComplete ? "✓" : "—"}
                 </Typography>
 
-                {/* =================================================
-                    DAY
-                ================================================= */}
+                {/* DAY */}
 
                 <Typography
                   sx={{
                     mt: 1,
                     fontSize: 12,
                     fontWeight: 900,
-                    color:
-                      "#77716b",
+                    color: "#77716b",
                   }}
                 >
                   Day {day.day}
                 </Typography>
 
-                {/* =================================================
-                    NAME
-                ================================================= */}
+                {/* NAME */}
 
                 <Typography
                   sx={{
@@ -241,63 +181,49 @@ const DayBreakdown = ({
                     fontSize: 8.5,
                     lineHeight: 1.25,
                     fontWeight: 700,
-                    letterSpacing:
-                      0.4,
+                    letterSpacing: 0.4,
                     color:
                       DAY_COLORS[
-                      index %
-                      DAY_COLORS.length
+                        index % DAY_COLORS.length
                       ],
                   }}
                 >
                   {day.name}
                 </Typography>
 
-                {/* =================================================
-                    COMPLETION
-                ================================================= */}
+                {/* COMPLETION */}
 
                 <Typography
                   sx={{
                     mt: 0.6,
                     fontSize: 9,
-                    color:
-                      "#aaa39c",
-                    fontFamily:
-                      "monospace",
+                    color: "#aaa39c",
+                    fontFamily: "monospace",
                   }}
                 >
                   Completion:{" "}
-                  {day.completion !==
-                    null
+                  {day.completion !== null
                     ? `${day.completion}%`
                     : "-"}
                 </Typography>
 
-                {/* =================================================
-                    CALORIES
-                ================================================= */}
+                {/* CALORIES */}
 
                 <Typography
                   sx={{
                     mt: 0.25,
                     fontSize: 9,
-                    color:
-                      "#aaa39c",
-                    fontFamily:
-                      "monospace",
+                    color: "#aaa39c",
+                    fontFamily: "monospace",
                   }}
                 >
                   Calories:{" "}
-                  {day.calories !==
-                    null
+                  {day.calories !== null
                     ? day.calories
                     : "-"}
                 </Typography>
 
-                {/* =================================================
-                    PROGRESS BAR
-                ================================================= */}
+                {/* PROGRESS BAR */}
 
                 <Box
                   sx={{
@@ -305,26 +231,15 @@ const DayBreakdown = ({
                     height: 4,
                     mt: "auto",
                     borderRadius: 3,
-                    backgroundColor:
-                      "#ebe7e1",
-                    overflow:
-                      "hidden",
+                    backgroundColor: "#ebe7e1",
+                    overflow: "hidden",
                   }}
                 >
                   <Box
                     sx={{
-                      width:
-                        `${Math.min(
-                          100,
-                          Math.max(
-                            0,
-                            day.completion ??
-                            0
-                          )
-                        )}%`,
+                      width: `${completion}%`,
                       height: "100%",
-                      backgroundColor:
-                        "#ff5c35",
+                      backgroundColor: "#ff5c35",
                       borderRadius: 3,
                       transition:
                         "width 250ms ease",
@@ -333,8 +248,8 @@ const DayBreakdown = ({
                 </Box>
               </Box>
             </Box>
-          )
-        )}
+          );
+        })}
       </Box>
     </Box>
   );
