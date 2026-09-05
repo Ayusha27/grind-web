@@ -15,6 +15,7 @@ import { getDashboard } from "../../api/dashboardApi";
 interface DashboardContentProps {
   month: number;
   week: number;
+  periodResetKey: number;
   onMonthChange: (month: number) => void;
   onWeekChange: (week: number) => void;
 }
@@ -22,6 +23,7 @@ interface DashboardContentProps {
 const DashboardContent = ({
   month,
   week,
+  periodResetKey,
   onMonthChange,
   onWeekChange,
 }: DashboardContentProps) => {
@@ -53,7 +55,13 @@ const DashboardContent = ({
       <DashboardNavigation />
 
       <Box component="main">
-        <Outlet context={{ month, week }} />
+        <Outlet
+            context={{
+                month,
+                week,
+                periodResetKey,
+            }}
+            />
       </Box>
 
       <Footer variant="dashboard" />
@@ -64,14 +72,26 @@ const DashboardContent = ({
 const DashboardLayout = () => {
   const [month, setMonth] = useState(1);
   const [week, setWeek] = useState(1);
+  const [periodResetKey, setPeriodResetKey] = useState(0);
+
+  const handleMonthChange = (newMonth: number) => {
+    setMonth(newMonth);
+    setPeriodResetKey((previous) => previous + 1);
+  };
+
+  const handleWeekChange = (newWeek: number) => {
+    setWeek(newWeek);
+    setPeriodResetKey((previous) => previous + 1);
+  };
 
   return (
     <DashboardProvider>
       <DashboardContent
         month={month}
         week={week}
-        onMonthChange={setMonth}
-        onWeekChange={setWeek}
+        periodResetKey={periodResetKey}
+        onMonthChange={handleMonthChange}
+        onWeekChange={handleWeekChange}
       />
     </DashboardProvider>
   );

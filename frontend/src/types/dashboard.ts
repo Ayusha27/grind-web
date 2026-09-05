@@ -62,12 +62,14 @@ export interface Meal {
 
 export interface MealOption {
   name: string;
-  calories: string;
-  protein: string;
-  carbs: string;
-  fat: string;
-  fibre: string;
-  items: string[];
+  calories: string | number;
+  protein: string | number;
+  carbs: string | number;
+  fat: string | number;
+  fibre: string | number;
+
+  items?: string[];
+  ingredients?: string;
 }
 
 export interface Progress {

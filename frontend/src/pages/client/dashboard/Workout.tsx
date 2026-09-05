@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { Box } from "@mui/material";
+import { useOutletContext } from "react-router-dom";
 
 import DayNavigation from "../../../components/workout/DayNavigation";
+import WorkoutCompletionCard from "../../../components/workout/WorkoutCompletionCard";
 import LoggingNotice from "../../../components/workout/LoggingNotice";
 import WorkoutSummaryCard from "../../../components/workout/WorkoutSummaryCard";
 import CalorieCard from "../../../components/workout/CalorieCard";
@@ -24,11 +26,23 @@ const Workout = () => {
   const [warmUpExercises, setWarmUpExercises] =
     useState(WARM_UP_EXERCISES);
 
-  const [completedSetsByDay, setCompletedSetsByDay] =
-    useState<Record<number, Record<string, boolean>>>({});
+const [completedSetsByDay, setCompletedSetsByDay] =
+  useState<Record<string, Record<string, boolean>>>({});
 
   const [openExerciseId, setOpenExerciseId] =
     useState<number | null>(null);
+
+  const { month, week } = useOutletContext<{
+  month: number;
+  week: number;
+  periodResetKey: number;
+}>(); 
+
+const getWorkoutStateKey = (
+  month: number,
+  week: number,
+  dayId: number
+) => `${month}-${week}-${dayId}`;
 
   /*
    * Select the first backend day once dashboard data is available.
@@ -61,8 +75,14 @@ const Workout = () => {
       return [];
     }
 
-    const completedSets =
-      completedSetsByDay[selectedWorkout.id] ?? {};
+const workoutStateKey = getWorkoutStateKey(
+  month,
+  week,
+  selectedWorkout.id
+);
+
+const completedSetState =
+  completedSetsByDay[workoutStateKey] ?? {};
 
     return selectedWorkout.exercises.map(
       (exercise, exerciseIndex) => {
@@ -82,7 +102,7 @@ const Workout = () => {
               label: `SET ${setIndex + 1}`,
               target: exercise.reps,
               completed:
-                completedSets[String(setId)] ?? false,
+                completedSetState[String(setId)] ?? false,
             };
           }
         );
@@ -98,10 +118,12 @@ const Workout = () => {
         };
       }
     );
-  }, [
+ }, [
     selectedWorkout,
     completedSetsByDay,
-  ]);
+    month,
+    week,
+ ]);
 
   /*
    * Total sets for the currently selected day.
@@ -128,6 +150,28 @@ const Workout = () => {
     );
   }, [exercises]);
 
+ const isDayCompleted =
+  totalSets > 0 &&
+  completedSets === totalSets; 
+
+
+const earnedCalories = useMemo(() => {
+  if (!selectedWorkout || totalSets === 0) {
+    return 0;
+  }
+
+  const completionRatio =
+    completedSets / totalSets;
+
+  return Math.round(
+    selectedWorkout.calMax * completionRatio
+  );
+}, [
+  selectedWorkout,
+  completedSets,
+  totalSets,
+]);
+
   /*
    * Keep the dashboard header statistics synchronized
    * with the backend-driven workout state.
@@ -152,9 +196,14 @@ const Workout = () => {
     const completedProgramSets =
       dashboard.days.reduce(
         (total, day) => {
-          const dayCompletedSets =
-            completedSetsByDay[day.id] ?? {};
+        const workoutStateKey = getWorkoutStateKey(
+            month,
+            week,
+            day.id
+            );
 
+            const dayCompletedSets =
+            completedSetsByDay[workoutStateKey] ?? {};
           return (
             total +
             Object.values(dayCompletedSets).filter(
@@ -165,39 +214,49 @@ const Workout = () => {
         0
       );
 
-    const completedDays =
-      dashboard.days.filter((day) => {
-        const totalDaySets =
-          day.exercises.reduce(
-            (total, exercise) =>
-              total + exercise.sets,
-            0
-          );
+const completedDays =
+  dashboard.days.filter((day) => {
+    const totalDaySets =
+      day.exercises.reduce(
+        (total, exercise) =>
+          total + exercise.sets,
+        0
+      );
 
-        const completedDaySets =
-          Object.values(
-            completedSetsByDay[day.id] ?? {}
-          ).filter(Boolean).length;
+    const workoutStateKey =
+      getWorkoutStateKey(
+        month,
+        week,
+        day.id
+      );
 
-        return (
-          totalDaySets > 0 &&
-          completedDaySets === totalDaySets
-        );
-      }).length;
+    const completedDaySets =
+      Object.values(
+        completedSetsByDay[workoutStateKey] ?? {}
+      ).filter(Boolean).length;
+
+    return (
+      totalDaySets > 0 &&
+      completedDaySets === totalDaySets
+    );
+  }).length;
 
     setStats({
       completedSets: completedProgramSets,
       totalSets: totalProgramSets,
       completedDays,
       totalDays: dashboard.days.length,
-      calories: selectedWorkout?.calMin ?? 0,
+      calories: earnedCalories,
     });
-  }, [
+ }, [
     dashboard,
     completedSetsByDay,
     selectedWorkout,
+    earnedCalories,
     setStats,
-  ]);
+    month,
+    week,
+]);
 
   /*
    * Open the first exercise whenever the selected day changes.
@@ -210,27 +269,31 @@ const Workout = () => {
     }
   }, [selectedDay, exercises.length]);
 
-  const handleResetDay = () => {
-    if (selectedWorkout === undefined) {
-      return;
-    }
+const handleResetDay = () => {
+  if (selectedWorkout === undefined) {
+    return;
+  }
 
-    setCompletedSetsByDay(
-      (current) => {
-        const updated = {
-          ...current,
-        };
+  const workoutStateKey = getWorkoutStateKey(
+    month,
+    week,
+    selectedWorkout.id
+  );
 
-        delete updated[selectedWorkout.id];
+  setCompletedSetsByDay((current) => {
+    const updated = {
+      ...current,
+    };
 
-        return updated;
-      }
-    );
+    delete updated[workoutStateKey];
 
-    setOpenExerciseId(
-      exercises[0]?.id ?? null
-    );
-  };
+    return updated;
+  });
+
+  setOpenExerciseId(
+    exercises[0]?.id ?? null
+  );
+};
 
   const handleWarmUpToggle = (
     exerciseId: number
@@ -261,30 +324,34 @@ const Workout = () => {
     );
   };
 
-  const handleSetToggle = (
-    exerciseId: number,
-    setId: number
-  ) => {
-    if (selectedWorkout === undefined) {
-      return;
-    }
+const handleSetToggle = (
+  exerciseId: number,
+  setId: number
+) => {
+  if (selectedWorkout === undefined) {
+    return;
+  }
 
-    setCompletedSetsByDay(
-      (current) => {
-        const currentDayState =
-          current[selectedWorkout.id] ?? {};
+  const workoutStateKey = getWorkoutStateKey(
+    month,
+    week,
+    selectedWorkout.id
+  );
 
-        return {
-          ...current,
-          [selectedWorkout.id]: {
-            ...currentDayState,
-            [String(setId)]:
-              !currentDayState[String(setId)],
-          },
-        };
-      }
-    );
-  };
+  setCompletedSetsByDay((current) => {
+    const currentDayState =
+      current[workoutStateKey] ?? {};
+
+    return {
+      ...current,
+      [workoutStateKey]: {
+        ...currentDayState,
+        [String(setId)]:
+          !currentDayState[String(setId)],
+      },
+    };
+  });
+};
 
   const handleWatch = (
     videoUrl?: string
@@ -356,9 +423,18 @@ const Workout = () => {
           },
         }}
       >
+        {isDayCompleted && selectedWorkout && (
+        <WorkoutCompletionCard
+            dayNumber={selectedWorkout.id}
+            month={month}
+            week={week}
+            earnedCalories={earnedCalories}
+        />
+        )}
+
         <LoggingNotice
-          month={1}
-          week={1}
+        month={month}
+        week={week}
         />
 
         <WorkoutSummaryCard
@@ -380,7 +456,7 @@ const Workout = () => {
           maximumCalories={
             selectedWorkout?.calMax ?? 0
           }
-          earnedCalories={0}
+          earnedCalories={earnedCalories}
         />
 
         <SessionProgress

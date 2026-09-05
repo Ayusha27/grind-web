@@ -6,11 +6,6 @@ interface NutritionStatsProps {
   height: string;
   bmi: string;
   bmiStatus: string;
-  calories: string;
-  protein: string;
-  carbs: string;
-  fat: string;
-  fibre: string;
   water: string;
 }
 
@@ -20,11 +15,6 @@ const NutritionStats = ({
   height,
   bmi,
   bmiStatus,
-  calories,
-  protein,
-  carbs,
-  fat,
-  fibre,
   water,
 }: NutritionStatsProps) => {
   const stats = [
@@ -47,26 +37,6 @@ const NutritionStats = ({
       highlight: true,
     },
     {
-      label: "CALORIES",
-      value: calories,
-    },
-    {
-      label: "PROTEIN",
-      value: protein,
-    },
-    {
-      label: "CARBS",
-      value: carbs,
-    },
-    {
-      label: "FAT",
-      value: fat,
-    },
-    {
-      label: "FIBRE",
-      value: fibre,
-    },
-    {
       label: "WATER",
       value: water,
     },
@@ -78,27 +48,32 @@ const NutritionStats = ({
         display: "grid",
         gridTemplateColumns: {
           xs: "1fr",
-          sm: "repeat(2, 1fr)",
-          md: "repeat(3, 1fr)",
+          sm: "repeat(2, minmax(0, 1fr))",
+          md: "repeat(3, minmax(0, 1fr))",
         },
         gap: {
           xs: 1.25,
+          sm: 1.5,
           md: 1.5,
         },
         mb: {
           xs: 2,
           md: 2.5,
         },
+        width: "100%",
       }}
     >
       {stats.map((stat) => (
         <Box
           key={stat.label}
           sx={{
+            width: "100%",
+            minWidth: 0,
             minHeight: {
               xs: 76,
               md: 78,
             },
+            boxSizing: "border-box",
             backgroundColor: "#fff",
             border: "1px solid #e0dbd4",
             borderRadius: "12px",
@@ -111,8 +86,7 @@ const NutritionStats = ({
             py: 1.45,
 
             ...(stat.highlight && {
-              borderLeft:
-                "4px solid #ff5c35",
+              borderLeft: "4px solid #ff5c35",
             }),
           }}
         >
@@ -139,6 +113,7 @@ const NutritionStats = ({
               fontFamily:
                 '"Roboto Mono", "Courier New", monospace',
               letterSpacing: 0.4,
+              wordBreak: "break-word",
             }}
           >
             {stat.value}
@@ -157,6 +132,7 @@ const NutritionStats = ({
                 sx={{
                   width: 10,
                   height: 10,
+                  flexShrink: 0,
                   borderRadius: "50%",
                   backgroundColor: "#e84462",
                 }}
