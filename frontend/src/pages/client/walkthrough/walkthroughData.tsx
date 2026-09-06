@@ -11,6 +11,7 @@ export interface WalkthroughMealOption {
     protein: number;
     carbs: number;
     fat: number;
+    fibre: number;
 }
 
 export interface WalkthroughSceneData {
@@ -37,7 +38,6 @@ export const WALKTHROUGH_SCENES: WalkthroughSceneData[] = [
         narration:
             "Welcome to GRIND. Your personalized fitness journey starts here.",
     },
-
     {
         id: "workout",
         eyebrow: "01 / WORKOUT",
@@ -47,7 +47,6 @@ export const WALKTHROUGH_SCENES: WalkthroughSceneData[] = [
         narration:
             "Your workout is organized around your plan, with every session broken down into clear exercises, sets and targets.",
     },
-
     {
         id: "nutrition",
         eyebrow: "02 / NUTRITION",
@@ -57,7 +56,6 @@ export const WALKTHROUGH_SCENES: WalkthroughSceneData[] = [
         narration:
             "Your nutrition plan keeps your daily calories and macros aligned with your goals, with structured meals throughout the day.",
     },
-
     {
         id: "progress",
         eyebrow: "03 / PROGRESS",
@@ -67,7 +65,6 @@ export const WALKTHROUGH_SCENES: WalkthroughSceneData[] = [
         narration:
             "GRIND helps you track your progress over time, so you can see whether your consistency is turning into results.",
     },
-
     {
         id: "journey",
         eyebrow: "GRIND",
@@ -85,13 +82,11 @@ export const WALKTHROUGH_WORKOUT = {
     exercises: 6,
     totalSets: 18,
     completedSets: 7,
-
     calories: {
         minimum: 300,
         maximum: 450,
         earned: 180,
     },
-
     exercisesList: [
         {
             id: 1,
@@ -114,6 +109,11 @@ export const WALKTHROUGH_WORKOUT = {
     ] satisfies WalkthroughExercise[],
 };
 
+/*
+ * Nutrition data is demo-only for the walkthrough.
+ * The showcase uses this data locally and never writes it
+ * to the real Diet page or backend.
+ */
 export const WALKTHROUGH_NUTRITION = {
     calories: 2250,
     protein: 170,
@@ -122,7 +122,7 @@ export const WALKTHROUGH_NUTRITION = {
     fibre: 38,
     water: "4–4.5 L",
 
-    planName: "Personalized Nutrition Plan",
+    planName: "12 Week Body Recomposition Nutrition Plan",
 
     meals: [
         {
@@ -130,70 +130,130 @@ export const WALKTHROUGH_NUTRITION = {
             options: [
                 {
                     name: "Protein Oats",
-                    calories: 480,
-                    protein: 32,
-                    carbs: 58,
-                    fat: 12,
+                    calories: 450,
+                    protein: 37,
+                    carbs: 55,
+                    fat: 8,
+                    fibre: 8,
                 },
                 {
-                    name: "Paneer Toast",
-                    calories: 450,
-                    protein: 30,
-                    carbs: 45,
-                    fat: 16,
+                    name: "Protein Poha",
+                    calories: 500,
+                    protein: 34,
+                    carbs: 68,
+                    fat: 7,
+                    fibre: 5,
+                },
+                {
+                    name: "Overnight Protein Oats",
+                    calories: 470,
+                    protein: 39,
+                    carbs: 52,
+                    fat: 9,
+                    fibre: 9,
                 },
             ],
         },
-
         {
             name: "Lunch",
             options: [
                 {
-                    name: "Paneer Rice Bowl",
-                    calories: 620,
-                    protein: 42,
-                    carbs: 72,
-                    fat: 18,
+                    name: "Paneer Rice Meal",
+                    calories: 640,
+                    protein: 48,
+                    carbs: 46,
+                    fat: 24,
+                    fibre: 4,
                 },
                 {
-                    name: "Dal & Roti",
+                    name: "Rajma Rice Meal",
+                    calories: 600,
+                    protein: 24,
+                    carbs: 90,
+                    fat: 4,
+                    fibre: 16,
+                },
+                {
+                    name: "Chana Rice Meal",
+                    calories: 620,
+                    protein: 25,
+                    carbs: 88,
+                    fat: 6,
+                    fibre: 15,
+                },
+                {
+                    name: "Dal Rice Meal",
                     calories: 580,
                     protein: 30,
                     carbs: 82,
                     fat: 12,
+                    fibre: 12,
                 },
             ],
         },
-
         {
             name: "Snack",
             options: [
                 {
                     name: "Protein Shake",
-                    calories: 220,
-                    protein: 30,
-                    carbs: 12,
+                    calories: 120,
+                    protein: 24,
+                    carbs: 3,
+                    fat: 1.5,
+                    fibre: 0,
+                },
+                {
+                    name: "Protein & Roasted Chana",
+                    calories: 310,
+                    protein: 36,
+                    carbs: 32,
                     fat: 4,
+                    fibre: 8,
+                },
+                {
+                    name: "Double Protein Shake",
+                    calories: 240,
+                    protein: 48,
+                    carbs: 6,
+                    fat: 3,
+                    fibre: 0,
                 },
             ],
         },
-
         {
             name: "Dinner",
             options: [
                 {
-                    name: "Tofu Stir Fry",
-                    calories: 540,
-                    protein: 38,
-                    carbs: 48,
-                    fat: 20,
+                    name: "Paneer Salad Bowl",
+                    calories: 420,
+                    protein: 40,
+                    carbs: 10,
+                    fat: 24,
+                    fibre: 3,
                 },
                 {
-                    name: "Rajma Bowl",
-                    calories: 510,
-                    protein: 28,
-                    carbs: 70,
-                    fat: 12,
+                    name: "Rajma Salad Bowl",
+                    calories: 400,
+                    protein: 22,
+                    carbs: 52,
+                    fat: 3,
+                    fibre: 15,
+                },
+                {
+                    name: "Chana Salad Bowl",
+                    calories: 420,
+                    protein: 22,
+                    carbs: 54,
+                    fat: 5,
+                    fibre: 14,
+                },
+                {
+                    name: "Dal Salad Bowl",
+                    calories: 360,
+                    protein: 22,
+                    carbs: 42,
+                    fat: 3,
+                    fibre: 12,
                 },
             ],
         },
@@ -207,16 +267,11 @@ export const WALKTHROUGH_PROGRESS = {
     startingWeight: 82,
     currentWeight: 78,
     weightChange: -4,
-
     monthScore: 86,
-
     sessionsCompleted: 12,
     totalSessions: 15,
-
     caloriesBurned: 3840,
-
     activeWeeks: 3,
     totalWeeks: 4,
-
     bestWeekScore: 94,
 };
