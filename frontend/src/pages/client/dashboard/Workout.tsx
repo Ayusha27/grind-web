@@ -4,9 +4,14 @@ import {
   useState,
 } from "react";
 
-import { Box, Button } from "@mui/material";
+import {
+  Box,
+  Button,
+} from "@mui/material";
 
-import { useOutletContext } from "react-router-dom";
+import {
+  useOutletContext,
+} from "react-router-dom";
 
 import DayNavigation from "../../../components/workout/DayNavigation";
 import WorkoutCompletionCard from "../../../components/workout/WorkoutCompletionCard";
@@ -24,6 +29,10 @@ import type { WorkoutSet } from "../../../components/workout/SetTracker";
 import { WARM_UP_EXERCISES } from "../../../constants/warmup";
 
 import { useDashboard } from "../../../context/DashboardContext";
+
+import {
+  logWorkout,
+} from "../../../api/workoutApi";
 
 const Workout = () => {
   const {
@@ -78,6 +87,18 @@ const Workout = () => {
     setCompletionSuccess,
   ] = useState(false);
 
+  const [
+    isSubmitting,
+    setIsSubmitting,
+  ] = useState(false);
+
+  const [
+    errorMessage,
+    setErrorMessage,
+  ] = useState<string | null>(
+    null
+  );
+
   const {
     month,
     week,
@@ -93,6 +114,7 @@ const Workout = () => {
    * =========================================================
    *
    * Completion is scoped to:
+   *
    * month + week + day
    */
 
@@ -474,8 +496,6 @@ const Workout = () => {
    * =========================================================
    * RESET DAY
    * =========================================================
-   *
-   * Existing reset functionality preserved.
    */
 
   const handleResetDay = () => {
@@ -511,10 +531,6 @@ const Workout = () => {
         null
     );
 
-    /*
-     * Close completion dialog if reset
-     * is triggered after completion.
-     */
     setCompletionDialogOpen(
       false
     );
@@ -522,6 +538,8 @@ const Workout = () => {
     setCompletionSuccess(
       false
     );
+
+    setErrorMessage(null);
   };
 
   /**
@@ -573,9 +591,9 @@ const Workout = () => {
    * SET TOGGLE
    * =========================================================
    *
-   * UI ONLY.
+   * Still UI/local state only.
    *
-   * No workout-log API is connected.
+   * No API request is made here.
    */
 
   const handleSetToggle = (
@@ -640,23 +658,40 @@ const Workout = () => {
 
   /**
    * =========================================================
-   * COMPLETION DIALOG
+   * OPEN COMPLETION DIALOG
    * =========================================================
    */
 
   const handleOpenCompletion = () => {
-  if (
-    !selectedWorkout ||
-    completedSets === 0
-  ) {
-    return;
-  }
+    if (
+      !selectedWorkout ||
+      completedSets === 0
+    ) {
+      return;
+    }
 
-  setCompletionSuccess(false);
-  setCompletionDialogOpen(true);
-};
+    setErrorMessage(null);
+
+    setCompletionSuccess(
+      false
+    );
+
+    setCompletionDialogOpen(
+      true
+    );
+  };
+
+  /**
+   * =========================================================
+   * CLOSE COMPLETION DIALOG
+   * =========================================================
+   */
 
   const handleCloseCompletion = () => {
+    if (isSubmitting) {
+      return;
+    }
+
     setCompletionDialogOpen(
       false
     );
@@ -664,19 +699,152 @@ const Workout = () => {
     setCompletionSuccess(
       false
     );
+
+    setErrorMessage(null);
   };
 
-  const handleConfirmCompletion = () => {
-    /*
-     * UI ONLY for now.
-     *
-     * Workout logs/backend integration
-     * will be added later.
-     */
-    setCompletionSuccess(
-      true
-    );
-  };
+  /**
+   * =========================================================
+   * CONFIRM WORKOUT COMPLETION
+   * =========================================================
+   *
+   * THIS IS WHERE THE BACKEND IS NOW CALLED.
+   *
+   * One click
+   *      ↓
+   * One POST request
+   *      ↓
+   * One workout_logs row
+   */
+
+  const handleConfirmCompletion =
+    async () => {
+      if (
+        !dashboard ||
+        !selectedWorkout ||
+        isSubmitting
+      ) {
+        return;
+      }
+
+      /**
+       * Safety check.
+       */
+      if (completedSets <= 0) {
+        setErrorMessage(
+          "Please complete at least one set before logging the workout."
+        );
+
+        return;
+      }
+
+      /**
+       * Safety check.
+       */
+      if (
+        completedSets >
+        totalSets
+      ) {
+        setErrorMessage(
+          "Completed sets cannot exceed total sets."
+        );
+
+        return;
+      }
+
+      setIsSubmitting(true);
+
+      setErrorMessage(null);
+
+      try {
+        /**
+         * Client ID comes directly from
+         * the dashboard response.
+         */
+        const clientId =
+          dashboard.client.id;
+
+        /**
+         * Send ONLY the raw values.
+         *
+         * completion_percent is intentionally
+         * not sent because the backend calculates it.
+         */
+        const response =
+          await logWorkout({
+            client_id:
+              clientId,
+
+            month_no:
+              month,
+
+            week_no:
+              week,
+
+            day_id:
+              selectedWorkout.id,
+
+            total_sets:
+              totalSets,
+
+            completed_sets:
+              completedSets,
+
+            calories_burned:
+              earnedCalories,
+          });
+
+        /**
+         * Backend confirmed successful save.
+         */
+        if (
+          response.success
+        ) {
+          setCompletionSuccess(
+            true
+          );
+
+          return;
+        }
+
+        /**
+         * Unexpected unsuccessful response.
+         */
+        setErrorMessage(
+          response.message ||
+            "Unable to save workout."
+        );
+      } catch (error) {
+        console.error(
+          "Failed to log workout:",
+          error
+        );
+
+        /**
+         * Convert API/network error
+         * into something the dialog can show.
+         */
+        if (
+          axiosErrorMessage(
+            error
+          )
+        ) {
+          setErrorMessage(
+            axiosErrorMessage(
+              error
+            )
+          );
+        } else {
+          setErrorMessage(
+            "Unable to save workout. Please try again."
+          );
+        }
+      } finally {
+        setIsSubmitting(
+          false
+        );
+      }
+    };
 
   /**
    * =========================================================
@@ -987,9 +1155,16 @@ const Workout = () => {
             },
           }}
         >
-         <Button
-            onClick={handleOpenCompletion}
-            disabled={completedSets === 0}
+          <Button
+            onClick={
+              handleOpenCompletion
+            }
+
+            disabled={
+              completedSets === 0 ||
+              isSubmitting
+            }
+
             fullWidth
             variant="contained"
 
@@ -1078,8 +1253,16 @@ const Workout = () => {
             earnedCalories
           }
 
+          isSubmitting={
+            isSubmitting
+          }
+
           isSuccess={
             completionSuccess
+          }
+
+          errorMessage={
+            errorMessage
           }
 
           onClose={
@@ -1096,9 +1279,66 @@ const Workout = () => {
 };
 
 /**
- * =========================================================
+ * ===========================================================
+ * API ERROR MESSAGE
+ * ===========================================================
+ */
+
+const axiosErrorMessage = (
+  error: unknown
+): string | null => {
+  if (
+    !error ||
+    typeof error !== "object"
+  ) {
+    return null;
+  }
+
+  if (
+    "response" in error
+  ) {
+    const response = (
+      error as {
+        response?: {
+          data?: {
+            detail?: string;
+            message?: string;
+          };
+        };
+      }
+    ).response;
+
+    return (
+      response?.data?.detail ??
+      response?.data?.message ??
+      null
+    );
+  }
+
+  if (
+    "message" in error
+  ) {
+    const message = (
+      error as {
+        message?: unknown;
+      }
+    ).message;
+
+    if (
+      typeof message ===
+      "string"
+    ) {
+      return message;
+    }
+  }
+
+  return null;
+};
+
+/**
+ * ===========================================================
  * YOUTUBE SEARCH URL
- * =========================================================
+ * ===========================================================
  */
 
 const buildYouTubeSearchUrl = (
