@@ -14,6 +14,14 @@ import {
  *
  * completed_sets / total_sets * 100
  */
+
+export interface WorkoutSetLogInput {
+  exercise_id: number;
+  set_no: number;
+  completed: boolean;
+}
+
+
 export interface WorkoutLogPayload {
   client_id: number;
   month_no: number;
@@ -22,8 +30,34 @@ export interface WorkoutLogPayload {
   total_sets: number;
   completed_sets: number;
   calories_burned: number;
+  sets: WorkoutSetLogInput[];
 }
 
+export interface WorkoutSetLogPayload {
+  month_no: number;
+  week_no: number;
+  day_id: number;
+  exercise_id: number;
+  set_no: number;
+  completed: boolean;
+}
+
+export interface WorkoutSetLogResponse {
+  success: boolean;
+  id: number;
+  client_id: number;
+  month_no: number;
+  week_no: number;
+  day_id: number;
+  exercise_id: number;
+  set_no: number;
+  completed: boolean;
+}
+
+export interface WorkoutSetsResponse {
+  success: boolean;
+  sets: WorkoutSetLogResponse[];
+}
 /**
  * Response returned by:
  *
@@ -53,6 +87,44 @@ export const logWorkout = async (
         },
       }
     );
+
+  return response.data;
+};
+
+
+export const logWorkoutSet = async (
+  payload: WorkoutSetLogPayload
+): Promise<WorkoutSetLogResponse> => {
+  const response = await axios.post<WorkoutSetLogResponse>(
+    `${API_BASE_URL}/api/v1/workout/set`,
+    payload,
+    {
+      params: {
+        token: DEV_TOKEN,
+      },
+    }
+  );
+
+  return response.data;
+};
+
+
+export const getWorkoutSets = async (
+  monthNo: number,
+  weekNo: number,
+  dayId: number
+): Promise<WorkoutSetsResponse> => {
+  const response = await axios.get<WorkoutSetsResponse>(
+    `${API_BASE_URL}/api/v1/workout/sets`,
+    {
+      params: {
+        token: DEV_TOKEN,
+        month_no: monthNo,
+        week_no: weekNo,
+        day_id: dayId,
+      },
+    }
+  );
 
   return response.data;
 };

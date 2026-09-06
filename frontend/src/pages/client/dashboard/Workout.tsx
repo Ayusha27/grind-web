@@ -9,12 +9,11 @@ import {
   Button,
 } from "@mui/material";
 
-import {
-  useOutletContext,
-} from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
 import DayNavigation from "../../../components/workout/DayNavigation";
 import WorkoutCompletionCard from "../../../components/workout/WorkoutCompletionCard";
+import WorkoutCompletionDialog from "../../../components/workout/WorkoutCompletionDialog";
 import LoggingNotice from "../../../components/workout/LoggingNotice";
 import WorkoutSummaryCard from "../../../components/workout/WorkoutSummaryCard";
 import SessionProgress from "../../../components/workout/SessionProgress";
@@ -22,7 +21,6 @@ import WarmUpSection from "../../../components/workout/WarmupSection";
 import ExerciseAccordion, {
   type WorkoutExercise,
 } from "../../../components/workout/ExerciseAccordion";
-import WorkoutCompletionDialog from "../../../components/workout/WorkoutCompletionDialog";
 
 import type { WorkoutSet } from "../../../components/workout/SetTracker";
 
@@ -31,6 +29,7 @@ import { WARM_UP_EXERCISES } from "../../../constants/warmup";
 import { useDashboard } from "../../../context/DashboardContext";
 
 import {
+  getWorkoutSets,
   logWorkout,
 } from "../../../api/workoutApi";
 
@@ -40,6 +39,12 @@ const Workout = () => {
     setStats,
   } = useDashboard();
 
+  /**
+   * =========================================================
+   * SELECTED DAY
+   * =========================================================
+   */
+
   const [
     selectedDay,
     setSelectedDay,
@@ -47,12 +52,33 @@ const Workout = () => {
     null
   );
 
+  /**
+   * =========================================================
+   * WARM-UP STATE
+   * =========================================================
+   */
+
   const [
     warmUpExercises,
     setWarmUpExercises,
   ] = useState(
     WARM_UP_EXERCISES
   );
+
+  /**
+   * =========================================================
+   * WORKOUT SET STATE
+   * =========================================================
+   *
+   * IMPORTANT:
+   *
+   * This is UI state only while the user is working out.
+   *
+   * Checking/unchecking a set DOES NOT call the API.
+   *
+   * The complete set state is sent when the user clicks
+   * "Mark Workout Complete".
+   */
 
   const [
     completedSetsByDay,
@@ -64,6 +90,12 @@ const Workout = () => {
     >
   >({});
 
+  /**
+   * =========================================================
+   * ACCORDION STATE
+   * =========================================================
+   */
+
   const [
     openExerciseId,
     setOpenExerciseId,
@@ -73,7 +105,7 @@ const Workout = () => {
 
   /**
    * =========================================================
-   * WORKOUT COMPLETION DIALOG STATE
+   * COMPLETION DIALOG STATE
    * =========================================================
    */
 
@@ -99,6 +131,12 @@ const Workout = () => {
     null
   );
 
+  /**
+   * =========================================================
+   * MONTH / WEEK
+   * =========================================================
+   */
+
   const {
     month,
     week,
@@ -113,7 +151,7 @@ const Workout = () => {
    * WORKOUT STATE KEY
    * =========================================================
    *
-   * Completion is scoped to:
+   * Each workout is uniquely represented by:
    *
    * month + week + day
    */
@@ -171,14 +209,121 @@ const Workout = () => {
 
   /**
    * =========================================================
+   * LOAD SAVED SETS
+   * =========================================================
+   *
+   * This GET happens when the workout/day changes.
+   *
+   * It does NOT happen when the user checks a set.
+   *
+   * The API uses the client's unique token internally.
+   */
+
+  useEffect(() => {
+    if (
+      !selectedWorkout
+    ) {
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadSavedWorkoutSets =
+      async () => {
+        try {
+          const response =
+            await getWorkoutSets(
+              month,
+              week,
+              selectedWorkout.id
+            );
+
+          if (
+            cancelled
+          ) {
+            return;
+          }
+
+          const savedSets: Record<
+            string,
+            boolean
+          > = {};
+
+          response.sets.forEach(
+            (set) => {
+              /**
+               * The frontend already uses:
+               *
+               * setId =
+               * exerciseId * 100 + setNo
+               *
+               * Recreate that same ID.
+               */
+
+              const setId =
+                set.exercise_id *
+                  100 +
+                set.set_no;
+
+              savedSets[
+                String(setId)
+              ] = set.completed;
+            }
+          );
+
+          const workoutStateKey =
+            getWorkoutStateKey(
+              month,
+              week,
+              selectedWorkout.id
+            );
+
+          setCompletedSetsByDay(
+            (previous) => ({
+              ...previous,
+
+              [workoutStateKey]:
+                savedSets,
+            })
+          );
+        } catch (error) {
+          if (
+            !cancelled
+          ) {
+            console.error(
+              "Failed to load saved workout sets:",
+              error
+            );
+          }
+        }
+      };
+
+    void loadSavedWorkoutSets();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    month,
+    week,
+    selectedWorkout?.id,
+  ]);
+
+  /**
+   * =========================================================
    * EXERCISES
    * =========================================================
+   *
+   * Converts backend exercise data into the existing
+   * ExerciseAccordion structure.
    */
 
   const exercises =
     useMemo<WorkoutExercise[]>(
       () => {
-        if (!selectedWorkout) {
+        if (
+          !selectedWorkout
+        ) {
           return [];
         }
 
@@ -199,6 +344,12 @@ const Workout = () => {
             exercise,
             exerciseIndex
           ) => {
+            /**
+             * Existing synthetic exercise ID.
+             *
+             * Keep this unchanged.
+             */
+
             const exerciseId =
               selectedWorkout.id *
                 1000 +
@@ -215,6 +366,10 @@ const Workout = () => {
                   _,
                   setIndex
                 ) => {
+                  /**
+                   * Existing synthetic set ID.
+                   */
+
                   const setId =
                     exerciseId *
                       100 +
@@ -224,9 +379,10 @@ const Workout = () => {
                   return {
                     id: setId,
 
-                    label: `SET ${
-                      setIndex + 1
-                    }`,
+                    label:
+                      `SET ${
+                        setIndex + 1
+                      }`,
 
                     target:
                       exercise.reps,
@@ -248,7 +404,8 @@ const Workout = () => {
               exerciseNumber:
                 exerciseIndex + 1,
 
-              name: exercise.name,
+              name:
+                exercise.name,
 
               sets,
 
@@ -325,7 +482,10 @@ const Workout = () => {
    * EARNED CALORIES
    * =========================================================
    *
-   * Existing calculation preserved.
+   * Existing frontend display calculation preserved.
+   *
+   * Backend will store the value sent when the workout
+   * is logged.
    */
 
   const earnedCalories =
@@ -355,6 +515,9 @@ const Workout = () => {
    * =========================================================
    * DASHBOARD STATS
    * =========================================================
+   *
+   * Keep the existing dashboard context synchronized
+   * with the currently loaded UI state.
    */
 
   useEffect(() => {
@@ -480,12 +643,16 @@ const Workout = () => {
    */
 
   useEffect(() => {
-    if (exercises.length > 0) {
+    if (
+      exercises.length > 0
+    ) {
       setOpenExerciseId(
         exercises[0].id
       );
     } else {
-      setOpenExerciseId(null);
+      setOpenExerciseId(
+        null
+      );
     }
   }, [
     selectedDay,
@@ -496,51 +663,61 @@ const Workout = () => {
    * =========================================================
    * RESET DAY
    * =========================================================
+   *
+   * IMPORTANT:
+   *
+   * This currently resets the UI state only.
+   *
+   * It does not delete database records because we have
+   * not created a DELETE/reset endpoint yet.
    */
 
-  const handleResetDay = () => {
-    if (
-      !selectedWorkout
-    ) {
-      return;
-    }
+  const handleResetDay =
+    () => {
+      if (
+        !selectedWorkout
+      ) {
+        return;
+      }
 
-    const workoutStateKey =
-      getWorkoutStateKey(
-        month,
-        week,
-        selectedWorkout.id
+      const workoutStateKey =
+        getWorkoutStateKey(
+          month,
+          week,
+          selectedWorkout.id
+        );
+
+      setCompletedSetsByDay(
+        (current) => {
+          const updated = {
+            ...current,
+          };
+
+          delete updated[
+            workoutStateKey
+          ];
+
+          return updated;
+        }
       );
 
-    setCompletedSetsByDay(
-      (current) => {
-        const updated = {
-          ...current,
-        };
+      setOpenExerciseId(
+        exercises[0]?.id ??
+          null
+      );
 
-        delete updated[
-          workoutStateKey
-        ];
+      setCompletionDialogOpen(
+        false
+      );
 
-        return updated;
-      }
-    );
+      setCompletionSuccess(
+        false
+      );
 
-    setOpenExerciseId(
-      exercises[0]?.id ??
+      setErrorMessage(
         null
-    );
-
-    setCompletionDialogOpen(
-      false
-    );
-
-    setCompletionSuccess(
-      false
-    );
-
-    setErrorMessage(null);
-  };
+      );
+    };
 
   /**
    * =========================================================
@@ -548,25 +725,26 @@ const Workout = () => {
    * =========================================================
    */
 
-  const handleWarmUpToggle = (
-    exerciseId: number
-  ) => {
-    setWarmUpExercises(
-      (current) =>
-        current.map(
-          (exercise) =>
-            exercise.id ===
-            exerciseId
-              ? {
-                  ...exercise,
+  const handleWarmUpToggle =
+    (
+      exerciseId: number
+    ) => {
+      setWarmUpExercises(
+        (current) =>
+          current.map(
+            (exercise) =>
+              exercise.id ===
+              exerciseId
+                ? {
+                    ...exercise,
 
-                  completed:
-                    !exercise.completed,
-                }
-              : exercise
-        )
-    );
-  };
+                    completed:
+                      !exercise.completed,
+                  }
+                : exercise
+          )
+      );
+    };
 
   /**
    * =========================================================
@@ -574,67 +752,76 @@ const Workout = () => {
    * =========================================================
    */
 
-  const handleExerciseToggle = (
-    exerciseId: number
-  ) => {
-    setOpenExerciseId(
-      (currentId) =>
-        currentId ===
-        exerciseId
-          ? null
-          : exerciseId
-    );
-  };
+  const handleExerciseToggle =
+    (
+      exerciseId: number
+    ) => {
+      setOpenExerciseId(
+        (currentId) =>
+          currentId ===
+          exerciseId
+            ? null
+            : exerciseId
+      );
+    };
 
   /**
    * =========================================================
    * SET TOGGLE
    * =========================================================
    *
-   * Still UI/local state only.
+   * IMPORTANT:
    *
-   * No API request is made here.
+   * NO API CALL HERE.
+   *
+   * The user can select/unselect as many sets as required.
+   * Everything stays in React state until the user presses
+   * "Mark Workout Complete".
    */
 
-  const handleSetToggle = (
-    exerciseId: number,
-    setId: number
-  ) => {
-    if (
-      !selectedWorkout
-    ) {
-      return;
-    }
-
-    const workoutStateKey =
-      getWorkoutStateKey(
-        month,
-        week,
-        selectedWorkout.id
-      );
-
-    setCompletedSetsByDay(
-      (current) => {
-        const currentDayState =
-          current[
-            workoutStateKey
-          ] ?? {};
-
-        return {
-          ...current,
-
-          [workoutStateKey]: {
-            ...currentDayState,
-
-            [String(setId)]:
-              !currentDayState[
-                String(setId)
-              ],
-          },
-        };
+  const handleSetToggle =
+    (
+      _exerciseId: number,
+      setId: number
+    ) => {
+      if (
+        !selectedWorkout
+      ) {
+        return;
       }
-    );
-  };
+
+      const workoutStateKey =
+        getWorkoutStateKey(
+          month,
+          week,
+          selectedWorkout.id
+        );
+
+      setCompletedSetsByDay(
+        (current) => {
+          const currentDayState =
+            current[
+              workoutStateKey
+            ] ?? {};
+
+          const key =
+            String(setId);
+
+          return {
+            ...current,
+
+            [workoutStateKey]: {
+              ...currentDayState,
+
+              [key]:
+                !currentDayState[
+                  key
+                ],
+            },
+          };
+        }
+      );
+    };
 
   /**
    * =========================================================
@@ -662,24 +849,27 @@ const Workout = () => {
    * =========================================================
    */
 
-  const handleOpenCompletion = () => {
-    if (
-      !selectedWorkout ||
-      completedSets === 0
-    ) {
-      return;
-    }
+  const handleOpenCompletion =
+    () => {
+      if (
+        !selectedWorkout ||
+        completedSets === 0
+      ) {
+        return;
+      }
 
-    setErrorMessage(null);
+      setErrorMessage(
+        null
+      );
 
-    setCompletionSuccess(
-      false
-    );
+      setCompletionSuccess(
+        false
+      );
 
-    setCompletionDialogOpen(
-      true
-    );
-  };
+      setCompletionDialogOpen(
+        true
+      );
+    };
 
   /**
    * =========================================================
@@ -687,34 +877,123 @@ const Workout = () => {
    * =========================================================
    */
 
-  const handleCloseCompletion = () => {
-    if (isSubmitting) {
-      return;
-    }
+  const handleCloseCompletion =
+    () => {
+      if (isSubmitting) {
+        return;
+      }
 
-    setCompletionDialogOpen(
-      false
-    );
+      setCompletionDialogOpen(
+        false
+      );
 
-    setCompletionSuccess(
-      false
-    );
+      setCompletionSuccess(
+        false
+      );
 
-    setErrorMessage(null);
-  };
+      setErrorMessage(
+        null
+      );
+    };
+
+  /**
+   * =========================================================
+   * BUILD ALL SET LOGS
+   * =========================================================
+   *
+   * Converts the current React state into the complete
+   * set list required by the backend.
+   *
+   * IMPORTANT:
+   *
+   * Both completed=true and completed=false are sent.
+   *
+   * This allows the backend to know the complete state
+   * of every set.
+   */
+
+  const buildWorkoutSetPayload =
+    () => {
+      if (
+        !selectedWorkout
+      ) {
+        return [];
+      }
+
+      const workoutStateKey =
+        getWorkoutStateKey(
+          month,
+          week,
+          selectedWorkout.id
+        );
+
+      const completedSetState =
+        completedSetsByDay[
+          workoutStateKey
+        ] ?? {};
+
+      return selectedWorkout.exercises.flatMap(
+        (
+          exercise,
+          exerciseIndex
+        ) => {
+          const exerciseId =
+            selectedWorkout.id *
+              1000 +
+            exerciseIndex +
+            1;
+
+          return Array.from(
+            {
+              length:
+                exercise.sets,
+            },
+            (
+              _,
+              setIndex
+            ) => {
+              const setNo =
+                setIndex + 1;
+
+              const setId =
+                exerciseId *
+                  100 +
+                setNo;
+
+              return {
+                exercise_id:
+                  exerciseId,
+
+                set_no:
+                  setNo,
+
+                completed:
+                  completedSetState[
+                    String(
+                      setId
+                    )
+                  ] ??
+                  false,
+              };
+            }
+          );
+        }
+      );
+    };
 
   /**
    * =========================================================
    * CONFIRM WORKOUT COMPLETION
    * =========================================================
    *
-   * THIS IS WHERE THE BACKEND IS NOW CALLED.
+   * ONE API CALL.
    *
-   * One click
-   *      ↓
-   * One POST request
-   *      ↓
-   * One workout_logs row
+   * This sends:
+   *
+   * - workout summary
+   * - all individual set states
+   *
+   * to POST /workout/log.
    */
 
   const handleConfirmCompletion =
@@ -730,7 +1009,10 @@ const Workout = () => {
       /**
        * Safety check.
        */
-      if (completedSets <= 0) {
+
+      if (
+        completedSets <= 0
+      ) {
         setErrorMessage(
           "Please complete at least one set before logging the workout."
         );
@@ -741,6 +1023,7 @@ const Workout = () => {
       /**
        * Safety check.
        */
+
       if (
         completedSets >
         totalSets
@@ -752,28 +1035,32 @@ const Workout = () => {
         return;
       }
 
-      setIsSubmitting(true);
+      setIsSubmitting(
+        true
+      );
 
-      setErrorMessage(null);
+      setErrorMessage(
+        null
+      );
 
       try {
         /**
-         * Client ID comes directly from
-         * the dashboard response.
+         * Build the complete set state.
          */
-        const clientId =
-          dashboard.client.id;
+
+        const sets =
+          buildWorkoutSetPayload();
 
         /**
-         * Send ONLY the raw values.
+         * ONE API REQUEST.
          *
-         * completion_percent is intentionally
-         * not sent because the backend calculates it.
+         * No /workout/set calls.
          */
+
         const response =
           await logWorkout({
             client_id:
-              clientId,
+              dashboard.client.id,
 
             month_no:
               month,
@@ -792,11 +1079,14 @@ const Workout = () => {
 
             calories_burned:
               earnedCalories,
+
+            sets,
           });
 
         /**
-         * Backend confirmed successful save.
+         * Backend confirmed success.
          */
+
         if (
           response.success
         ) {
@@ -810,6 +1100,7 @@ const Workout = () => {
         /**
          * Unexpected unsuccessful response.
          */
+
         setErrorMessage(
           response.message ||
             "Unable to save workout."
@@ -820,25 +1111,12 @@ const Workout = () => {
           error
         );
 
-        /**
-         * Convert API/network error
-         * into something the dialog can show.
-         */
-        if (
+        setErrorMessage(
           axiosErrorMessage(
             error
-          )
-        ) {
-          setErrorMessage(
-            axiosErrorMessage(
-              error
-            )
-          );
-        } else {
-          setErrorMessage(
+          ) ??
             "Unable to save workout. Please try again."
-          );
-        }
+        );
       } finally {
         setIsSubmitting(
           false
@@ -875,7 +1153,9 @@ const Workout = () => {
    * =========================================================
    */
 
-  if (!selectedWorkout) {
+  if (
+    !selectedWorkout
+  ) {
     return (
       <Box
         sx={{
@@ -937,9 +1217,11 @@ const Workout = () => {
           (day) => ({
             id: day.id,
 
-            dayNumber: day.id,
+            dayNumber:
+              day.id,
 
-            label: day.label,
+            label:
+              day.label,
           })
         )}
 
@@ -991,9 +1273,13 @@ const Workout = () => {
               selectedWorkout.id
             }
 
-            month={month}
+            month={
+              month
+            }
 
-            week={week}
+            week={
+              week
+            }
 
             earnedCalories={
               earnedCalories
@@ -1006,8 +1292,13 @@ const Workout = () => {
             ================================================= */}
 
         <LoggingNotice
-          month={month}
-          week={week}
+          month={
+            month
+          }
+
+          week={
+            week
+          }
         />
 
         {/* =================================================
@@ -1161,11 +1452,13 @@ const Workout = () => {
             }
 
             disabled={
-              completedSets === 0 ||
+              completedSets ===
+                0 ||
               isSubmitting
             }
 
             fullWidth
+
             variant="contained"
 
             sx={{
@@ -1180,14 +1473,16 @@ const Workout = () => {
               backgroundColor:
                 "#ff5b38",
 
-              color: "#ffffff",
+              color:
+                "#ffffff",
 
               fontSize: {
                 xs: 11,
                 sm: 12,
               },
 
-              fontWeight: 800,
+              fontWeight:
+                800,
 
               textTransform:
                 "none",
@@ -1297,16 +1592,17 @@ const axiosErrorMessage = (
   if (
     "response" in error
   ) {
-    const response = (
-      error as {
-        response?: {
-          data?: {
-            detail?: string;
-            message?: string;
+    const response =
+      (
+        error as {
+          response?: {
+            data?: {
+              detail?: string;
+              message?: string;
+            };
           };
-        };
-      }
-    ).response;
+        }
+      ).response;
 
     return (
       response?.data?.detail ??
@@ -1318,11 +1614,12 @@ const axiosErrorMessage = (
   if (
     "message" in error
   ) {
-    const message = (
-      error as {
-        message?: unknown;
-      }
-    ).message;
+    const message =
+      (
+        error as {
+          message?: unknown;
+        }
+      ).message;
 
     if (
       typeof message ===
