@@ -41,18 +41,13 @@ const Progress = () => {
    * =========================================================
    */
 
-  const [selectedMonth, setSelectedMonth] =
-    useState(1);
-
-  const [selectedWeek, setSelectedWeek] =
-    useState(1);
+  const [selectedMonth, setSelectedMonth] = useState(1);
+  const [selectedWeek, setSelectedWeek] = useState(1);
 
   /*
    * =========================================================
    * WEEKLY WEIGHTS
    * =========================================================
-   *
-   * User-entered weight tracking.
    */
 
   const [weights, setWeights] = useState<
@@ -80,11 +75,6 @@ const Progress = () => {
    * =========================================================
    * LOAD PROGRESS
    * =========================================================
-   *
-   * GET /api/v1/portal/progress
-   *
-   * This is separate from /portal/my-plan because
-   * progress is not cached by the backend.
    */
 
   useEffect(() => {
@@ -94,8 +84,7 @@ const Progress = () => {
       try {
         setProgressLoading(true);
 
-        const response =
-          await getProgress();
+        const response = await getProgress();
 
         if (!mounted) {
           return;
@@ -127,46 +116,14 @@ const Progress = () => {
    * =========================================================
    * BACKEND DAYS
    * =========================================================
-   *
-   * These provide the workout day structure.
-   *
-   * The progress API currently does NOT return individual
-   * days, so the day names still come from my-plan.
    */
 
-  const backendDays =
-    dashboard?.days ?? [];
+  const backendDays = dashboard?.days ?? [];
 
   /*
    * =========================================================
-   * TOTAL SETS PER DAY
+   * OVERALL PROGRESS
    * =========================================================
-   */
-
-  const getDayTotalSets = (
-    day: typeof backendDays[number]
-  ) => {
-    return day.exercises.reduce(
-      (
-        total: number,
-        exercise: typeof day.exercises[number]
-      ) =>
-        total +
-        Number(exercise.sets || 0),
-      0
-    );
-  };
-
-  /*
-   * =========================================================
-   * OVERALL PROGRESS FROM BACKEND
-   * =========================================================
-   *
-   * API:
-   *
-   * data.exercises.total
-   * data.exercises.completed
-   * data.exercises.percent
    */
 
   const totalExercises =
@@ -180,65 +137,172 @@ const Progress = () => {
 
   /*
    * =========================================================
-   * DAY BREAKDOWN
+   * TOTAL CALORIES
+   * =========================================================
+   */
+
+  const totalCaloriesBurned =
+    progress?.data?.calories_burned ?? 0;
+
+  /*
+   * =========================================================
+   * BACKEND WEEKLY DETAIL
    * =========================================================
    *
-   * The current progress API does not expose individual
-   * day completion/calorie values.
+   * Structure:
    *
-   * Therefore:
-   *
-   * - Day/name/type come from dashboard days.
-   * - Completion remains unavailable at day level.
-   * - Calories remain unavailable at day level.
-   *
-   * We deliberately do NOT copy the overall progress
-   * percentage onto every day because that would be
-   * misleading.
+   * month
+   *   └── week
+   *        └── day
+   */
+
+  const weeklyDetail =
+    progress?.data?.weekly_detail ?? {};
+
+  /*
+   * =========================================================
+   * BACKEND CALCULATED WEEK METRICS
+   * =========================================================
+   */
+
+  const activeWeeks =
+    progress?.data?.active_weeks ?? 0;
+
+  const bestWeekScore =
+    progress?.data?.best_week_score ?? 0;
+
+  /*
+   * =========================================================
+   * SELECTED MONTH / WEEK DETAIL
+   * =========================================================
+   */
+
+  const selectedMonthDetail =
+    weeklyDetail[String(selectedMonth)] ?? {};
+
+  const selectedWeekDetail =
+    selectedMonthDetail[String(selectedWeek)] ?? {};
+
+  /*
+   * =========================================================
+   * DAY BREAKDOWN
+   * =========================================================
    */
 
   const selectedWeekDays = useMemo<
     ProgressDay[]
   >(() => {
-    return backendDays.map((day) => ({
-      day: day.id,
-      name: day.label,
-      type: day.label,
-      completion: null,
-      calories: null,
-    }));
-  }, [backendDays]);
+    return backendDays.map((day) => {
+      const dayDetail =
+        selectedWeekDetail[String(day.id)];
+
+      return {
+        day: day.id,
+
+        name: day.label,
+
+        type: day.label,
+
+        completion:
+          dayDetail?.completion_percent ??
+          null,
+
+        calories:
+          dayDetail?.calories_burned ??
+          null,
+      };
+    });
+  }, [
+    backendDays,
+    selectedWeekDetail,
+  ]);
 
   /*
    * =========================================================
-   * TOTAL WORKOUT DAYS
+   * WEEK SESSIONS COMPLETED
+   * =========================================================
+   *
+   * A session is counted when the backend
+   * marks that workout day as completed.
+   */
+
+  const weekSessionsCompleted =
+    useMemo(() => {
+      return backendDays.reduce(
+        (count, day) => {
+          const dayDetail =
+            selectedWeekDetail[
+              String(day.id)
+            ];
+
+          return dayDetail?.completed === true
+            ? count + 1
+            : count;
+        },
+        0
+      );
+    }, [
+      backendDays,
+      selectedWeekDetail,
+    ]);
+
+  /*
+   * =========================================================
+   * WEEK TOTAL SESSIONS
    * =========================================================
    */
 
-  const totalSessions =
+  const weekTotalSessions =
     backendDays.length;
 
   /*
    * =========================================================
-   * TOTAL SETS
+   * WEEK CALORIES
    * =========================================================
    */
 
-  const totalSets = useMemo(() => {
-    return backendDays.reduce(
-      (total, day) =>
-        total +
-        getDayTotalSets(day),
-      0
-    );
-  }, [backendDays]);
+  const weekCaloriesBurned =
+    useMemo(() => {
+      return backendDays.reduce(
+        (total, day) => {
+          const dayDetail =
+            selectedWeekDetail[
+              String(day.id)
+            ];
+
+          return (
+            total +
+            Number(
+              dayDetail?.calories_burned ?? 0
+            )
+          );
+        },
+        0
+      );
+    }, [
+      backendDays,
+      selectedWeekDetail,
+    ]);
+
+  /*
+   * =========================================================
+   * WEEK SCORE
+   * =========================================================
+   */
+
+  const weekScore =
+    weekTotalSessions > 0
+      ? Math.round(
+          (weekSessionsCompleted /
+            weekTotalSessions) *
+            100
+        )
+      : 0;
 
   /*
    * =========================================================
    * CURRENT WEIGHT
    * =========================================================
-   *
-   * Latest entered weekly weight.
    */
 
   const currentWeight = useMemo(() => {
@@ -271,9 +335,6 @@ const Progress = () => {
    * =========================================================
    * STARTING WEIGHT
    * =========================================================
-   *
-   * Until a dedicated starting_weight field is available,
-   * use the backend diet current_weight.
    */
 
   const startingWeight = useMemo(() => {
@@ -296,15 +357,15 @@ const Progress = () => {
 
   /*
    * =========================================================
-   * HEIGHT
+   * HEIGHT / BMI
    * =========================================================
    */
 
- const height =
-  dashboard?.diet?.height ?? null;
+  const height =
+    dashboard?.diet?.height ?? null;
 
-const bmi =
-  dashboard?.diet?.bmi ?? null;
+  const bmi =
+    dashboard?.diet?.bmi ?? null;
 
   /*
    * =========================================================
@@ -413,79 +474,77 @@ const bmi =
       >
         <Stack spacing={2.5}>
 
-          {/* =================================================
-              PROGRESS STATS
-          ================================================= */}
-
           <ProgressStats
             startingWeight={
-                startingWeight ?? 0
+              startingWeight ?? 0
             }
+
             currentWeight={
-                currentWeight ??
-                startingWeight ??
-                0
+              currentWeight ??
+              startingWeight ??
+              0
             }
+
             weightChange={
-                weightChange ?? 0
+              weightChange ?? 0
             }
+
             height={height}
+
             bmi={bmi}
+          />
+
+          <Box
+            sx={{
+              width: "100%",
+              minWidth: 0,
+            }}
+          >
+            <ProgressTrackerHeader
+              month={selectedMonth}
+              onMonthChange={
+                handleMonthChange
+              }
             />
 
-       {/* =================================================
-    PROGRESS TRACKER
-================================================= */}
+            <Box
+              sx={{
+                mt: {
+                  xs: 1.5,
+                  sm: 1.7,
+                  md: 2,
+                },
+              }}
+            >
+              <ProgressSummaryCards
+                monthScore={
+                  overallProgress
+                }
 
-<Box
-  sx={{
-    width: "100%",
-    minWidth: 0,
-  }}
->
-  <ProgressTrackerHeader
-    month={selectedMonth}
-    onMonthChange={
-      handleMonthChange
-    }
-  />
+                sessionsCompleted={
+                  completedExercises
+                }
 
-  <Box
-    sx={{
-      mt: {
-        xs: 1.5,
-        sm: 1.7,
-        md: 2,
-      },
-    }}
-  >
-    <ProgressSummaryCards
-      monthScore={
-        overallProgress
-      }
-      sessionsCompleted={
-        completedExercises
-      }
-      totalSessions={
-        totalExercises
-      }
-      caloriesBurned={0}
-      activeWeeks={
-        completedExercises > 0
-          ? 1
-          : 0
-      }
-      totalWeeks={4}
-      bestWeekScore={
-        overallProgress
-      }
-    />
-  </Box>
-</Box>
+                totalSessions={
+                  totalExercises
+                }
 
-          {/* =================================================
-              WEEK SELECTOR
-          ================================================= */}
+                caloriesBurned={
+                  totalCaloriesBurned
+                }
+
+                activeWeeks={
+                  activeWeeks
+                }
+
+                totalWeeks={4}
+
+                bestWeekScore={
+                  bestWeekScore
+                }
+              />
+            </Box>
+          </Box>
 
           <WeeklyDetail
             week={selectedWeek}
@@ -494,10 +553,6 @@ const bmi =
             }
           />
 
-          {/* =================================================
-              DAY BREAKDOWN
-          ================================================= */}
-
           <DayBreakdown
             week={selectedWeek}
             days={
@@ -505,29 +560,23 @@ const bmi =
             }
           />
 
-          {/* =================================================
-              WEEK SUMMARY
-          ================================================= */}
-
           <WeeklySummary
             sessionsCompleted={
-              completedExercises
+              weekSessionsCompleted
             }
 
             totalSessions={
-              totalExercises
+              weekTotalSessions
             }
 
-            caloriesBurned={0}
+            caloriesBurned={
+              weekCaloriesBurned
+            }
 
             weekScore={
-              overallProgress
+              weekScore
             }
           />
-
-          {/* =================================================
-              WEEKLY WEIGHT TRACKER
-          ================================================= */}
 
           <WeeklyWeightTracker
             weights={weights}
@@ -535,10 +584,6 @@ const bmi =
               handleWeightChange
             }
           />
-
-          {/* =================================================
-              THREE MONTH OVERVIEW
-          ================================================= */}
 
           <ThreeMonthOverview
             data={[
@@ -548,7 +593,8 @@ const bmi =
                 workouts:
                   completedExercises,
 
-                calories: 0,
+                calories:
+                  totalCaloriesBurned,
 
                 score:
                   overallProgress,

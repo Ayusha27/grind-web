@@ -1,6 +1,8 @@
-import { Box, Typography } from "@mui/material";
-import { useDashboard } from "../../context/DashboardContext";
+import { Box, Button, Typography } from "@mui/material";
+import InstallDesktopRoundedIcon from "@mui/icons-material/InstallDesktopRounded";
 
+import { useDashboard } from "../../context/DashboardContext";
+import useInstallPrompt from "../../hooks/useInstallPrompt";
 
 interface HeaderStatProps {
   value: string;
@@ -64,7 +66,6 @@ const HeaderStat = ({
 
 const DashboardHeader = () => {
   const { stats } = useDashboard();
-  console.log("🔥 HEADER STATS:", stats);
 
   const {
     completedSets,
@@ -73,11 +74,22 @@ const DashboardHeader = () => {
     totalDays,
     calories,
   } = stats;
+
+  const {
+    canInstall,
+    isInstalled,
+    installApp,
+  } = useInstallPrompt();
+
+  const handleInstall = async () => {
+    await installApp();
+  };
+
   return (
     <Box
       component="header"
       sx={{
-        height: 72,
+        minHeight: 72,
         backgroundColor: "#171614",
         borderBottom: "1px solid #252321",
         display: "flex",
@@ -88,10 +100,15 @@ const DashboardHeader = () => {
           sm: 3,
           md: 4,
         },
+        gap: 2,
       }}
     >
       {/* Logo */}
-      <Box>
+      <Box
+        sx={{
+          flexShrink: 0,
+        }}
+      >
         <Typography
           sx={{
             fontSize: {
@@ -136,14 +153,105 @@ const DashboardHeader = () => {
         </Typography>
       </Box>
 
-      {/* Stats */}
+      {/* Right side */}
       <Box
         sx={{
-          height: "100%",
           display: "flex",
           alignItems: "stretch",
+          height: "100%",
+          minWidth: 0,
         }}
       >
+        {/* Install Grind */}
+        {!isInstalled && canInstall && (
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              px: {
+                xs: 0.8,
+                sm: 1.5,
+                md: 2,
+              },
+              borderLeft: "1px solid #292724",
+            }}
+          >
+            <Button
+              type="button"
+              onClick={handleInstall}
+              variant="contained"
+              startIcon={
+                <InstallDesktopRoundedIcon
+                  sx={{
+                    fontSize: {
+                      xs: 15,
+                      sm: 17,
+                    },
+                  }}
+                />
+              }
+              sx={{
+                minHeight: {
+                  xs: 34,
+                  sm: 38,
+                },
+                px: {
+                  xs: 1,
+                  sm: 1.5,
+                },
+                borderRadius: 1.5,
+                backgroundColor: "#ff5c35",
+                color: "#ffffff",
+                textTransform: "none",
+                fontSize: {
+                  xs: 8,
+                  sm: 9,
+                },
+                fontWeight: 800,
+                whiteSpace: "nowrap",
+                boxShadow: "none",
+
+                "&:hover": {
+                  backgroundColor: "#e94d2b",
+                  boxShadow: "none",
+                },
+
+                "& .MuiButton-startIcon": {
+                  marginRight: {
+                    xs: 0.3,
+                    sm: 0.5,
+                  },
+                },
+              }}
+            >
+              <Box
+                component="span"
+                sx={{
+                  display: {
+                    xs: "none",
+                    sm: "inline",
+                  },
+                }}
+              >
+                Install Grind
+              </Box>
+
+              <Box
+                component="span"
+                sx={{
+                  display: {
+                    xs: "inline",
+                    sm: "none",
+                  },
+                }}
+              >
+                Install
+              </Box>
+            </Button>
+          </Box>
+        )}
+
+        {/* Stats */}
         <HeaderStat
           value={`${completedSets}/${totalSets}`}
           label="SETS DONE"

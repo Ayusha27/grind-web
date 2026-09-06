@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Box, Container } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 import PersonalSection from "./PersonalSection";
 import BodyMetricsSection from "./BodyMetricsSection";
@@ -16,6 +17,7 @@ import {
 import IntakeFooter from "./IntakeFooter";
 
 const IntakeForm = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] =
     useState<IntakeFormData>(initialFormData);
 
@@ -29,8 +31,52 @@ const IntakeForm = () => {
     }));
   };
 
-  const handleSubmit = () => {
-    console.log("Intake form:", formData);
+  const handleSubmit = async () => {
+    try {
+      const payload = {
+        name: formData.fullName,
+        email: formData.email,
+        age: formData.age,
+        weight: formData.weight,
+        weight_unit: formData.weightUnit,
+        height: formData.height,
+        height_ft: formData.heightFt,
+        height_in: formData.heightIn,
+        height_unit: formData.heightUnit,
+        gender: formData.gender,
+        occupation: formData.occupation,
+        fitness_level: formData.fitnessLevel,
+        days_per_week: formData.trainingDays,
+        session_duration: formData.sessionLength,
+        goals: formData.trainingGoals.join(", "),
+        goal_focus: formData.specificFocus,
+        workout_pref: formData.workoutPreference,
+        injuries: formData.injuries.join(", "),
+        injuries_detail: formData.healthConcern,
+        diet: formData.dietaryPreference
+      };
+
+      const response = await fetch("http://localhost:8001/api/v1/intake", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        if (result.success) {
+          navigate("/submission-success");
+        } else {
+          console.error("Failed to submit intake form:", result.message);
+        }
+      } else {
+        console.error("Failed to submit intake form");
+      }
+    } catch (error) {
+      console.error("Error submitting intake form:", error);
+    }
   };
 
   return (
