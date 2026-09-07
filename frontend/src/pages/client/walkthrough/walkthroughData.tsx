@@ -68,11 +68,9 @@ export const WALKTHROUGH_SCENES: WalkthroughSceneData[] = [
     {
         id: "journey",
         eyebrow: "GRIND",
-        title: "READY TO START?",
-        description:
-            "Your personalized fitness journey starts with a few simple questions.",
-        narration:
-            "Ready to start? Begin your personalized GRIND journey today.",
+        title: "CONGRATULATIONS ON STARTING\nYOUR JOURNEY.",
+        description: "#FITINDIA",
+        narration: "",
     },
 ];
 

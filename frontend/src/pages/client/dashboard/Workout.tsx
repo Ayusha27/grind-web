@@ -36,21 +36,26 @@ import {
 const Workout = () => {
   const {
     dashboard,
-    setStats,
   } = useDashboard();
 
   /**
    * =========================================================
    * SELECTED DAY
    * =========================================================
+   *
+   * dashboard.days[].id is the workout DAY NUMBER.
+   *
+   * M1/W1/Day 1 -> 1
+   * M1/W1/Day 2 -> 2
+   * etc.
+   *
+   * The backend expects this value as day_id.
    */
 
   const [
     selectedDay,
     setSelectedDay,
-  ] = useState<number | null>(
-    null
-  );
+  ] = useState<number | null>(null);
 
   /**
    * =========================================================
@@ -61,23 +66,20 @@ const Workout = () => {
   const [
     warmUpExercises,
     setWarmUpExercises,
-  ] = useState(
-    WARM_UP_EXERCISES
-  );
+  ] = useState(WARM_UP_EXERCISES);
 
   /**
    * =========================================================
    * WORKOUT SET STATE
    * =========================================================
    *
-   * IMPORTANT:
+   * UI state while the user is working out.
    *
-   * This is UI state only while the user is working out.
+   * No API request happens when a set is checked/unchecked.
    *
-   * Checking/unchecking a set DOES NOT call the API.
+   * The complete state is sent when the user clicks:
    *
-   * The complete set state is sent when the user clicks
-   * "Mark Workout Complete".
+   * "Mark Workout Complete"
    */
 
   const [
@@ -99,9 +101,7 @@ const Workout = () => {
   const [
     openExerciseId,
     setOpenExerciseId,
-  ] = useState<number | null>(
-    null
-  );
+  ] = useState<number | null>(null);
 
   /**
    * =========================================================
@@ -127,9 +127,7 @@ const Workout = () => {
   const [
     errorMessage,
     setErrorMessage,
-  ] = useState<string | null>(
-    null
-  );
+  ] = useState<string | null>(null);
 
   /**
    * =========================================================
@@ -151,7 +149,7 @@ const Workout = () => {
    * WORKOUT STATE KEY
    * =========================================================
    *
-   * Each workout is uniquely represented by:
+   * Unique UI state per:
    *
    * month + week + day
    */
@@ -212,17 +210,22 @@ const Workout = () => {
    * LOAD SAVED SETS
    * =========================================================
    *
-   * This GET happens when the workout/day changes.
+   * Loads raw set states from workout_set_logs.
    *
-   * It does NOT happen when the user checks a set.
+   * Backend response:
    *
-   * The API uses the client's unique token internally.
+   * {
+   *   success: true,
+   *   data: [...]
+   * }
+   *
+   * State is keyed by:
+   *
+   * exerciseId + setNo
    */
 
   useEffect(() => {
-    if (
-      !selectedWorkout
-    ) {
+    if (!selectedWorkout) {
       return;
     }
 
@@ -238,9 +241,7 @@ const Workout = () => {
               selectedWorkout.id
             );
 
-          if (
-            cancelled
-          ) {
+          if (cancelled) {
             return;
           }
 
@@ -249,25 +250,42 @@ const Workout = () => {
             boolean
           > = {};
 
-          response.sets.forEach(
+          /**
+           * IMPORTANT:
+           *
+           * The API response is:
+           *
+           * {
+           *   success: true,
+           *   data: [...]
+           * }
+           *
+           * Therefore we iterate over:
+           *
+           * response.data
+           */
+
+          response.data.forEach(
             (set) => {
               /**
-               * The frontend already uses:
+               * Use the REAL backend exercise ID.
                *
-               * setId =
-               * exerciseId * 100 + setNo
+               * Example:
                *
-               * Recreate that same ID.
+               * exercise 705 + set 2
+               *
+               * becomes:
+               *
+               * "705-2"
                */
 
-              const setId =
-                set.exercise_id *
-                  100 +
-                set.set_no;
+              const setKey =
+                `${set.exercise_id}-${set.set_no}`;
 
-              savedSets[
-                String(setId)
-              ] = set.completed;
+              savedSets[setKey] =
+                Boolean(
+                  set.completed
+                );
             }
           );
 
@@ -287,9 +305,7 @@ const Workout = () => {
             })
           );
         } catch (error) {
-          if (
-            !cancelled
-          ) {
+          if (!cancelled) {
             console.error(
               "Failed to load saved workout sets:",
               error
@@ -316,14 +332,18 @@ const Workout = () => {
    *
    * Converts backend exercise data into the existing
    * ExerciseAccordion structure.
+   *
+   * IMPORTANT:
+   *
+   * We use exercise.id directly.
+   *
+   * NO synthetic database IDs.
    */
 
   const exercises =
     useMemo<WorkoutExercise[]>(
       () => {
-        if (
-          !selectedWorkout
-        ) {
+        if (!selectedWorkout) {
           return [];
         }
 
@@ -336,7 +356,7 @@ const Workout = () => {
 
         const completedSetState =
           completedSetsByDay[
-            workoutStateKey
+          workoutStateKey
           ] ?? {};
 
         return selectedWorkout.exercises.map(
@@ -345,16 +365,11 @@ const Workout = () => {
             exerciseIndex
           ) => {
             /**
-             * Existing synthetic exercise ID.
-             *
-             * Keep this unchanged.
+             * REAL DATABASE EXERCISE ID
              */
 
             const exerciseId =
-              selectedWorkout.id *
-                1000 +
-              exerciseIndex +
-              1;
+              Number(exercise.id);
 
             const sets: WorkoutSet[] =
               Array.from(
@@ -366,46 +381,49 @@ const Workout = () => {
                   _,
                   setIndex
                 ) => {
-                  /**
-                   * Existing synthetic set ID.
-                   */
+                  const setNo =
+                    setIndex + 1;
 
-                  const setId =
-                    exerciseId *
-                      100 +
-                    setIndex +
-                    1;
+                  const setKey =
+                    `${exerciseId}-${setNo}`;
 
                   return {
-                    id: setId,
+                    /**
+                     * UI set ID.
+                     *
+                     * Unique within this workout.
+                     */
+
+                    id:
+                      exerciseId *
+                      100 +
+                      setNo,
 
                     label:
-                      `SET ${
-                        setIndex + 1
-                      }`,
+                      `SET ${setNo}`,
 
                     target:
                       exercise.reps,
 
                     completed:
                       completedSetState[
-                        String(
-                          setId
-                        )
-                      ] ??
-                      false,
+                      setKey
+                      ] ?? false,
                   };
                 }
               );
 
             return {
+              /**
+               * REAL exercise ID.
+               */
+
               id: exerciseId,
 
               exerciseNumber:
                 exerciseIndex + 1,
 
-              name:
-                exercise.name,
+              name: exercise.name,
 
               sets,
 
@@ -474,36 +492,46 @@ const Workout = () => {
 
   const isDayCompleted =
     totalSets > 0 &&
-    completedSets ===
-      totalSets;
+    completedSets === totalSets;
 
   /**
    * =========================================================
    * EARNED CALORIES
    * =========================================================
    *
-   * Existing frontend display calculation preserved.
+   * UI preview only.
    *
-   * Backend will store the value sent when the workout
-   * is logged.
+   * Backend calculates and stores the authoritative
+   * calorie value when the workout is submitted.
    */
 
   const earnedCalories =
     useMemo(() => {
       if (
         !selectedWorkout ||
-        totalSets === 0
+        totalSets === 0 ||
+        completedSets === 0
       ) {
         return 0;
       }
 
-      const completionRatio =
+      const ratio =
         completedSets /
         totalSets;
 
+      const calories =
+        (
+          selectedWorkout.calMin +
+          (
+            selectedWorkout.calMax -
+            selectedWorkout.calMin
+          ) *
+          ratio
+        ) *
+        ratio;
+
       return Math.round(
-        selectedWorkout.calMax *
-          completionRatio
+        calories
       );
     }, [
       selectedWorkout,
@@ -513,146 +541,17 @@ const Workout = () => {
 
   /**
    * =========================================================
-   * DASHBOARD STATS
-   * =========================================================
-   *
-   * Keep the existing dashboard context synchronized
-   * with the currently loaded UI state.
-   */
-
-  useEffect(() => {
-    if (!dashboard) {
-      return;
-    }
-
-    const totalProgramSets =
-      dashboard.days.reduce(
-        (
-          total,
-          day
-        ) =>
-          total +
-          day.exercises.reduce(
-            (
-              dayTotal,
-              exercise
-            ) =>
-              dayTotal +
-              exercise.sets,
-            0
-          ),
-        0
-      );
-
-    const completedProgramSets =
-      dashboard.days.reduce(
-        (
-          total,
-          day
-        ) => {
-          const workoutStateKey =
-            getWorkoutStateKey(
-              month,
-              week,
-              day.id
-            );
-
-          const dayCompletedSets =
-            completedSetsByDay[
-              workoutStateKey
-            ] ?? {};
-
-          return (
-            total +
-            Object.values(
-              dayCompletedSets
-            ).filter(
-              Boolean
-            ).length
-          );
-        },
-        0
-      );
-
-    const completedDays =
-      dashboard.days.filter(
-        (day) => {
-          const totalDaySets =
-            day.exercises.reduce(
-              (
-                total,
-                exercise
-              ) =>
-                total +
-                exercise.sets,
-              0
-            );
-
-          const workoutStateKey =
-            getWorkoutStateKey(
-              month,
-              week,
-              day.id
-            );
-
-          const completedDaySets =
-            Object.values(
-              completedSetsByDay[
-                workoutStateKey
-              ] ?? {}
-            ).filter(
-              Boolean
-            ).length;
-
-          return (
-            totalDaySets > 0 &&
-            completedDaySets ===
-              totalDaySets
-          );
-        }
-      ).length;
-
-    setStats({
-      completedSets:
-        completedProgramSets,
-
-      totalSets:
-        totalProgramSets,
-
-      completedDays,
-
-      totalDays:
-        dashboard.days.length,
-
-      calories:
-        earnedCalories,
-    });
-  }, [
-    dashboard,
-    completedSetsByDay,
-    earnedCalories,
-    setStats,
-    month,
-    week,
-  ]);
-
-  /**
-   * =========================================================
    * OPEN FIRST EXERCISE
    * =========================================================
    */
 
   useEffect(() => {
-    if (
-      exercises.length > 0
-    ) {
+    if (exercises.length > 0) {
       setOpenExerciseId(
         exercises[0].id
       );
     } else {
-      setOpenExerciseId(
-        null
-      );
+      setOpenExerciseId(null);
     }
   }, [
     selectedDay,
@@ -664,60 +563,51 @@ const Workout = () => {
    * RESET DAY
    * =========================================================
    *
-   * IMPORTANT:
+   * UI reset only.
    *
-   * This currently resets the UI state only.
-   *
-   * It does not delete database records because we have
-   * not created a DELETE/reset endpoint yet.
+   * No database DELETE endpoint exists yet.
    */
 
-  const handleResetDay =
-    () => {
-      if (
-        !selectedWorkout
-      ) {
-        return;
+  const handleResetDay = () => {
+    if (!selectedWorkout) {
+      return;
+    }
+
+    const workoutStateKey =
+      getWorkoutStateKey(
+        month,
+        week,
+        selectedWorkout.id
+      );
+
+    setCompletedSetsByDay(
+      (current) => {
+        const updated = {
+          ...current,
+        };
+
+        delete updated[
+          workoutStateKey
+        ];
+
+        return updated;
       }
+    );
 
-      const workoutStateKey =
-        getWorkoutStateKey(
-          month,
-          week,
-          selectedWorkout.id
-        );
+    setOpenExerciseId(
+      exercises[0]?.id ?? null
+    );
 
-      setCompletedSetsByDay(
-        (current) => {
-          const updated = {
-            ...current,
-          };
+    setCompletionDialogOpen(
+      false
+    );
 
-          delete updated[
-            workoutStateKey
-          ];
+    setCompletionSuccess(
+      false
+    );
 
-          return updated;
-        }
-      );
-
-      setOpenExerciseId(
-        exercises[0]?.id ??
-          null
-      );
-
-      setCompletionDialogOpen(
-        false
-      );
-
-      setCompletionSuccess(
-        false
-      );
-
-      setErrorMessage(
-        null
-      );
-    };
+    setErrorMessage(null);
+  };
 
   /**
    * =========================================================
@@ -725,26 +615,23 @@ const Workout = () => {
    * =========================================================
    */
 
-  const handleWarmUpToggle =
-    (
-      exerciseId: number
-    ) => {
-      setWarmUpExercises(
-        (current) =>
-          current.map(
-            (exercise) =>
-              exercise.id ===
-              exerciseId
-                ? {
-                    ...exercise,
-
-                    completed:
-                      !exercise.completed,
-                  }
-                : exercise
-          )
-      );
-    };
+  const handleWarmUpToggle = (
+    exerciseId: number
+  ) => {
+    setWarmUpExercises(
+      (current) =>
+        current.map(
+          (exercise) =>
+            exercise.id === exerciseId
+              ? {
+                ...exercise,
+                completed:
+                  !exercise.completed,
+              }
+              : exercise
+        )
+    );
+  };
 
   /**
    * =========================================================
@@ -752,76 +639,76 @@ const Workout = () => {
    * =========================================================
    */
 
-  const handleExerciseToggle =
-    (
-      exerciseId: number
-    ) => {
-      setOpenExerciseId(
-        (currentId) =>
-          currentId ===
-          exerciseId
-            ? null
-            : exerciseId
-      );
-    };
+  const handleExerciseToggle = (
+    exerciseId: number
+  ) => {
+    setOpenExerciseId(
+      (currentId) =>
+        currentId === exerciseId
+          ? null
+          : exerciseId
+    );
+  };
 
   /**
    * =========================================================
    * SET TOGGLE
    * =========================================================
    *
-   * IMPORTANT:
+   * NO API REQUEST.
    *
-   * NO API CALL HERE.
-   *
-   * The user can select/unselect as many sets as required.
-   * Everything stays in React state until the user presses
-   * "Mark Workout Complete".
+   * Local state only.
    */
 
-  const handleSetToggle =
-    (
-      _exerciseId: number,
-      setId: number
-    ) => {
-      if (
-        !selectedWorkout
-      ) {
-        return;
-      }
+  const handleSetToggle = (
+    exerciseId: number,
+    setId: number
+  ) => {
+    if (!selectedWorkout) {
+      return;
+    }
 
-      const workoutStateKey =
-        getWorkoutStateKey(
-          month,
-          week,
-          selectedWorkout.id
-        );
-
-      setCompletedSetsByDay(
-        (current) => {
-          const currentDayState =
-            current[
-              workoutStateKey
-            ] ?? {};
-
-          const key =
-            String(setId);
-
-          return {
-            ...current,
-
-            [workoutStateKey]: {
-              ...currentDayState,
-
-              [key]:
-                !currentDayState[
-                  key
-                ],
-            },
-          };
-        }
+    const workoutStateKey =
+      getWorkoutStateKey(
+        month,
+        week,
+        selectedWorkout.id
       );
-    };
+
+    setCompletedSetsByDay(
+      (current) => {
+        const currentDayState =
+          current[
+          workoutStateKey
+          ] ?? {};
+
+        /**
+         * Rendered UI set ID:
+         *
+         * exerciseId * 100 + setNo
+         */
+
+        const setNo =
+          setId % 100;
+
+        const setKey =
+          `${exerciseId}-${setNo}`;
+
+        return {
+          ...current,
+
+          [workoutStateKey]: {
+            ...currentDayState,
+
+            [setKey]:
+              !currentDayState[
+              setKey
+              ],
+          },
+        };
+      }
+    );
+  };
 
   /**
    * =========================================================
@@ -858,13 +745,9 @@ const Workout = () => {
         return;
       }
 
-      setErrorMessage(
-        null
-      );
+      setErrorMessage(null);
 
-      setCompletionSuccess(
-        false
-      );
+      setCompletionSuccess(false);
 
       setCompletionDialogOpen(
         true
@@ -887,36 +770,24 @@ const Workout = () => {
         false
       );
 
-      setCompletionSuccess(
-        false
-      );
+      setCompletionSuccess(false);
 
-      setErrorMessage(
-        null
-      );
+      setErrorMessage(null);
     };
 
   /**
    * =========================================================
-   * BUILD ALL SET LOGS
+   * BUILD WORKOUT SET PAYLOAD
    * =========================================================
    *
-   * Converts the current React state into the complete
-   * set list required by the backend.
+   * The backend requires the actual database exercise ID.
    *
-   * IMPORTANT:
-   *
-   * Both completed=true and completed=false are sent.
-   *
-   * This allows the backend to know the complete state
-   * of every set.
+   * Every planned set is submitted.
    */
 
   const buildWorkoutSetPayload =
     () => {
-      if (
-        !selectedWorkout
-      ) {
+      if (!selectedWorkout) {
         return [];
       }
 
@@ -929,19 +800,17 @@ const Workout = () => {
 
       const completedSetState =
         completedSetsByDay[
-          workoutStateKey
+        workoutStateKey
         ] ?? {};
 
       return selectedWorkout.exercises.flatMap(
-        (
-          exercise,
-          exerciseIndex
-        ) => {
+        (exercise) => {
+          /**
+           * REAL DATABASE ID
+           */
+
           const exerciseId =
-            selectedWorkout.id *
-              1000 +
-            exerciseIndex +
-            1;
+            Number(exercise.id);
 
           return Array.from(
             {
@@ -955,10 +824,8 @@ const Workout = () => {
               const setNo =
                 setIndex + 1;
 
-              const setId =
-                exerciseId *
-                  100 +
-                setNo;
+              const setKey =
+                `${exerciseId}-${setNo}`;
 
               return {
                 exercise_id:
@@ -969,11 +836,8 @@ const Workout = () => {
 
                 completed:
                   completedSetState[
-                    String(
-                      setId
-                    )
-                  ] ??
-                  false,
+                  setKey
+                  ] ?? false,
               };
             }
           );
@@ -986,14 +850,7 @@ const Workout = () => {
    * CONFIRM WORKOUT COMPLETION
    * =========================================================
    *
-   * ONE API CALL.
-   *
-   * This sends:
-   *
-   * - workout summary
-   * - all individual set states
-   *
-   * to POST /workout/log.
+   * POST /api/v1/workout/log
    */
 
   const handleConfirmCompletion =
@@ -1006,23 +863,13 @@ const Workout = () => {
         return;
       }
 
-      /**
-       * Safety check.
-       */
-
-      if (
-        completedSets <= 0
-      ) {
+      if (completedSets <= 0) {
         setErrorMessage(
           "Please complete at least one set before logging the workout."
         );
 
         return;
       }
-
-      /**
-       * Safety check.
-       */
 
       if (
         completedSets >
@@ -1035,33 +882,29 @@ const Workout = () => {
         return;
       }
 
-      setIsSubmitting(
-        true
-      );
+      setIsSubmitting(true);
 
-      setErrorMessage(
-        null
-      );
+      setErrorMessage(null);
 
       try {
         /**
-         * Build the complete set state.
+         * Build complete raw set state.
          */
 
         const sets =
           buildWorkoutSetPayload();
 
         /**
-         * ONE API REQUEST.
+         * Submit to backend.
          *
-         * No /workout/set calls.
+         * client_id is NOT sent.
+         *
+         * Backend gets client identity from
+         * CurrentClient / access token.
          */
 
         const response =
           await logWorkout({
-            client_id:
-              dashboard.client.id,
-
             month_no:
               month,
 
@@ -1087,9 +930,42 @@ const Workout = () => {
          * Backend confirmed success.
          */
 
-        if (
-          response.success
-        ) {
+        if (response.success) {
+          /**
+           * Synchronize local set state with
+           * what was submitted.
+           */
+
+          const submittedState: Record<
+            string,
+            boolean
+          > = {};
+
+          sets.forEach(
+            (set) => {
+              submittedState[
+                `${set.exercise_id}-${set.set_no}`
+              ] =
+                set.completed;
+            }
+          );
+
+          const workoutStateKey =
+            getWorkoutStateKey(
+              month,
+              week,
+              selectedWorkout.id
+            );
+
+          setCompletedSetsByDay(
+            (previous) => ({
+              ...previous,
+
+              [workoutStateKey]:
+                submittedState,
+            })
+          );
+
           setCompletionSuccess(
             true
           );
@@ -1097,13 +973,9 @@ const Workout = () => {
           return;
         }
 
-        /**
-         * Unexpected unsuccessful response.
-         */
-
         setErrorMessage(
           response.message ||
-            "Unable to save workout."
+          "Unable to save workout."
         );
       } catch (error) {
         console.error(
@@ -1115,12 +987,10 @@ const Workout = () => {
           axiosErrorMessage(
             error
           ) ??
-            "Unable to save workout. Please try again."
+          "Unable to save workout. Please try again."
         );
       } finally {
-        setIsSubmitting(
-          false
-        );
+        setIsSubmitting(false);
       }
     };
 
@@ -1153,9 +1023,7 @@ const Workout = () => {
    * =========================================================
    */
 
-  if (
-    !selectedWorkout
-  ) {
+  if (!selectedWorkout) {
     return (
       <Box
         sx={{
@@ -1273,13 +1141,9 @@ const Workout = () => {
               selectedWorkout.id
             }
 
-            month={
-              month
-            }
+            month={month}
 
-            week={
-              week
-            }
+            week={week}
 
             earnedCalories={
               earnedCalories
@@ -1292,13 +1156,8 @@ const Workout = () => {
             ================================================= */}
 
         <LoggingNotice
-          month={
-            month
-          }
-
-          week={
-            week
-          }
+          month={month}
+          week={week}
         />
 
         {/* =================================================
@@ -1453,7 +1312,7 @@ const Workout = () => {
 
             disabled={
               completedSets ===
-                0 ||
+              0 ||
               isSubmitting
             }
 
@@ -1520,13 +1379,9 @@ const Workout = () => {
             completionDialogOpen
           }
 
-          month={
-            month
-          }
+          month={month}
 
-          week={
-            week
-          }
+          week={week}
 
           dayNumber={
             selectedWorkout.id
@@ -1589,9 +1444,7 @@ const axiosErrorMessage = (
     return null;
   }
 
-  if (
-    "response" in error
-  ) {
+  if ("response" in error) {
     const response =
       (
         error as {
@@ -1611,9 +1464,7 @@ const axiosErrorMessage = (
     );
   }
 
-  if (
-    "message" in error
-  ) {
+  if ("message" in error) {
     const message =
       (
         error as {

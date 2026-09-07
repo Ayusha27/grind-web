@@ -7,7 +7,9 @@ import {
 } from "@mui/material";
 import VolumeOffRoundedIcon from "@mui/icons-material/VolumeOffRounded";
 import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
-import { useNavigate } from "react-router-dom";
+import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
+import ArrowForwardIosRoundedIcon from "@mui/icons-material/ArrowForwardIosRounded";
+import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
 
 import NutritionShowcase from "../../client/walkthrough/NutritionShowcase";
 import WorkoutShowcase from "../../client/walkthrough/WorkoutShowcase";
@@ -53,126 +55,143 @@ const SCENES = [
     {
         id: "journey",
         eyebrow: "GRIND",
-        title: "READY TO START?",
-        description:
-            "Your personalized fitness journey starts with a few simple questions.",
-        narration:
-            "Ready to start? Answer a few simple questions and Grind will build your personalized fitness journey around your goals.",
+        title: "YOUR JOURNEY STARTS NOW.",
+        description: "#FITINDIA",
+        narration: "",
     },
 ] as const;
 
 type SceneId = (typeof SCENES)[number]["id"];
 
 const GrindWalkthrough = () => {
-    const navigate = useNavigate();
+    const [sceneIndex, setSceneIndex] =
+        useState(0);
 
-    const [sceneIndex, setSceneIndex] = useState(0);
-    const [isPaused, setIsPaused] = useState(false);
-    const [voiceEnabled, setVoiceEnabled] = useState(true);
+    const [isPaused, setIsPaused] =
+        useState(false);
 
-    /*
-     * Used to make sure an old utterance cannot
-     * accidentally advance the new scene.
-     */
-    const narrationIdRef = useRef(0);
+    const [voiceEnabled, setVoiceEnabled] =
+        useState(true);
 
     /*
-     * Keep a reference to the current utterance.
-     * This allows pause/resume and proper cleanup.
+     * Prevent stale speech events from
+     * changing the current scene.
      */
-    const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
+    const narrationIdRef =
+        useRef(0);
 
-    const scene = SCENES[sceneIndex];
+    const utteranceRef =
+        useRef<SpeechSynthesisUtterance | null>(
+            null
+        );
+
+    /*
+     * Reference to the final showcase video.
+     * The sound button uses this to mute/unmute
+     * the video's original audio.
+     */
+    const videoRef =
+        useRef<HTMLVideoElement | null>(
+            null
+        );
+
+    const scene =
+        SCENES[sceneIndex];
 
     /*
      * ============================================================
-     * STOP CURRENT NARRATION
+     * STOP NARRATION
      * ============================================================
      */
 
-    const stopNarration = useCallback(() => {
-        narrationIdRef.current += 1;
+    const stopNarration =
+        useCallback(() => {
+            narrationIdRef.current += 1;
 
-        if ("speechSynthesis" in window) {
-            window.speechSynthesis.cancel();
-        }
+            if (
+                "speechSynthesis" in window
+            ) {
+                window.speechSynthesis.cancel();
+            }
 
-        utteranceRef.current = null;
-    }, []);
+            utteranceRef.current =
+                null;
+        }, []);
 
     /*
      * ============================================================
      * MOVE TO NEXT SCENE
      * ============================================================
-     *
-     * This is now called when the narration finishes.
-     *
-     * We DO NOT use a fixed 6-second timer anymore.
      */
 
-    const moveToNextScene = useCallback(() => {
-        setSceneIndex((current) => {
-            if (current >= SCENES.length - 1) {
-                return current;
-            }
+    const moveToNextScene =
+        useCallback(() => {
+            setSceneIndex((current) => {
+                if (
+                    current >=
+                    SCENES.length - 1
+                ) {
+                    return current;
+                }
 
-            return current + 1;
-        });
-    }, []);
+                return current + 1;
+            });
+        }, []);
 
     /*
      * ============================================================
      * VOICE NARRATION
      * ============================================================
-     *
-     * Every time a scene loads:
-     *
-     * 1. Cancel previous narration.
-     * 2. Start the new narration.
-     * 3. Wait for onend.
-     * 4. Only then move to the next scene.
      */
 
     useEffect(() => {
-        if (!voiceEnabled || isPaused) {
+        /*
+         * Final scene is intentionally silent
+         * because it contains the actual video.
+         */
+        if (!scene.narration) {
             return;
         }
 
-        if (!("speechSynthesis" in window)) {
-            /*
-             * If speech synthesis is unavailable, we cannot
-             * wait for audio completion.
-             *
-             * In that rare case, don't automatically advance.
-             * The user can still use Next manually.
-             */
+        if (
+            !voiceEnabled ||
+            isPaused
+        ) {
             return;
         }
 
-        const currentNarrationId = narrationIdRef.current + 1;
+        if (
+            !("speechSynthesis" in window)
+        ) {
+            return;
+        }
 
-        narrationIdRef.current = currentNarrationId;
+        const currentNarrationId =
+            narrationIdRef.current + 1;
 
+        narrationIdRef.current =
+            currentNarrationId;
+
+        /*
+         * Cancel any previous narration.
+         */
         window.speechSynthesis.cancel();
 
-        const utterance = new SpeechSynthesisUtterance(
-            scene.narration
-        );
+        const utterance =
+            new SpeechSynthesisUtterance(
+                scene.narration
+            );
 
         utterance.rate = 0.95;
         utterance.pitch = 1;
         utterance.volume = 1;
 
-        utteranceRef.current = utterance;
+        utteranceRef.current =
+            utterance;
 
         utterance.onend = () => {
             /*
-             * Ignore this callback if:
-             *
-             * - the user already changed scenes
-             * - narration was disabled
-             * - the component was cleaned up
-             * - another narration replaced this one
+             * Ignore an old utterance.
              */
             if (
                 narrationIdRef.current !==
@@ -181,34 +200,34 @@ const GrindWalkthrough = () => {
                 return;
             }
 
-            if (isPaused || !voiceEnabled) {
+            if (
+                !voiceEnabled ||
+                isPaused
+            ) {
                 return;
             }
 
-            /*
-             * Only move forward after the COMPLETE
-             * narration has finished.
-             */
-            if (sceneIndex < SCENES.length - 1) {
-                moveToNextScene();
-            }
+            utteranceRef.current =
+                null;
+
+            moveToNextScene();
         };
 
         utterance.onerror = () => {
-            /*
-             * Do not automatically skip the scene
-             * when speech fails.
-             *
-             * User can continue manually.
-             */
+            if (
+                narrationIdRef.current ===
+                currentNarrationId
+            ) {
+                utteranceRef.current =
+                    null;
+            }
         };
 
-        window.speechSynthesis.speak(utterance);
+        window.speechSynthesis.speak(
+            utterance
+        );
 
         return () => {
-            /*
-             * Invalidate this narration before cancelling it.
-             */
             if (
                 narrationIdRef.current ===
                 currentNarrationId
@@ -218,8 +237,12 @@ const GrindWalkthrough = () => {
 
             window.speechSynthesis.cancel();
 
-            if (utteranceRef.current === utterance) {
-                utteranceRef.current = null;
+            if (
+                utteranceRef.current ===
+                utterance
+            ) {
+                utteranceRef.current =
+                    null;
             }
         };
     }, [
@@ -238,33 +261,19 @@ const GrindWalkthrough = () => {
 
     useEffect(() => {
         return () => {
-            stopNarration();
+            if (
+                "speechSynthesis" in window
+            ) {
+                window.speechSynthesis.cancel();
+            }
         };
-    }, [stopNarration]);
+    }, []);
 
     /*
      * ============================================================
-     * NAVIGATION
+     * PREVIOUS
      * ============================================================
-     *
-     * Manual navigation immediately:
-     *
-     * 1. Stops current audio.
-     * 2. Changes scene.
-     * 3. New scene's useEffect starts new audio.
      */
-
-    const handleNext = () => {
-        if (sceneIndex >= SCENES.length - 1) {
-            return;
-        }
-
-        stopNarration();
-
-        setSceneIndex((current) =>
-            Math.min(current + 1, SCENES.length - 1)
-        );
-    };
 
     const handlePrevious = () => {
         if (sceneIndex <= 0) {
@@ -274,7 +283,34 @@ const GrindWalkthrough = () => {
         stopNarration();
 
         setSceneIndex((current) =>
-            Math.max(current - 1, 0)
+            Math.max(
+                current - 1,
+                0
+            )
+        );
+    };
+
+    /*
+     * ============================================================
+     * NEXT
+     * ============================================================
+     */
+
+    const handleNext = () => {
+        if (
+            sceneIndex >=
+            SCENES.length - 1
+        ) {
+            return;
+        }
+
+        stopNarration();
+
+        setSceneIndex((current) =>
+            Math.min(
+                current + 1,
+                SCENES.length - 1
+            )
         );
     };
 
@@ -285,31 +321,63 @@ const GrindWalkthrough = () => {
      */
 
     const handlePauseToggle = () => {
-        if (!("speechSynthesis" in window)) {
-            setIsPaused((current) => !current);
+        /*
+         * On the final video scene, pause/play
+         * controls the video itself.
+         */
+        if (scene.id === "journey") {
+            if (videoRef.current) {
+                if (
+                    videoRef.current.paused
+                ) {
+                    videoRef.current
+                        .play()
+                        .catch(() => {
+                            // Browser may block playback.
+                        });
+                } else {
+                    videoRef.current.pause();
+                }
+            }
+
+            setIsPaused(
+                (current) => !current
+            );
+
+            return;
+        }
+
+        /*
+         * Existing speech pause/play behavior
+         * for all other scenes.
+         */
+        if (
+            !("speechSynthesis" in window)
+        ) {
+            setIsPaused(
+                (current) => !current
+            );
+
             return;
         }
 
         if (isPaused) {
-            /*
-             * Resume the existing audio if possible.
-             *
-             * If the browser has already cancelled the utterance,
-             * the scene effect will start it again.
-             */
             setIsPaused(false);
 
-            if (window.speechSynthesis.paused) {
+            if (
+                window.speechSynthesis
+                    .paused
+            ) {
                 window.speechSynthesis.resume();
             }
 
             return;
         }
 
-        /*
-         * Pause the actual voice.
-         */
-        if (window.speechSynthesis.speaking) {
+        if (
+            window.speechSynthesis
+                .speaking
+        ) {
             window.speechSynthesis.pause();
         }
 
@@ -318,14 +386,36 @@ const GrindWalkthrough = () => {
 
     /*
      * ============================================================
-     * VOICE TOGGLE
+     * SOUND TOGGLE
      * ============================================================
      */
 
     const handleVoiceToggle = () => {
         setVoiceEnabled((current) => {
-            const nextValue = !current;
+            const nextValue =
+                !current;
 
+            /*
+             * Final showcase:
+             * control the video's original audio.
+             */
+            if (
+                scene.id === "journey"
+            ) {
+                if (
+                    videoRef.current
+                ) {
+                    videoRef.current.muted =
+                        !nextValue;
+                }
+
+                return nextValue;
+            }
+
+            /*
+             * Other showcases:
+             * control the existing narration.
+             */
             if (!nextValue) {
                 stopNarration();
             }
@@ -336,23 +426,27 @@ const GrindWalkthrough = () => {
 
     /*
      * ============================================================
-     * START JOURNEY
+     * HOW GRIND WORKS
      * ============================================================
      */
 
-    const handleStart = () => {
+    const handleHowGrindWorks = () => {
         stopNarration();
-        navigate("/start-your-journey");
+
+        window.location.href =
+            "/#how-grind-works";
     };
 
     /*
      * ============================================================
-     * SCENE CONTENT
+     * SHOWCASE CONTENT
      * ============================================================
      */
 
     const renderSceneContent = () => {
-        switch (scene.id as SceneId) {
+        switch (
+        scene.id as SceneId
+        ) {
             case "welcome":
                 return (
                     <DashboardPreview
@@ -362,20 +456,68 @@ const GrindWalkthrough = () => {
                 );
 
             case "workout":
-                return <WorkoutShowcase />;
+                return (
+                    <WorkoutShowcase />
+                );
 
             case "nutrition":
-                return <NutritionShowcase />;
+                return (
+                    <NutritionShowcase />
+                );
 
             case "progress":
-                return <ProgressShowcase />;
+                return (
+                    <ProgressShowcase />
+                );
 
             case "journey":
                 return (
-                    <DashboardPreview
-                        label="YOUR JOURNEY STARTS HERE"
-                        description="Answer a few questions and let GRIND build your personalized plan."
-                    />
+                    <Box
+                        sx={{
+                            width:
+                                "100%",
+
+                            height:
+                                "100%",
+
+                            overflow:
+                                "hidden",
+
+                            backgroundColor:
+                                "#101010",
+                        }}
+                    >
+                        <video
+                            ref={videoRef}
+                            src="/videos/grind-intro.mp4"
+                            autoPlay
+                            playsInline
+                            preload="auto"
+                            muted={
+                                !voiceEnabled
+                            }
+                            style={{
+                                width:
+                                    "100%",
+
+                                height:
+                                    "100%",
+
+                                /*
+                                 * Fill the complete
+                                 * showcase container.
+                                 */
+                                objectFit:
+                                    "cover",
+
+                                display:
+                                    "block",
+
+                                backgroundColor:
+                                    "#000",
+                            }}
+                        />
+                    </Box>
                 );
 
             default:
@@ -383,16 +525,42 @@ const GrindWalkthrough = () => {
         }
     };
 
+    const isFinalScene =
+        sceneIndex ===
+        SCENES.length - 1;
+
+    /*
+     * Workout / Nutrition / Progress
+     * use the large scrollable showcase.
+     */
+    const isScrollableShowcase =
+        scene.id === "workout" ||
+        scene.id === "nutrition" ||
+        scene.id === "progress";
+
     return (
         <Box
             sx={{
-                minHeight: "100vh",
-                backgroundColor: "#080808",
-                color: "#ffffff",
-                position: "relative",
-                overflow: "hidden",
-                display: "flex",
-                flexDirection: "column",
+                minHeight:
+                    "100vh",
+
+                backgroundColor:
+                    "#080808",
+
+                color:
+                    "#ffffff",
+
+                position:
+                    "relative",
+
+                overflow:
+                    "hidden",
+
+                display:
+                    "flex",
+
+                flexDirection:
+                    "column",
             }}
         >
             {/* =====================================================
@@ -401,22 +569,34 @@ const GrindWalkthrough = () => {
 
             <Box
                 sx={{
-                    position: "absolute",
+                    position:
+                        "absolute",
+
                     width: {
                         xs: 320,
                         md: 600,
                     },
+
                     height: {
                         xs: 320,
                         md: 600,
                     },
-                    borderRadius: "50%",
+
+                    borderRadius:
+                        "50%",
+
                     background:
                         "radial-gradient(circle, rgba(255,92,53,0.12) 0%, rgba(255,92,53,0) 70%)",
+
                     top: "25%",
+
                     left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    pointerEvents: "none",
+
+                    transform:
+                        "translate(-50%, -50%)",
+
+                    pointerEvents:
+                        "none",
                 }}
             />
 
@@ -426,21 +606,34 @@ const GrindWalkthrough = () => {
 
             <Box
                 sx={{
-                    position: "relative",
+                    position:
+                        "relative",
+
                     zIndex: 2,
+
                     height: {
                         xs: 64,
                         md: 76,
                     },
+
                     px: {
                         xs: 2,
                         sm: 3,
                         md: 5,
                     },
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    borderBottom: "1px solid #202020",
+
+                    display:
+                        "flex",
+
+                    alignItems:
+                        "center",
+
+                    justifyContent:
+                        "space-between",
+
+                    borderBottom:
+                        "1px solid #202020",
+
                     flexShrink: 0,
                 }}
             >
@@ -450,190 +643,180 @@ const GrindWalkthrough = () => {
                             xs: 21,
                             md: 26,
                         },
-                        fontWeight: 900,
-                        letterSpacing: 5,
+
+                        fontWeight:
+                            900,
+
+                        letterSpacing:
+                            5,
                     }}
                 >
                     GRIND
                     <Box
                         component="span"
                         sx={{
-                            color: "#ff5c35",
+                            color:
+                                "#ff5c35",
                         }}
                     >
                         .
                     </Box>
                 </Typography>
-
-                <Box
-                    sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: {
-                            xs: 0.5,
-                            sm: 1,
-                        },
-                    }}
-                >
-                    {/* Voice toggle */}
-                    <IconButton
-                        onClick={handleVoiceToggle}
-                        aria-label={
-                            voiceEnabled
-                                ? "Disable narration"
-                                : "Enable narration"
-                        }
-                        sx={{
-                            width: 32,
-                            height: 32,
-                            color: voiceEnabled
-                                ? "#ff5c35"
-                                : "#555",
-                            "&:hover": {
-                                backgroundColor:
-                                    "rgba(255,92,53,0.08)",
-                            },
-                        }}
-                    >
-                        {voiceEnabled ? (
-                            <VolumeUpRoundedIcon
-                                sx={{
-                                    fontSize: 17,
-                                }}
-                            />
-                        ) : (
-                            <VolumeOffRoundedIcon
-                                sx={{
-                                    fontSize: 17,
-                                }}
-                            />
-                        )}
-                    </IconButton>
-
-                    <Button
-                        onClick={handleStart}
-                        sx={{
-                            color: "#aaa",
-                            fontSize: 9,
-                            fontWeight: 800,
-                            letterSpacing: 1.2,
-                            px: 1,
-                            "&:hover": {
-                                color: "#fff",
-                                backgroundColor: "transparent",
-                            },
-                        }}
-                    >
-                        START YOUR JOURNEY
-                    </Button>
-                </Box>
             </Box>
 
             {/* =====================================================
-                MAIN CONTENT
+                MAIN
             ===================================================== */}
 
             <Box
                 sx={{
-                    position: "relative",
+                    position:
+                        "relative",
+
                     zIndex: 1,
+
                     flex: 1,
+
                     minHeight: 0,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
+
+                    display:
+                        "flex",
+
+                    alignItems:
+                        "center",
+
+                    justifyContent:
+                        "center",
+
                     px: {
                         xs: 1.5,
                         sm: 3,
                         md: 5,
                     },
+
                     py: {
                         xs: 3,
                         sm: 4,
-                        md: 5,
+                        md: 4,
                     },
-                    overflow: "hidden",
+
+                    overflow:
+                        "hidden",
                 }}
             >
                 <Box
                     key={scene.id}
                     sx={{
-                        width: "100%",
-                        maxWidth: 1100,
-                        height: "100%",
-                        maxHeight: 900,
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
+                        width:
+                            "100%",
+
+                        maxWidth:
+                            1200,
+
+                        display:
+                            "flex",
+
+                        flexDirection:
+                            "column",
+
+                        alignItems:
+                            "center",
+
                         justifyContent:
-                            scene.id === "workout" ||
-                                scene.id === "nutrition" ||
-                                scene.id === "progress"
-                                ? "flex-start"
-                                : "center",
+                            "center",
+
                         animation:
                             "walkthroughSceneIn 650ms ease both",
 
-                        "@keyframes walkthroughSceneIn": {
+                        "@keyframes walkthroughSceneIn":
+                        {
                             from: {
                                 opacity: 0,
-                                transform: "translateY(18px)",
+
+                                transform:
+                                    "translateY(18px)",
                             },
+
                             to: {
                                 opacity: 1,
-                                transform: "translateY(0)",
+
+                                transform:
+                                    "translateY(0)",
                             },
                         },
                     }}
                 >
                     {/* =================================================
-                        SCENE HEADING
+                        TEXT
                     ================================================= */}
 
                     <Box
                         sx={{
-                            width: "100%",
-                            textAlign: "center",
-                            flexShrink: 0,
+                            width:
+                                "100%",
+
+                            textAlign:
+                                "center",
+
+                            flexShrink:
+                                0,
+
                             mb: {
                                 xs: 2.5,
+                                sm: 3,
                                 md: 3.5,
                             },
                         }}
                     >
                         <Typography
                             sx={{
-                                color: "#ff5c35",
+                                color:
+                                    "#ff5c35",
+
                                 fontSize: {
                                     xs: 8,
+                                    sm: 9,
                                     md: 10,
                                 },
-                                fontWeight: 800,
-                                letterSpacing: 2,
-                                mb: 1.5,
+
+                                fontWeight:
+                                    800,
+
+                                letterSpacing:
+                                    2,
+
+                                mb: 1.3,
                             }}
                         >
                             {scene.eyebrow}
                         </Typography>
 
                         <Typography
+                            component="h1"
                             sx={{
-                                whiteSpace: "pre-line",
+                                whiteSpace:
+                                    "pre-line",
+
                                 fontSize: {
                                     xs: 27,
                                     sm: 40,
-                                    md: 56,
+                                    md: 54,
                                 },
-                                lineHeight: {
-                                    xs: 1.05,
-                                    md: 1,
-                                },
-                                fontWeight: 900,
+
+                                lineHeight:
+                                    1.02,
+
+                                fontWeight:
+                                    900,
+
                                 letterSpacing: {
                                     xs: -0.8,
-                                    md: -1.8,
+                                    md: -1.5,
                                 },
-                                maxWidth: 850,
+
+                                maxWidth:
+                                    850,
+
                                 mx: "auto",
                             }}
                         >
@@ -642,16 +825,43 @@ const GrindWalkthrough = () => {
 
                         <Typography
                             sx={{
-                                mt: 1.5,
-                                maxWidth: 550,
+                                mt: 1.4,
+
+                                maxWidth:
+                                    600,
+
                                 mx: "auto",
-                                color: "#8d8985",
+
+                                /*
+                                 * FITINDIA is orange
+                                 * on the final scene.
+                                 */
+                                color:
+                                    scene.id ===
+                                        "journey"
+                                        ? "#ff5c35"
+                                        : "#8d8985",
+
                                 fontSize: {
-                                    xs: 11,
-                                    sm: 12,
-                                    md: 14,
+                                    xs: 10,
+                                    sm: 11,
+                                    md: 13,
                                 },
-                                lineHeight: 1.6,
+
+                                lineHeight:
+                                    1.6,
+
+                                fontWeight:
+                                    scene.id ===
+                                        "journey"
+                                        ? 800
+                                        : 400,
+
+                                letterSpacing:
+                                    scene.id ===
+                                        "journey"
+                                        ? 1.5
+                                        : 0,
                             }}
                         >
                             {scene.description}
@@ -659,184 +869,807 @@ const GrindWalkthrough = () => {
                     </Box>
 
                     {/* =================================================
-                        SCENE CONTENT
+                        SHOWCASE + LEFT SCROLL INDICATOR + CONTROLS
                     ================================================= */}
 
                     <Box
                         sx={{
-                            width: "100%",
-                            flex:
-                                scene.id === "workout" ||
-                                    scene.id === "nutrition" ||
-                                    scene.id === "progress"
-                                    ? 1
-                                    : "none",
-                            minHeight:
-                                scene.id === "workout" ||
-                                    scene.id === "nutrition" ||
-                                    scene.id === "progress"
-                                    ? 0
-                                    : undefined,
-                            display: "flex",
-                            justifyContent: "center",
+                            width:
+                                "100%",
+
+                            display:
+                                "flex",
+
                             alignItems:
-                                scene.id === "workout" ||
-                                    scene.id === "nutrition" ||
-                                    scene.id === "progress"
-                                    ? "flex-start"
-                                    : "center",
-                            overflow:
-                                scene.id === "workout" ||
-                                    scene.id === "nutrition" ||
-                                    scene.id === "progress"
-                                    ? "auto"
-                                    : "visible",
-                            scrollbarWidth: "none",
-                            "&::-webkit-scrollbar": {
-                                display: "none",
+                                "center",
+
+                            justifyContent:
+                                "center",
+
+                            gap: {
+                                xs: 1,
+                                sm: 1.5,
+                                md: 2,
                             },
                         }}
                     >
-                        {renderSceneContent()}
+                        {/* =================================================
+                            MULTIPLE DOWN ARROWS
+                        ================================================= */}
+
+                        {isScrollableShowcase && (
+                            <Box
+                                sx={{
+                                    width: {
+                                        xs: 28,
+                                        sm: 34,
+                                        md: 42,
+                                    },
+
+                                    height: {
+                                        xs: 110,
+                                        sm: 130,
+                                        md: 150,
+                                    },
+
+                                    flexShrink:
+                                        0,
+
+                                    display:
+                                        "flex",
+
+                                    alignItems:
+                                        "center",
+
+                                    justifyContent:
+                                        "center",
+
+                                    position:
+                                        "relative",
+
+                                    overflow:
+                                        "hidden",
+
+                                    "@keyframes scrollArrowFlow":
+                                    {
+                                        "0%": {
+                                            transform:
+                                                "translateY(-45px)",
+
+                                            opacity: 0,
+                                        },
+
+                                        "15%": {
+                                            opacity: 1,
+                                        },
+
+                                        "70%": {
+                                            opacity: 0.45,
+                                        },
+
+                                        "100%": {
+                                            transform:
+                                                "translateY(65px)",
+
+                                            opacity: 0,
+                                        },
+                                    },
+
+                                    "@media (prefers-reduced-motion: reduce)":
+                                    {
+                                        "& .scroll-arrow":
+                                        {
+                                            animation:
+                                                "none !important",
+
+                                            opacity:
+                                                0.6,
+
+                                            transform:
+                                                "none",
+                                        },
+                                    },
+                                }}
+                            >
+                                {[0, 1, 2, 3].map(
+                                    (index) => (
+                                        <KeyboardArrowDownRoundedIcon
+                                            key={
+                                                index
+                                            }
+                                            className="scroll-arrow"
+                                            sx={{
+                                                position:
+                                                    "absolute",
+
+                                                color:
+                                                    "#ff5c35",
+
+                                                fontSize:
+                                                {
+                                                    xs: 25,
+                                                    sm: 30,
+                                                    md: 34,
+                                                },
+
+                                                animation:
+                                                    "scrollArrowFlow 2.4s ease-in-out infinite",
+
+                                                animationDelay:
+                                                    `${index * 0.6}s`,
+
+                                                opacity:
+                                                    0,
+                                            }}
+                                        />
+                                    )
+                                )}
+                            </Box>
+                        )}
+
+                        {/* =================================================
+                            SHOWCASE WINDOW
+                        ================================================= */}
+
+                        <Box
+                            sx={{
+                                width:
+                                    isScrollableShowcase
+                                        ? {
+                                            xs: "calc(100vw - 105px)",
+                                            sm: "min(78vw, 760px)",
+                                            md: "min(72vw, 900px)",
+                                            lg: "min(70vw, 1040px)",
+                                        }
+                                        : {
+                                            xs: "calc(100vw - 115px)",
+                                            sm: "min(62vw, 600px)",
+                                            md: "min(58vw, 720px)",
+                                            lg: "min(55vw, 820px)",
+                                        },
+
+                                maxWidth:
+                                    isScrollableShowcase
+                                        ? 1040
+                                        : 820,
+
+                                height:
+                                    isScrollableShowcase
+                                        ? {
+                                            xs: "min(58vh, 470px)",
+                                            sm: "min(62vh, 560px)",
+                                            md: "min(64vh, 650px)",
+                                            lg: "min(66vh, 700px)",
+                                        }
+                                        : {
+                                            xs: "min(45vh, 320px)",
+                                            sm: "min(50vh, 400px)",
+                                            md: "min(52vh, 480px)",
+                                            lg: "min(55vh, 540px)",
+                                        },
+
+                                flex: 1,
+
+                                minWidth: 0,
+
+                                border:
+                                    "1px solid #282828",
+
+                                borderRadius: {
+                                    xs: 1,
+                                    md: 2,
+                                },
+
+                                backgroundColor:
+                                    "#101010",
+
+                                overflow:
+                                    "hidden",
+
+                                position:
+                                    "relative",
+
+                                "& > *": {
+                                    width:
+                                        "100%",
+
+                                    height:
+                                        "100%",
+
+                                    maxWidth:
+                                        "none",
+                                },
+                            }}
+                        >
+                            <Box
+                                sx={{
+                                    width:
+                                        "100%",
+
+                                    height:
+                                        "100%",
+
+                                    overflowY:
+                                        "auto",
+
+                                    overflowX:
+                                        "hidden",
+
+                                    scrollBehavior:
+                                        "smooth",
+
+                                    scrollbarWidth:
+                                        "thin",
+
+                                    "&::-webkit-scrollbar":
+                                    {
+                                        width: 5,
+                                    },
+
+                                    "&::-webkit-scrollbar-track":
+                                    {
+                                        background:
+                                            "#101010",
+                                    },
+
+                                    "&::-webkit-scrollbar-thumb":
+                                    {
+                                        background:
+                                            "#363636",
+
+                                        borderRadius:
+                                            10,
+                                    },
+
+                                    "&::-webkit-scrollbar-thumb:hover":
+                                    {
+                                        background:
+                                            "#ff5c35",
+                                    },
+                                }}
+                            >
+                                {renderSceneContent()}
+                            </Box>
+                        </Box>
+
+                        {/* =================================================
+                            RIGHT CONTROL PANEL
+                        ================================================= */}
+
+                        <Box
+                            sx={{
+                                width: {
+                                    xs: 44,
+                                    sm: 52,
+                                    md: 60,
+                                },
+
+                                flexShrink: 0,
+
+                                display:
+                                    "flex",
+
+                                flexDirection:
+                                    "column",
+
+                                alignItems:
+                                    "center",
+
+                                justifyContent:
+                                    "center",
+
+                                gap: {
+                                    xs: 0.8,
+                                    sm: 1,
+                                    md: 1.1,
+                                },
+                            }}
+                        >
+                            {/* =================================================
+                                SOUND
+                            ================================================= */}
+
+                            <IconButton
+                                onClick={
+                                    handleVoiceToggle
+                                }
+                                aria-label={
+                                    voiceEnabled
+                                        ? "Disable audio"
+                                        : "Enable audio"
+                                }
+                                sx={{
+                                    width: {
+                                        xs: 36,
+                                        sm: 42,
+                                        md: 46,
+                                    },
+
+                                    height: {
+                                        xs: 36,
+                                        sm: 42,
+                                        md: 46,
+                                    },
+
+                                    flexShrink:
+                                        0,
+
+                                    border:
+                                        "1px solid #383838",
+
+                                    backgroundColor:
+                                        voiceEnabled
+                                            ? "rgba(255,92,53,0.08)"
+                                            : "#151515",
+
+                                    color:
+                                        voiceEnabled
+                                            ? "#ff5c35"
+                                            : "#555",
+
+                                    transition:
+                                        "all 180ms ease",
+
+                                    "&:hover":
+                                    {
+                                        borderColor:
+                                            "#ff5c35",
+
+                                        color:
+                                            "#ff5c35",
+
+                                        backgroundColor:
+                                            "rgba(255,92,53,0.08)",
+                                    },
+                                }}
+                            >
+                                {voiceEnabled ? (
+                                    <VolumeUpRoundedIcon
+                                        sx={{
+                                            fontSize:
+                                            {
+                                                xs: 16,
+                                                sm: 18,
+                                                md: 19,
+                                            },
+                                        }}
+                                    />
+                                ) : (
+                                    <VolumeOffRoundedIcon
+                                        sx={{
+                                            fontSize:
+                                            {
+                                                xs: 16,
+                                                sm: 18,
+                                                md: 19,
+                                            },
+                                        }}
+                                    />
+                                )}
+                            </IconButton>
+
+                            {/* =================================================
+                                PREVIOUS
+                            ================================================= */}
+
+                            <IconButton
+                                onClick={
+                                    handlePrevious
+                                }
+                                disabled={
+                                    sceneIndex ===
+                                    0
+                                }
+                                aria-label="Previous scene"
+                                sx={{
+                                    width: {
+                                        xs: 36,
+                                        sm: 42,
+                                        md: 46,
+                                    },
+
+                                    height: {
+                                        xs: 36,
+                                        sm: 42,
+                                        md: 46,
+                                    },
+
+                                    flexShrink:
+                                        0,
+
+                                    border:
+                                        "1px solid #ff5c35",
+
+                                    backgroundColor:
+                                        "rgba(255,92,53,0.08)",
+
+                                    color:
+                                        "#ff5c35",
+
+                                    transition:
+                                        "all 180ms ease",
+
+                                    "&:hover":
+                                    {
+                                        backgroundColor:
+                                            "#ff5c35",
+
+                                        color:
+                                            "#fff",
+
+                                        transform:
+                                            "translateY(-2px)",
+                                    },
+
+                                    "&.Mui-disabled":
+                                    {
+                                        opacity:
+                                            0.25,
+
+                                        color:
+                                            "#ff5c35",
+
+                                        borderColor:
+                                            "#ff5c35",
+                                    },
+                                }}
+                            >
+                                <ArrowBackIosNewRoundedIcon
+                                    sx={{
+                                        fontSize:
+                                        {
+                                            xs: 12,
+                                            sm: 14,
+                                            md: 15,
+                                        },
+                                    }}
+                                />
+                            </IconButton>
+
+                            {/* =================================================
+                                PAUSE / PLAY
+                            ================================================= */}
+
+                            <IconButton
+                                onClick={
+                                    handlePauseToggle
+                                }
+                                aria-label={
+                                    isPaused
+                                        ? "Play"
+                                        : "Pause"
+                                }
+                                sx={{
+                                    width: {
+                                        xs: 44,
+                                        sm: 52,
+                                        md: 58,
+                                    },
+
+                                    height: {
+                                        xs: 44,
+                                        sm: 52,
+                                        md: 58,
+                                    },
+
+                                    flexShrink:
+                                        0,
+
+                                    border:
+                                        "1px solid #383838",
+
+                                    backgroundColor:
+                                        isPaused
+                                            ? "rgba(255,92,53,0.12)"
+                                            : "#151515",
+
+                                    color:
+                                        isPaused
+                                            ? "#ff5c35"
+                                            : "#888",
+
+                                    transition:
+                                        "all 180ms ease",
+
+                                    "&:hover":
+                                    {
+                                        borderColor:
+                                            "#ff5c35",
+
+                                        color:
+                                            "#ff5c35",
+
+                                        backgroundColor:
+                                            "rgba(255,92,53,0.08)",
+                                    },
+                                }}
+                            >
+                                <Typography
+                                    component="span"
+                                    sx={{
+                                        fontSize:
+                                        {
+                                            xs: 7,
+                                            sm: 8,
+                                            md: 9,
+                                        },
+
+                                        fontWeight:
+                                            900,
+
+                                        letterSpacing:
+                                            0.7,
+                                    }}
+                                >
+                                    {isPaused
+                                        ? "PLAY"
+                                        : "PAUSE"}
+                                </Typography>
+                            </IconButton>
+
+                            {/* =================================================
+                                NEXT
+                            ================================================= */}
+
+                            <IconButton
+                                onClick={
+                                    handleNext
+                                }
+                                disabled={
+                                    isFinalScene
+                                }
+                                aria-label="Next scene"
+                                sx={{
+                                    width: {
+                                        xs: 36,
+                                        sm: 42,
+                                        md: 46,
+                                    },
+
+                                    height: {
+                                        xs: 36,
+                                        sm: 42,
+                                        md: 46,
+                                    },
+
+                                    flexShrink:
+                                        0,
+
+                                    border:
+                                        "1px solid #ff5c35",
+
+                                    backgroundColor:
+                                        "rgba(255,92,53,0.08)",
+
+                                    color:
+                                        "#ff5c35",
+
+                                    transition:
+                                        "all 180ms ease",
+
+                                    "&:hover":
+                                    {
+                                        backgroundColor:
+                                            "#ff5c35",
+
+                                        color:
+                                            "#fff",
+
+                                        transform:
+                                            "translateY(2px)",
+                                    },
+
+                                    "&.Mui-disabled":
+                                    {
+                                        opacity:
+                                            0.25,
+
+                                        color:
+                                            "#ff5c35",
+
+                                        borderColor:
+                                            "#ff5c35",
+                                    },
+                                }}
+                            >
+                                <ArrowForwardIosRoundedIcon
+                                    sx={{
+                                        fontSize:
+                                        {
+                                            xs: 12,
+                                            sm: 14,
+                                            md: 15,
+                                        },
+                                    }}
+                                />
+                            </IconButton>
+                        </Box>
                     </Box>
 
                     {/* =================================================
                         FINAL CTA
                     ================================================= */}
 
-                    {scene.id === "journey" && (
+                    {isFinalScene && (
                         <Button
-                            onClick={handleStart}
+                            onClick={
+                                handleHowGrindWorks
+                            }
                             variant="contained"
                             sx={{
-                                mt: 3,
-                                px: 4,
-                                py: 1.4,
-                                borderRadius: 0,
-                                backgroundColor: "#ff5c35",
-                                color: "#fff",
-                                fontSize: 9,
-                                fontWeight: 900,
-                                letterSpacing: 1.5,
-                                boxShadow: "none",
-                                "&:hover": {
-                                    backgroundColor: "#ff5c35",
-                                    boxShadow: "none",
+                                mt: {
+                                    xs: 2.5,
+                                    md: 3,
+                                },
+
+                                px: {
+                                    xs: 3,
+                                    sm: 4,
+                                },
+
+                                py: {
+                                    xs: 1,
+                                    sm: 1.2,
+                                },
+
+                                borderRadius:
+                                    0,
+
+                                backgroundColor:
+                                    "#ff5c35",
+
+                                color:
+                                    "#fff",
+
+                                fontSize: {
+                                    xs: 9,
+                                    sm: 10,
+                                },
+
+                                fontWeight:
+                                    900,
+
+                                letterSpacing:
+                                    1.5,
+
+                                boxShadow:
+                                    "none",
+
+                                "&:hover":
+                                {
+                                    backgroundColor:
+                                        "#ff5c35",
+
+                                    boxShadow:
+                                        "none",
                                 },
                             }}
                         >
-                            START YOUR JOURNEY
+                            HOW GRIND WORKS
                         </Button>
                     )}
                 </Box>
             </Box>
 
             {/* =====================================================
-                BOTTOM CONTROLS
+                PROGRESS
             ===================================================== */}
 
             <Box
                 sx={{
-                    position: "relative",
+                    position:
+                        "relative",
+
                     zIndex: 2,
+
                     px: {
                         xs: 2,
                         sm: 3,
                         md: 5,
                     },
+
                     pb: {
                         xs: 1.5,
                         md: 2.5,
                     },
+
                     flexShrink: 0,
                 }}
             >
-                {/* Progress bars */}
                 <Box
                     sx={{
-                        display: "flex",
+                        display:
+                            "flex",
+
                         gap: 0.5,
+
                         mb: 1.5,
                     }}
                 >
-                    {SCENES.map((item, index) => (
-                        <Box
-                            key={item.id}
-                            sx={{
-                                height: 2,
-                                flex: 1,
-                                backgroundColor:
-                                    index <= sceneIndex
-                                        ? "#ff5c35"
-                                        : "#292929",
-                                transition:
-                                    "background-color 300ms ease",
-                            }}
-                        />
-                    ))}
+                    {SCENES.map(
+                        (
+                            item,
+                            index
+                        ) => (
+                            <Box
+                                key={
+                                    item.id
+                                }
+                                sx={{
+                                    height: 2,
+
+                                    flex: 1,
+
+                                    backgroundColor:
+                                        index <=
+                                            sceneIndex
+                                            ? "#ff5c35"
+                                            : "#292929",
+
+                                    transition:
+                                        "background-color 300ms ease",
+                                }}
+                            />
+                        )
+                    )}
                 </Box>
 
-                {/* Controls row */}
                 <Box
                     sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
+                        display:
+                            "flex",
+
+                        alignItems:
+                            "center",
+
+                        justifyContent:
+                            "space-between",
                     }}
                 >
                     <Typography
                         sx={{
-                            color: "#5e5a57",
+                            color:
+                                "#5e5a57",
+
                             fontSize: 9,
-                            fontFamily: "monospace",
+
+                            fontFamily:
+                                "monospace",
+
                             minWidth: 50,
                         }}
                     >
-                        {String(sceneIndex + 1).padStart(2, "0")} /{" "}
-                        {String(SCENES.length).padStart(2, "0")}
+                        {String(
+                            sceneIndex + 1
+                        ).padStart(
+                            2,
+                            "0"
+                        )}{" "}
+                        /{" "}
+                        {String(
+                            SCENES.length
+                        ).padStart(
+                            2,
+                            "0"
+                        )}
                     </Typography>
 
-                    <Box
+                    <Typography
                         sx={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: {
-                                xs: 0.2,
-                                sm: 0.8,
-                            },
+                            color:
+                                "#3d3a38",
+
+                            fontSize: 8,
+
+                            letterSpacing:
+                                1,
+
+                            textTransform:
+                                "uppercase",
                         }}
                     >
-                        <Button
-                            onClick={handlePrevious}
-                            disabled={sceneIndex === 0}
-                            sx={controlButtonStyles}
-                        >
-                            PREVIOUS
-                        </Button>
-
-                        <Button
-                            onClick={handlePauseToggle}
-                            sx={{
-                                ...controlButtonStyles,
-                                color: isPaused
-                                    ? "#ff5c35"
-                                    : "#777",
-                            }}
-                        >
-                            {isPaused ? "PLAY" : "PAUSE"}
-                        </Button>
-
-                        <Button
-                            onClick={handleNext}
-                            disabled={
-                                sceneIndex ===
-                                SCENES.length - 1
-                            }
-                            sx={controlButtonStyles}
-                        >
-                            NEXT
-                        </Button>
-                    </Box>
+                        {scene.id}
+                    </Typography>
                 </Box>
             </Box>
         </Box>
@@ -859,58 +1692,93 @@ const DashboardPreview = ({
     return (
         <Box
             sx={{
-                width: "100%",
-                maxWidth: 900,
-                height: {
-                    xs: 190,
-                    sm: 250,
-                    md: 320,
-                },
-                border: "1px solid #282828",
-                borderRadius: {
-                    xs: 1,
-                    md: 2,
-                },
-                backgroundColor: "#101010",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
+                width:
+                    "100%",
+
+                height:
+                    "100%",
+
+                minHeight:
+                    "100%",
+
+                backgroundColor:
+                    "#101010",
+
+                display:
+                    "flex",
+
+                flexDirection:
+                    "column",
+
+                alignItems:
+                    "center",
+
+                justifyContent:
+                    "center",
+
                 px: 3,
-                position: "relative",
-                overflow: "hidden",
+
+                position:
+                    "relative",
+
+                overflow:
+                    "hidden",
             }}
         >
             {/* Background grid */}
+
             <Box
                 sx={{
-                    position: "absolute",
+                    position:
+                        "absolute",
+
                     inset: 0,
+
                     opacity: 0.35,
+
                     backgroundImage:
                         "linear-gradient(#252525 1px, transparent 1px), linear-gradient(90deg, #252525 1px, transparent 1px)",
-                    backgroundSize: "40px 40px",
+
+                    backgroundSize:
+                        "40px 40px",
                 }}
             />
 
             {/* Animated glow */}
+
             <Box
                 sx={{
-                    position: "absolute",
+                    position:
+                        "absolute",
+
                     width: 180,
+
                     height: 180,
-                    borderRadius: "50%",
+
+                    borderRadius:
+                        "50%",
+
                     background:
                         "radial-gradient(circle, rgba(255,92,53,0.12) 0%, rgba(255,92,53,0) 70%)",
+
                     animation:
                         "previewGlow 3s ease-in-out infinite",
-                    "@keyframes previewGlow": {
-                        "0%, 100%": {
-                            transform: "scale(0.9)",
+
+                    "@keyframes previewGlow":
+                    {
+                        "0%, 100%":
+                        {
+                            transform:
+                                "scale(0.9)",
+
                             opacity: 0.6,
                         },
-                        "50%": {
-                            transform: "scale(1.15)",
+
+                        "50%":
+                        {
+                            transform:
+                                "scale(1.15)",
+
                             opacity: 1,
                         },
                     },
@@ -918,22 +1786,34 @@ const DashboardPreview = ({
             />
 
             {/* Content */}
+
             <Box
                 sx={{
-                    position: "relative",
+                    position:
+                        "relative",
+
                     zIndex: 1,
-                    textAlign: "center",
+
+                    textAlign:
+                        "center",
                 }}
             >
                 <Typography
                     sx={{
-                        color: "#ff5c35",
+                        color:
+                            "#ff5c35",
+
                         fontSize: {
                             xs: 8,
                             md: 9,
                         },
-                        fontWeight: 900,
-                        letterSpacing: 1.5,
+
+                        fontWeight:
+                            900,
+
+                        letterSpacing:
+                            1.5,
+
                         mb: 1,
                     }}
                 >
@@ -942,13 +1822,19 @@ const DashboardPreview = ({
 
                 <Typography
                     sx={{
-                        color: "#777",
+                        color:
+                            "#777",
+
                         fontSize: {
                             xs: 10,
                             md: 12,
                         },
-                        maxWidth: 400,
-                        lineHeight: 1.6,
+
+                        maxWidth:
+                            400,
+
+                        lineHeight:
+                            1.6,
                     }}
                 >
                     {description}
@@ -956,29 +1842,6 @@ const DashboardPreview = ({
             </Box>
         </Box>
     );
-};
-
-/* ===============================================================
-   CONTROL STYLES
-================================================================ */
-
-const controlButtonStyles = {
-    minWidth: 0,
-    px: {
-        xs: 0.7,
-        sm: 1,
-    },
-    color: "#777",
-    fontSize: 8,
-    fontWeight: 800,
-    letterSpacing: 1,
-    "&:hover": {
-        color: "#fff",
-        backgroundColor: "transparent",
-    },
-    "&.Mui-disabled": {
-        color: "#292929",
-    },
 };
 
 export default GrindWalkthrough;

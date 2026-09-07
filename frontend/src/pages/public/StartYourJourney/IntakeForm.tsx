@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Box, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import api from "../../../services/api";
 
 import PersonalSection from "./PersonalSection";
 import BodyMetricsSection from "./BodyMetricsSection";
@@ -56,16 +57,10 @@ const IntakeForm = () => {
         diet: formData.dietaryPreference
       };
 
-      const response = await fetch("http://localhost:8001/api/v1/intake", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await api.post("/intake", payload);
 
-      if (response.ok) {
-        const result = await response.json();
+      if (response.status === 200 || response.status === 201) {
+        const result = response.data;
         if (result.success) {
           navigate("/submission-success");
         } else {

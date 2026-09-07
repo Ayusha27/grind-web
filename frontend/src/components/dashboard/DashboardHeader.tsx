@@ -70,7 +70,7 @@ const DashboardHeader = () => {
   const {
     completedSets,
     totalSets,
-    completedDays,
+    loggedDays,
     totalDays,
     calories,
   } = stats;
@@ -258,8 +258,8 @@ const DashboardHeader = () => {
         />
 
         <HeaderStat
-          value={`${completedDays}/${totalDays}`}
-          label="DAYS DONE"
+          value={`${loggedDays}/${totalDays}`}
+          label="DAYS LOGGED"
         />
 
         <HeaderStat

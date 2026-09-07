@@ -10,9 +10,16 @@ import EmojiEventsOutlinedIcon from "@mui/icons-material/EmojiEventsOutlined";
 
 interface ProgressSummaryCardsProps {
   monthScore: number;
-  sessionsCompleted: number;
+
+  sessionsLogged: number;
   totalSessions: number;
+
+  setsCompleted: number;
+  setsTotal: number;
+
   caloriesBurned: number;
+  avgCaloriesPerSession: number;
+
   activeWeeks: number;
   totalWeeks: number;
   bestWeekScore: number;
@@ -168,9 +175,16 @@ const Metric = ({
 
 const ProgressSummaryCards = ({
   monthScore,
-  sessionsCompleted,
+
+  sessionsLogged,
   totalSessions,
+
+  setsCompleted,
+  setsTotal,
+
   caloriesBurned,
+  avgCaloriesPerSession,
+
   activeWeeks,
   totalWeeks,
   bestWeekScore,
@@ -180,17 +194,38 @@ const ProgressSummaryCards = ({
     Math.max(0, monthScore)
   );
 
-  const safeSessions =
-    Math.max(0, sessionsCompleted);
+  const safeSessionsLogged =
+    Math.max(0, sessionsLogged);
 
   const safeTotalSessions =
     Math.max(0, totalSessions);
+
+  const safeSetsCompleted =
+    Math.max(0, setsCompleted);
+
+  const safeSetsTotal =
+    Math.max(0, setsTotal);
+
+  const safeCalories =
+    Math.max(0, caloriesBurned);
+
+  const safeAvgCalories =
+    Math.max(
+      0,
+      avgCaloriesPerSession
+    );
 
   const safeActiveWeeks =
     Math.max(0, activeWeeks);
 
   const safeTotalWeeks =
     Math.max(0, totalWeeks);
+
+  const safeBestWeekScore =
+    Math.min(
+      100,
+      Math.max(0, bestWeekScore)
+    );
 
   /*
    * SVG CIRCLE
@@ -199,13 +234,14 @@ const ProgressSummaryCards = ({
    */
 
   const radius = 47;
+
   const circumference =
     2 * Math.PI * radius;
 
   const dashOffset =
     circumference -
     (safeScore / 100) *
-      circumference;
+    circumference;
 
   return (
     <Box
@@ -248,13 +284,6 @@ const ProgressSummaryCards = ({
           boxShadow:
             "0 5px 18px rgba(26,23,20,.14)",
 
-          /*
-           * Desktop:
-           * score + metrics all in one row.
-           *
-           * Mobile:
-           * score remains on top.
-           */
           display: {
             xs: "block",
             md: "flex",
@@ -454,7 +483,7 @@ const ProgressSummaryCards = ({
                 color: "#f1f1f1",
               }}
             >
-              {safeSessions}/
+              {safeSessionsLogged}/
               {safeTotalSessions} sessions
             </Typography>
 
@@ -527,7 +556,7 @@ const ProgressSummaryCards = ({
             },
           }}
         >
-          {/* WORKOUTS */}
+          {/* SETS DONE */}
 
           <Metric
             icon={
@@ -537,9 +566,9 @@ const ProgressSummaryCards = ({
                 }}
               />
             }
-            value={safeSessions}
-            title="Workouts Done"
-            subtitle={`Out of ${safeTotalSessions} planned`}
+            value={safeSetsCompleted}
+            title="Sets Done"
+            subtitle={`Out of ${safeSetsTotal} planned`}
           />
 
           {/* DIVIDER */}
@@ -570,9 +599,9 @@ const ProgressSummaryCards = ({
                 }}
               />
             }
-            value={caloriesBurned}
+            value={safeCalories}
             title="Calories Burned"
-            subtitle={`Avg ${caloriesBurned} kcal/session`}
+            subtitle={`Avg ${safeAvgCalories} kcal/session`}
           />
 
           {/* DIVIDER */}
@@ -606,10 +635,7 @@ const ProgressSummaryCards = ({
             value={`${safeActiveWeeks}/${safeTotalWeeks}`}
             title="Active Weeks"
             subtitle={`Best: ${Math.round(
-              Math.max(
-                0,
-                bestWeekScore
-              )
+              safeBestWeekScore
             )}% week score`}
             accent
           />

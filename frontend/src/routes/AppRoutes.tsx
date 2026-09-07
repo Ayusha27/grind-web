@@ -16,11 +16,13 @@ import Workout from "../pages/client/dashboard/Workout";
 import Diet from "../pages/client/dashboard/Diet";
 import Progress from "../pages/client/dashboard/Progress";
 import GrindWalkthrough from "../pages/public/GrindWalkthrough/GrindWalkthrough";
+import GlobalLoader from "../components/common/GlobalLoader";
 
 const AppRoutes = () => {
   console.log("🔥 APP ROUTES IS RENDERING");
   return (
     <BrowserRouter>
+      <GlobalLoader />
       <ScrollToHash />
 
       <Routes>

@@ -30,6 +30,15 @@ export interface WorkoutDay {
 }
 
 export interface BackendWorkoutExercise {
+  /**
+   * Real database exercise ID.
+   *
+   * Example:
+   * 705 = Barbell Bench Press
+   * 706 = Incline Dumbbell Press
+   */
+  id: number;
+
   name: string;
   sets: number;
   reps: string;

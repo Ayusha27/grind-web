@@ -10,6 +10,10 @@ import {
   Stack,
 } from "@mui/material";
 
+import {
+  useOutletContext,
+} from "react-router-dom";
+
 import ProgressStats from "../../../components/progress/ProgressStats";
 import ProgressTrackerHeader from "../../../components/progress/ProgressTrackerHeader";
 import ProgressSummaryCards from "../../../components/progress/ProgressSummaryCards";
@@ -24,6 +28,44 @@ import { getProgress } from "../../../api/dashboardApi";
 
 import type { ProgressResponse } from "../../../types/progress";
 
+/* =========================================================
+   DASHBOARD OUTLET CONTEXT
+========================================================= */
+
+interface DashboardOutletContext {
+  month: number;
+  week: number;
+  periodResetKey: number;
+  onMonthChange: (month: number) => void;
+  onWeekChange: (week: number) => void;
+}
+
+/* =========================================================
+   DASHBOARD EXERCISE
+========================================================= */
+
+interface DashboardExercise {
+  id: number;
+  name?: string;
+  exercise_name?: string;
+  sets?: number;
+  reps?: number | string;
+}
+
+/* =========================================================
+   DASHBOARD DAY
+========================================================= */
+
+interface DashboardDay {
+  id: number;
+  label: string;
+  exercises: DashboardExercise[];
+}
+
+/* =========================================================
+   DAY BREAKDOWN
+========================================================= */
+
 interface ProgressDay {
   day: number;
   name: string;
@@ -32,25 +74,182 @@ interface ProgressDay {
   calories: number | null;
 }
 
+/* =========================================================
+   MONTH DATA
+========================================================= */
+
+interface MonthProgress {
+  month_no: number;
+
+  sessions_completed: number;
+  sessions_logged: number;
+  sessions_total: number;
+  percent: number;
+
+  calories_burned: number;
+  avg_calories_per_session: number;
+
+  active_weeks: number;
+  weeks_logged: number;
+  weeks_completed: number;
+
+  best_week_score: number;
+
+  workouts: number;
+  calories: number;
+  score: number;
+
+  sets_total: number;
+  sets_completed: number;
+}
+
+/* =========================================================
+   EXTENDED PROGRESS DATA
+========================================================= */
+
+interface ExtendedProgressData {
+  sessions?: {
+    total: number;
+    logged: number;
+    completed: number;
+    percent: number;
+  };
+
+  exercises?: {
+    total: number;
+    completed: number;
+    percent: number;
+  };
+
+  calories_burned: number;
+  avg_calories_per_session: number;
+
+  active_weeks: number;
+  weeks_total: number;
+  best_week_score: number;
+
+  weekly_detail: Record<
+    string,
+    Record<
+      string,
+      Record<
+        string,
+        {
+          completed: boolean;
+          logged: boolean;
+          completion_percent: number;
+          calories_burned: number;
+          total_sets: number;
+          completed_sets: number;
+        }
+      >
+    >
+  >;
+
+  plan: {
+    workouts_per_week: number;
+    weeks_per_month: number;
+    sessions_per_month: number;
+    months: number;
+    sessions_total: number;
+  };
+
+  month: MonthProgress;
+
+  months?: Record<
+    string,
+    MonthProgress
+  >;
+
+  overall: {
+    sessions_completed: number;
+    sessions_logged: number;
+    sessions_total: number;
+    percent: number;
+
+    calories_burned: number;
+    avg_calories_per_session: number;
+
+    active_weeks: number;
+    best_week_score: number;
+    months_tracked: number;
+  };
+
+  sets: {
+    total: number;
+    completed: number;
+    percent: number;
+  };
+
+  current: unknown;
+
+  transformation: {
+    weight_lost: number;
+    waist_reduced: number;
+  };
+
+  chart: {
+    dates: string[];
+    weights: number[];
+    waists: number[];
+  };
+}
+
+/* =========================================================
+   EMPTY MONTH
+========================================================= */
+
+const EMPTY_MONTH: MonthProgress = {
+  month_no: 1,
+
+  sessions_completed: 0,
+  sessions_logged: 0,
+  sessions_total: 0,
+  percent: 0,
+
+  calories_burned: 0,
+  avg_calories_per_session: 0,
+
+  active_weeks: 0,
+  weeks_logged: 0,
+  weeks_completed: 0,
+
+  best_week_score: 0,
+
+  workouts: 0,
+  calories: 0,
+  score: 0,
+
+  sets_total: 0,
+  sets_completed: 0,
+};
+
+/* =========================================================
+   COMPONENT
+========================================================= */
+
 const Progress = () => {
-  const { dashboard } = useDashboard();
+  const {
+    month,
+    week,
+    periodResetKey,
+    onMonthChange,
+    onWeekChange,
+  } =
+    useOutletContext<DashboardOutletContext>();
 
-  /*
-   * =========================================================
-   * MONTH / WEEK
-   * =========================================================
-   */
+  const {
+    dashboard,
+  } = useDashboard();
 
-  const [selectedMonth, setSelectedMonth] = useState(1);
-  const [selectedWeek, setSelectedWeek] = useState(1);
+  /* =========================================================
+     WEIGHTS
+  ========================================================= */
 
-  /*
-   * =========================================================
-   * WEEKLY WEIGHTS
-   * =========================================================
-   */
-
-  const [weights, setWeights] = useState<
+  const [
+    weights,
+    setWeights,
+  ] = useState<
     Record<number, number | null>
   >({
     1: null,
@@ -59,23 +258,26 @@ const Progress = () => {
     4: null,
   });
 
-  /*
-   * =========================================================
-   * BACKEND PROGRESS
-   * =========================================================
-   */
+  /* =========================================================
+     PROGRESS API STATE
+  ========================================================= */
 
-  const [progress, setProgress] =
-    useState<ProgressResponse | null>(null);
+  const [
+    progress,
+    setProgress,
+  ] =
+    useState<ProgressResponse | null>(
+      null
+    );
 
-  const [progressLoading, setProgressLoading] =
-    useState(true);
+  const [
+    progressLoading,
+    setProgressLoading,
+  ] = useState(true);
 
-  /*
-   * =========================================================
-   * LOAD PROGRESS
-   * =========================================================
-   */
+  /* =========================================================
+     LOAD PROGRESS
+  ========================================================= */
 
   useEffect(() => {
     let mounted = true;
@@ -84,7 +286,8 @@ const Progress = () => {
       try {
         setProgressLoading(true);
 
-        const response = await getProgress();
+        const response =
+          await getProgress();
 
         if (!mounted) {
           return;
@@ -112,127 +315,109 @@ const Progress = () => {
     };
   }, []);
 
-  /*
-   * =========================================================
-   * BACKEND DAYS
-   * =========================================================
-   */
+  /* =========================================================
+     PROGRESS DATA
+  ========================================================= */
 
-  const backendDays = dashboard?.days ?? [];
+  const progressData =
+    progress?.data as
+    | ExtendedProgressData
+    | undefined;
 
-  /*
-   * =========================================================
-   * OVERALL PROGRESS
-   * =========================================================
-   */
+  /* =========================================================
+     DASHBOARD DAYS
+  ========================================================= */
 
-  const totalExercises =
-    progress?.data?.exercises?.total ?? 0;
+  const backendDays =
+    (dashboard?.days ??
+      []) as DashboardDay[];
 
-  const completedExercises =
-    progress?.data?.exercises?.completed ?? 0;
-
-  const overallProgress =
-    progress?.data?.exercises?.percent ?? 0;
-
-  /*
-   * =========================================================
-   * TOTAL CALORIES
-   * =========================================================
-   */
-
-  const totalCaloriesBurned =
-    progress?.data?.calories_burned ?? 0;
-
-  /*
-   * =========================================================
-   * BACKEND WEEKLY DETAIL
-   * =========================================================
-   *
-   * Structure:
-   *
-   * month
-   *   └── week
-   *        └── day
-   */
+  /* =========================================================
+     WEEKLY DETAIL
+  ========================================================= */
 
   const weeklyDetail =
-    progress?.data?.weekly_detail ?? {};
+    progressData?.weekly_detail ??
+    {};
 
-  /*
-   * =========================================================
-   * BACKEND CALCULATED WEEK METRICS
-   * =========================================================
-   */
-
-  const activeWeeks =
-    progress?.data?.active_weeks ?? 0;
-
-  const bestWeekScore =
-    progress?.data?.best_week_score ?? 0;
-
-  /*
-   * =========================================================
-   * SELECTED MONTH / WEEK DETAIL
-   * =========================================================
-   */
+  /* =========================================================
+     SELECTED MONTH DETAIL
+  ========================================================= */
 
   const selectedMonthDetail =
-    weeklyDetail[String(selectedMonth)] ?? {};
+    weeklyDetail[
+    String(month)
+    ] ?? {};
+
+  /* =========================================================
+     SELECTED WEEK DETAIL
+  ========================================================= */
 
   const selectedWeekDetail =
-    selectedMonthDetail[String(selectedWeek)] ?? {};
+    selectedMonthDetail[
+    String(week)
+    ] ?? {};
 
-  /*
-   * =========================================================
-   * DAY BREAKDOWN
-   * =========================================================
-   */
+  /* =========================================================
+     DAY BREAKDOWN
+  ========================================================= */
 
-  const selectedWeekDays = useMemo<
-    ProgressDay[]
-  >(() => {
-    return backendDays.map((day) => {
-      const dayDetail =
-        selectedWeekDetail[String(day.id)];
+  const selectedWeekDays =
+    useMemo<ProgressDay[]>(
+      () => {
+        return backendDays.map(
+          (
+            day: DashboardDay
+          ) => {
+            const dayDetail =
+              selectedWeekDetail[
+              String(day.id)
+              ];
 
-      return {
-        day: day.id,
+            return {
+              day: day.id,
 
-        name: day.label,
+              name: day.label,
 
-        type: day.label,
+              type: day.label,
 
-        completion:
-          dayDetail?.completion_percent ??
-          null,
+              completion:
+                dayDetail
+                  ?.completion_percent ??
+                null,
 
-        calories:
-          dayDetail?.calories_burned ??
-          null,
-      };
-    });
-  }, [
-    backendDays,
-    selectedWeekDetail,
-  ]);
+              calories:
+                dayDetail
+                  ?.calories_burned ??
+                null,
+            };
+          }
+        );
+      },
+      [
+        backendDays,
+        selectedWeekDetail,
+      ]
+    );
 
-  /*
-   * =========================================================
-   * WEEK SESSIONS COMPLETED
-   * =========================================================
-   *
-   * A session is counted when the backend
-   * marks that workout day as completed.
-   */
+  /* =========================================================
+     WEEK SESSIONS COMPLETED
+     
+     This is kept separate from logged sessions.
+
+     `completed` means the workout reached 100%.
+  ========================================================= */
 
   const weekSessionsCompleted =
     useMemo(() => {
       return backendDays.reduce(
-        (count, day) => {
+        (
+          count: number,
+          day: DashboardDay
+        ) => {
           const dayDetail =
             selectedWeekDetail[
-              String(day.id)
+            String(day.id)
             ];
 
           return dayDetail?.completed === true
@@ -246,34 +431,67 @@ const Progress = () => {
       selectedWeekDetail,
     ]);
 
-  /*
-   * =========================================================
-   * WEEK TOTAL SESSIONS
-   * =========================================================
-   */
+  /* =========================================================
+     WEEK SESSIONS LOGGED
+     
+     Attendance rule:
+
+     A session counts as logged when the user
+     logs at least one set.
+  ========================================================= */
+
+  const weekSessionsLogged =
+    useMemo(() => {
+      return backendDays.reduce(
+        (
+          count: number,
+          day: DashboardDay
+        ) => {
+          const dayDetail =
+            selectedWeekDetail[
+            String(day.id)
+            ];
+
+          return dayDetail?.logged === true
+            ? count + 1
+            : count;
+        },
+        0
+      );
+    }, [
+      backendDays,
+      selectedWeekDetail,
+    ]);
+
+  /* =========================================================
+     WEEK TOTAL SESSIONS
+  ========================================================= */
 
   const weekTotalSessions =
     backendDays.length;
 
-  /*
-   * =========================================================
-   * WEEK CALORIES
-   * =========================================================
-   */
+  /* =========================================================
+     WEEK CALORIES
+  ========================================================= */
 
   const weekCaloriesBurned =
     useMemo(() => {
       return backendDays.reduce(
-        (total, day) => {
+        (
+          total: number,
+          day: DashboardDay
+        ) => {
           const dayDetail =
             selectedWeekDetail[
-              String(day.id)
+            String(day.id)
             ];
 
           return (
             total +
             Number(
-              dayDetail?.calories_burned ?? 0
+              dayDetail
+                ?.calories_burned ??
+              0
             )
           );
         },
@@ -284,138 +502,361 @@ const Progress = () => {
       selectedWeekDetail,
     ]);
 
-  /*
-   * =========================================================
-   * WEEK SCORE
-   * =========================================================
-   */
+  /* =========================================================
+     WEEK SCORE
+     
+     IMPORTANT:
+
+     Week score is based on ATTENDANCE.
+
+     1 logged session / 5 = 20%
+     3 logged sessions / 5 = 60%
+     5 logged sessions / 5 = 100%
+
+     It does NOT require a workout to be 100% complete.
+  ========================================================= */
 
   const weekScore =
     weekTotalSessions > 0
       ? Math.round(
-          (weekSessionsCompleted /
-            weekTotalSessions) *
-            100
-        )
+        (weekSessionsLogged /
+          weekTotalSessions) *
+        100
+      )
       : 0;
 
-  /*
-   * =========================================================
-   * CURRENT WEIGHT
-   * =========================================================
-   */
+  /* =========================================================
+     SELECTED MONTH DATA
+  ========================================================= */
 
-  const currentWeight = useMemo(() => {
-    const enteredWeeks =
-      Object.entries(weights)
-        .filter(
-          ([, weight]) =>
-            weight !== null &&
-            weight !== undefined &&
-            Number.isFinite(weight)
-        )
-        .map(
-          ([week, weight]) => ({
-            week: Number(week),
-            weight: weight as number,
-          })
-        )
-        .sort(
-          (a, b) =>
-            b.week - a.week
+  const selectedMonthData =
+    progressData?.months?.[
+    String(month)
+    ] ??
+    progressData?.month ??
+    {
+      ...EMPTY_MONTH,
+      month_no: month,
+    };
+
+  /* =========================================================
+     MONTH LOGGED SESSIONS
+  ========================================================= */
+
+  const monthSessionsLogged =
+    selectedMonthData
+      .sessions_logged ?? 0;
+
+  /* =========================================================
+     MONTH TOTAL SESSIONS
+  ========================================================= */
+
+  const monthTotalSessions =
+    selectedMonthData
+      .sessions_total ??
+    progressData?.plan
+      ?.sessions_per_month ??
+    0;
+
+  /* =========================================================
+     MONTH SCORE
+     
+     ATTENDANCE BASED:
+
+     logged sessions / planned sessions
+
+     Current example:
+
+     1 / 20 = 5%
+  ========================================================= */
+
+  const monthScore =
+    monthTotalSessions > 0
+      ? Math.round(
+        (monthSessionsLogged /
+          monthTotalSessions) *
+        100
+      )
+      : 0;
+
+  /* =========================================================
+     MONTH SETS
+     
+     This is the total planned/completed sets
+     across the selected month.
+
+     For Month 1:
+
+     29 / 139
+  ========================================================= */
+
+  const calculatedMonthTotalSets =
+    useMemo(() => {
+      return backendDays.reduce(
+        (
+          total: number,
+          day: DashboardDay
+        ) => {
+          return (
+            total +
+            day.exercises.reduce(
+              (
+                dayTotal: number,
+                exercise: DashboardExercise
+              ) => {
+                return (
+                  dayTotal +
+                  Number(
+                    exercise.sets ?? 0
+                  )
+                );
+              },
+              0
+            )
+          );
+        },
+        0
+      );
+    }, [backendDays]);
+
+  const monthSetsTotal =
+    selectedMonthData
+      .sets_total ??
+    calculatedMonthTotalSets;
+
+  const monthSetsCompleted =
+    selectedMonthData
+      .sets_completed ??
+    0;
+
+  /* =========================================================
+     MONTH CALORIES
+  ========================================================= */
+
+  const monthCaloriesBurned =
+    selectedMonthData
+      .calories_burned ?? 0;
+
+  /* =========================================================
+     MONTH AVERAGE CALORIES
+  ========================================================= */
+
+  const monthAvgCaloriesPerSession =
+    selectedMonthData
+      .avg_calories_per_session ??
+    0;
+
+  /* =========================================================
+     MONTH ACTIVE WEEKS
+  ========================================================= */
+
+  const monthActiveWeeks =
+    selectedMonthData
+      .active_weeks ??
+    0;
+
+  /* =========================================================
+     BEST WEEK SCORE
+     
+     Attendance based.
+     
+     Example:
+
+     Week 1 = 1/5 = 20%
+     Week 2 = 1/5 = 20%
+     Week 3 = 3/5 = 60%
+
+     Best = 60%
+  ========================================================= */
+
+  const monthBestWeekScore =
+    selectedMonthData
+      .best_week_score ??
+    progressData?.best_week_score ??
+    0;
+
+  /* =========================================================
+     WEIGHT CHANGE
+  ========================================================= */
+
+  const handleWeightChange = (
+    weekNumber: number,
+    value: number | null
+  ) => {
+    setWeights(
+      (
+        previous: Record<
+          number,
+          number | null
+        >
+      ) => ({
+        ...previous,
+        [weekNumber]: value,
+      })
+    );
+  };
+
+  /* =========================================================
+     CURRENT WEIGHT
+  ========================================================= */
+
+  const currentWeight =
+    useMemo(() => {
+      const enteredWeeks =
+        Object.entries(weights)
+          .filter(
+            (
+              entry: [
+                string,
+                number | null
+              ]
+            ) =>
+              entry[1] !== null &&
+              entry[1] !== undefined &&
+              Number.isFinite(
+                entry[1]
+              )
+          )
+          .map(
+            (
+              entry: [
+                string,
+                number | null
+              ]
+            ) => ({
+              week: Number(
+                entry[0]
+              ),
+
+              weight:
+                entry[1] as number,
+            })
+          )
+          .sort(
+            (
+              a: {
+                week: number;
+                weight: number;
+              },
+              b: {
+                week: number;
+                weight: number;
+              }
+            ) =>
+              b.week - a.week
+          );
+
+      return (
+        enteredWeeks[0]
+          ?.weight ?? null
+      );
+    }, [weights]);
+
+  /* =========================================================
+     STARTING WEIGHT
+  ========================================================= */
+
+  const startingWeight =
+    useMemo(() => {
+      const value =
+        dashboard?.diet
+          ?.current_weight;
+
+      if (!value) {
+        return null;
+      }
+
+      const match =
+        String(value).match(
+          /-?\d+(?:\.\d+)?/
         );
 
-    return (
-      enteredWeeks[0]?.weight ??
-      null
-    );
-  }, [weights]);
+      return match
+        ? Number(match[0])
+        : null;
+    }, [dashboard]);
 
-  /*
-   * =========================================================
-   * STARTING WEIGHT
-   * =========================================================
-   */
-
-  const startingWeight = useMemo(() => {
-    const value =
-      dashboard?.diet?.current_weight;
-
-    if (!value) {
-      return null;
-    }
-
-    const match =
-      String(value).match(
-        /-?\d+(?:\.\d+)?/
-      );
-
-    return match
-      ? Number(match[0])
-      : null;
-  }, [dashboard]);
-
-  /*
-   * =========================================================
-   * HEIGHT / BMI
-   * =========================================================
-   */
-
-  const height =
-    dashboard?.diet?.height ?? null;
-
-  const bmi =
-    dashboard?.diet?.bmi ?? null;
-
-  /*
-   * =========================================================
-   * WEIGHT CHANGE
-   * =========================================================
-   */
+  /* =========================================================
+     WEIGHT CHANGE
+  ========================================================= */
 
   const weightChange =
     startingWeight !== null &&
       currentWeight !== null
       ? currentWeight -
-        startingWeight
+      startingWeight
       : null;
 
-  /*
-   * =========================================================
-   * MONTH CHANGE
-   * =========================================================
-   */
+  /* =========================================================
+     HEIGHT / BMI
+  ========================================================= */
 
-  const handleMonthChange = (
-    month: number
-  ) => {
-    setSelectedMonth(month);
-    setSelectedWeek(1);
-  };
+  const height =
+    dashboard?.diet?.height ??
+    null;
 
-  /*
-   * =========================================================
-   * WEIGHT CHANGE
-   * =========================================================
-   */
+  const bmi =
+    dashboard?.diet?.bmi ??
+    null;
 
-  const handleWeightChange = (
-    week: number,
-    value: number | null
-  ) => {
-    setWeights((previous) => ({
-      ...previous,
-      [week]: value,
-    }));
-  };
+  /* =========================================================
+     THREE MONTH OVERVIEW
+     
+     Month overview uses LOGGED sessions
+     because workouts represent attendance.
+  ========================================================= */
 
-  /*
-   * =========================================================
-   * LOADING
-   * =========================================================
-   */
+  const threeMonthData =
+    useMemo(() => {
+      const months =
+        progressData?.months ??
+        {};
 
-  if (!dashboard || progressLoading) {
+      return [1, 2, 3].map(
+        (
+          monthNumber: number
+        ) => {
+          const monthData =
+            months[
+            String(monthNumber)
+            ];
+
+          return {
+            month:
+              `M${monthNumber}`,
+
+            workouts:
+              monthData
+                ?.sessions_logged ??
+              monthData?.workouts ??
+              0,
+
+            calories:
+              monthData
+                ?.calories ??
+              monthData
+                ?.calories_burned ??
+              0,
+
+            score:
+              monthData
+                ?.score ??
+              monthData
+                ?.percent ??
+              0,
+          };
+        }
+      );
+    }, [progressData]);
+
+  /* =========================================================
+     LOADING
+  ========================================================= */
+
+  if (
+    !dashboard ||
+    progressLoading
+  ) {
     return (
       <Box
         sx={{
@@ -441,12 +882,18 @@ const Progress = () => {
     );
   }
 
+  /* =========================================================
+     RENDER
+  ========================================================= */
+
   return (
     <Box
+      key={periodResetKey}
       sx={{
         width: "100%",
         minWidth: 0,
         minHeight: "100%",
+
         backgroundColor:
           "#f5f2ed",
       }}
@@ -474,6 +921,10 @@ const Progress = () => {
       >
         <Stack spacing={2.5}>
 
+          {/* =============================================
+              PROGRESS OVERVIEW
+          ============================================= */}
+
           <ProgressStats
             startingWeight={
               startingWeight ?? 0
@@ -494,6 +945,10 @@ const Progress = () => {
             bmi={bmi}
           />
 
+          {/* =============================================
+              PROGRESS TRACKER
+          ============================================= */}
+
           <Box
             sx={{
               width: "100%",
@@ -501,9 +956,9 @@ const Progress = () => {
             }}
           >
             <ProgressTrackerHeader
-              month={selectedMonth}
+              month={month}
               onMonthChange={
-                handleMonthChange
+                onMonthChange
               }
             />
 
@@ -518,51 +973,79 @@ const Progress = () => {
             >
               <ProgressSummaryCards
                 monthScore={
-                  overallProgress
+                  monthScore
                 }
 
-                sessionsCompleted={
-                  completedExercises
+                sessionsLogged={
+                  monthSessionsLogged
                 }
 
                 totalSessions={
-                  totalExercises
+                  monthTotalSessions
+                }
+
+                setsCompleted={
+                  monthSetsCompleted
+                }
+
+                setsTotal={
+                  monthSetsTotal
                 }
 
                 caloriesBurned={
-                  totalCaloriesBurned
+                  monthCaloriesBurned
+                }
+
+                avgCaloriesPerSession={
+                  monthAvgCaloriesPerSession
                 }
 
                 activeWeeks={
-                  activeWeeks
+                  monthActiveWeeks
                 }
 
-                totalWeeks={4}
+                totalWeeks={
+                  progressData?.plan
+                    ?.weeks_per_month ??
+                  4
+                }
 
                 bestWeekScore={
-                  bestWeekScore
+                  monthBestWeekScore
                 }
               />
             </Box>
           </Box>
 
+          {/* =============================================
+              WEEKLY DETAIL
+          ============================================= */}
+
           <WeeklyDetail
-            week={selectedWeek}
+            week={week}
             onWeekChange={
-              setSelectedWeek
+              onWeekChange
             }
           />
 
+          {/* =============================================
+              DAY BREAKDOWN
+          ============================================= */}
+
           <DayBreakdown
-            week={selectedWeek}
+            week={week}
             days={
               selectedWeekDays
             }
           />
 
+          {/* =============================================
+              WEEKLY SUMMARY
+          ============================================= */}
+
           <WeeklySummary
             sessionsCompleted={
-              weekSessionsCompleted
+              weekSessionsLogged
             }
 
             totalSessions={
@@ -578,6 +1061,10 @@ const Progress = () => {
             }
           />
 
+          {/* =============================================
+              WEEKLY WEIGHT TRACKER
+          ============================================= */}
+
           <WeeklyWeightTracker
             weights={weights}
             onChange={
@@ -585,41 +1072,14 @@ const Progress = () => {
             }
           />
 
+          {/* =============================================
+              THREE MONTH OVERVIEW
+          ============================================= */}
+
           <ThreeMonthOverview
-            data={[
-              {
-                month: "M1",
-
-                workouts:
-                  completedExercises,
-
-                calories:
-                  totalCaloriesBurned,
-
-                score:
-                  overallProgress,
-              },
-
-              {
-                month: "M2",
-
-                workouts: 0,
-
-                calories: 0,
-
-                score: 0,
-              },
-
-              {
-                month: "M3",
-
-                workouts: 0,
-
-                calories: 0,
-
-                score: 0,
-              },
-            ]}
+            data={
+              threeMonthData
+            }
           />
 
         </Stack>

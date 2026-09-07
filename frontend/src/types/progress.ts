@@ -1,15 +1,79 @@
-export interface ProgressExercises {
+export interface ProgressDay {
+  completed: boolean;
+  logged: boolean;
+  completion_percent: number;
+  calories_burned: number;
+  total_sets: number;
+  completed_sets: number;
+}
+
+export interface ProgressWeeklyDetail {
+  [month: string]: {
+    [week: string]: {
+      [day: string]: ProgressDay;
+    };
+  };
+}
+
+export interface ProgressSessions {
   total: number;
+  logged: number;
   completed: number;
   percent: number;
 }
 
-export interface ProgressCurrent {
-  day?: number | null;
-  week?: number | null;
-  month?: number | null;
-  completion?: number | null;
-  calories?: number | null;
+export interface ProgressMonth {
+  month_no: number;
+
+  sessions_completed: number;
+  sessions_logged: number;
+  sessions_total: number;
+  percent: number;
+
+  sets_total: number;
+  sets_completed: number;
+
+  calories_burned: number;
+  avg_calories_per_session: number;
+
+  active_weeks: number;
+  weeks_logged: number;
+  weeks_completed: number;
+  weeks_total: number;
+
+  best_week_score: number;
+
+  workouts: number;
+  calories: number;
+  score: number;
+}
+
+export interface ProgressPlan {
+  workouts_per_week: number;
+  weeks_per_month: number;
+  sessions_per_month: number;
+  months: number;
+  sessions_total: number;
+}
+
+export interface ProgressOverall {
+  sessions_completed: number;
+  sessions_logged: number;
+  sessions_total: number;
+  percent: number;
+
+  calories_burned: number;
+  avg_calories_per_session: number;
+
+  active_weeks: number;
+  best_week_score: number;
+  months_tracked: number;
+}
+
+export interface ProgressSets {
+  total: number;
+  completed: number;
+  percent: number;
 }
 
 export interface ProgressTransformation {
@@ -23,56 +87,52 @@ export interface ProgressChart {
   waists: number[];
 }
 
-/*
- * =========================================================
- * WORKOUT DAY PROGRESS
- * =========================================================
- */
-
-export interface ProgressDayDetail {
-  completed: boolean;
-  completion_percent: number;
-  calories_burned: number;
+export interface ProgressExercises {
+  total: number;
+  completed: number;
+  percent: number;
 }
 
-/*
- * =========================================================
- * MONTH → WEEK → DAY
- * =========================================================
- */
-
-export interface ProgressWeeklyDetail {
-  [month: string]: {
-    [week: string]: {
-      [day: string]: ProgressDayDetail;
-    };
-  };
+export interface ProgressCurrent {
+  [key: string]: unknown;
 }
 
 export interface ProgressData {
-  exercises: ProgressExercises;
-
-  /*
-   * Total calories burned from workout_logs
+  /**
+   * Session attendance overview.
+   *
+   * A session is considered logged when the user
+   * logs at least one set.
    */
+  sessions: ProgressSessions;
+
+  /**
+   * Kept optional for backwards compatibility with
+   * any existing frontend code that may still reference
+   * the previous API field.
+   */
+  exercises?: ProgressExercises;
+
   calories_burned: number;
+  avg_calories_per_session: number;
 
-  /*
-   * Number of weeks with at least one
-   * logged/completed workout.
-   */
   active_weeks: number;
-
-  /*
-   * Highest week score.
-   */
+  weeks_total: number;
   best_week_score: number;
 
-  /*
-   * Workout progress grouped by:
-   * month → week → day
-   */
   weekly_detail: ProgressWeeklyDetail;
+
+  plan: ProgressPlan;
+
+  month: ProgressMonth;
+
+  months: {
+    [month: string]: ProgressMonth;
+  };
+
+  overall: ProgressOverall;
+
+  sets: ProgressSets;
 
   current: ProgressCurrent | null;
 
