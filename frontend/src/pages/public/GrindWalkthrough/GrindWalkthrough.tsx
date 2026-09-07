@@ -1,10 +1,17 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
+
 import {
     Box,
     Button,
     IconButton,
     Typography,
 } from "@mui/material";
+
 import VolumeOffRoundedIcon from "@mui/icons-material/VolumeOffRounded";
 import VolumeUpRoundedIcon from "@mui/icons-material/VolumeUpRounded";
 import ArrowBackIosNewRoundedIcon from "@mui/icons-material/ArrowBackIosNewRounded";
@@ -14,6 +21,7 @@ import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownR
 import NutritionShowcase from "../../client/walkthrough/NutritionShowcase";
 import WorkoutShowcase from "../../client/walkthrough/WorkoutShowcase";
 import ProgressShowcase from "../../client/walkthrough/ProgressShowcase";
+import WelcomeShowcase from "../../client/walkthrough/WelcomeShowcase";
 
 const SCENES = [
     {
@@ -56,7 +64,8 @@ const SCENES = [
         id: "journey",
         eyebrow: "GRIND",
         title: "YOUR JOURNEY STARTS NOW.",
-        description: "#FITINDIA",
+        description:
+            "TRAIN SMARTER. NOT HARDER.",
         narration: "",
     },
 ] as const;
@@ -74,6 +83,15 @@ const GrindWalkthrough = () => {
         useState(true);
 
     /*
+     * ============================================================
+     * WELCOME CAPTION INDEX
+     * ============================================================
+     */
+
+    const [captionIndex, setCaptionIndex] =
+        useState(0);
+
+    /*
      * Prevent stale speech events from
      * changing the current scene.
      */
@@ -86,9 +104,7 @@ const GrindWalkthrough = () => {
         );
 
     /*
-     * Reference to the final showcase video.
-     * The sound button uses this to mute/unmute
-     * the video's original audio.
+     * Reference to final showcase video.
      */
     const videoRef =
         useRef<HTMLVideoElement | null>(
@@ -97,6 +113,16 @@ const GrindWalkthrough = () => {
 
     const scene =
         SCENES[sceneIndex];
+
+    /*
+     * ============================================================
+     * RESET CAPTION WHEN SCENE CHANGES
+     * ============================================================
+     */
+
+    useEffect(() => {
+        setCaptionIndex(0);
+    }, [sceneIndex]);
 
     /*
      * ============================================================
@@ -145,10 +171,6 @@ const GrindWalkthrough = () => {
      */
 
     useEffect(() => {
-        /*
-         * Final scene is intentionally silent
-         * because it contains the actual video.
-         */
         if (!scene.narration) {
             return;
         }
@@ -172,9 +194,6 @@ const GrindWalkthrough = () => {
         narrationIdRef.current =
             currentNarrationId;
 
-        /*
-         * Cancel any previous narration.
-         */
         window.speechSynthesis.cancel();
 
         const utterance =
@@ -189,10 +208,64 @@ const GrindWalkthrough = () => {
         utteranceRef.current =
             utterance;
 
+        /*
+         * ========================================================
+         * CAPTION SYNCHRONIZATION
+         * ========================================================
+         *
+         * Chrome's speech synthesis reports word boundaries.
+         *
+         * Every ~7 words we advance to the next caption.
+         */
+
+        utterance.onboundary = (
+            event
+        ) => {
+            if (
+                scene.id !== "welcome"
+            ) {
+                return;
+            }
+
+            if (
+                event.name !== "word"
+            ) {
+                return;
+            }
+
+            const spokenText =
+                scene.narration.slice(
+                    0,
+                    event.charIndex
+                );
+
+            const wordsSpoken =
+                spokenText
+                    .trim()
+                    .split(/\s+/)
+                    .filter(Boolean)
+                    .length;
+
+            const nextCaption =
+                Math.floor(
+                    wordsSpoken / 7
+                );
+
+            setCaptionIndex(
+                Math.min(
+                    nextCaption,
+                    99
+                )
+            );
+        };
+
+        /*
+         * ========================================================
+         * NARRATION FINISHED
+         * ========================================================
+         */
+
         utterance.onend = () => {
-            /*
-             * Ignore an old utterance.
-             */
             if (
                 narrationIdRef.current !==
                 currentNarrationId
@@ -322,13 +395,15 @@ const GrindWalkthrough = () => {
 
     const handlePauseToggle = () => {
         /*
-         * On the final video scene, pause/play
-         * controls the video itself.
+         * Final video scene.
          */
-        if (scene.id === "journey") {
+        if (
+            scene.id === "journey"
+        ) {
             if (videoRef.current) {
                 if (
-                    videoRef.current.paused
+                    videoRef.current
+                        .paused
                 ) {
                     videoRef.current
                         .play()
@@ -348,8 +423,7 @@ const GrindWalkthrough = () => {
         }
 
         /*
-         * Existing speech pause/play behavior
-         * for all other scenes.
+         * Speech synthesis.
          */
         if (
             !("speechSynthesis" in window)
@@ -396,8 +470,7 @@ const GrindWalkthrough = () => {
                 !current;
 
             /*
-             * Final showcase:
-             * control the video's original audio.
+             * Final video.
              */
             if (
                 scene.id === "journey"
@@ -413,8 +486,7 @@ const GrindWalkthrough = () => {
             }
 
             /*
-             * Other showcases:
-             * control the existing narration.
+             * Narration.
              */
             if (!nextValue) {
                 stopNarration();
@@ -449,9 +521,13 @@ const GrindWalkthrough = () => {
         ) {
             case "welcome":
                 return (
-                    <DashboardPreview
-                        label="YOUR GRIND DASHBOARD"
-                        description="One place for your workouts, nutrition and progress."
+                    <WelcomeShowcase
+                        narration={
+                            scene.narration
+                        }
+                        captionIndex={
+                            captionIndex
+                        }
                     />
                 );
 
@@ -503,10 +579,6 @@ const GrindWalkthrough = () => {
                                 height:
                                     "100%",
 
-                                /*
-                                 * Fill the complete
-                                 * showcase container.
-                                 */
                                 objectFit:
                                     "cover",
 
@@ -529,14 +601,18 @@ const GrindWalkthrough = () => {
         sceneIndex ===
         SCENES.length - 1;
 
-    /*
-     * Workout / Nutrition / Progress
-     * use the large scrollable showcase.
-     */
     const isScrollableShowcase =
         scene.id === "workout" ||
         scene.id === "nutrition" ||
         scene.id === "progress";
+
+    /*
+     * Welcome should also receive the
+     * larger showcase dimensions.
+     */
+    const isLargeShowcase =
+        isScrollableShowcase ||
+        scene.id === "welcome";
 
     return (
         <Box
@@ -747,7 +823,7 @@ const GrindWalkthrough = () => {
                     }}
                 >
                     {/* =================================================
-                        TEXT
+                        TOP TEXT
                     ================================================= */}
 
                     <Box
@@ -768,6 +844,11 @@ const GrindWalkthrough = () => {
                             },
                         }}
                     >
+                        {/* =================================================
+                            EYEBROW
+                            ALWAYS VISIBLE
+                        ================================================= */}
+
                         <Typography
                             sx={{
                                 color:
@@ -785,91 +866,113 @@ const GrindWalkthrough = () => {
                                 letterSpacing:
                                     2,
 
-                                mb: 1.3,
+                                /*
+                                 * On welcome there is no
+                                 * title underneath, so reduce
+                                 * the bottom spacing.
+                                 */
+                                mb:
+                                    scene.id ===
+                                        "welcome"
+                                        ? 0
+                                        : 1.3,
                             }}
                         >
                             {scene.eyebrow}
                         </Typography>
 
-                        <Typography
-                            component="h1"
-                            sx={{
-                                whiteSpace:
-                                    "pre-line",
+                        {/* =================================================
+                            TITLE + DESCRIPTION
+                            HIDDEN ONLY ON WELCOME
+                        ================================================= */}
 
-                                fontSize: {
-                                    xs: 27,
-                                    sm: 40,
-                                    md: 54,
-                                },
+                        {scene.id !==
+                            "welcome" && (
+                                <>
+                                    <Typography
+                                        component="h1"
+                                        sx={{
+                                            whiteSpace:
+                                                "pre-line",
 
-                                lineHeight:
-                                    1.02,
+                                            fontSize: {
+                                                xs: 27,
+                                                sm: 40,
+                                                md: 54,
+                                            },
 
-                                fontWeight:
-                                    900,
+                                            lineHeight:
+                                                1.02,
 
-                                letterSpacing: {
-                                    xs: -0.8,
-                                    md: -1.5,
-                                },
+                                            fontWeight:
+                                                900,
 
-                                maxWidth:
-                                    850,
+                                            letterSpacing:
+                                            {
+                                                xs: -0.8,
+                                                md: -1.5,
+                                            },
 
-                                mx: "auto",
-                            }}
-                        >
-                            {scene.title}
-                        </Typography>
+                                            maxWidth:
+                                                850,
 
-                        <Typography
-                            sx={{
-                                mt: 1.4,
+                                            mx:
+                                                "auto",
+                                        }}
+                                    >
+                                        {
+                                            scene.title
+                                        }
+                                    </Typography>
 
-                                maxWidth:
-                                    600,
+                                    <Typography
+                                        sx={{
+                                            mt: 1.4,
 
-                                mx: "auto",
+                                            maxWidth:
+                                                600,
 
-                                /*
-                                 * FITINDIA is orange
-                                 * on the final scene.
-                                 */
-                                color:
-                                    scene.id ===
-                                        "journey"
-                                        ? "#ff5c35"
-                                        : "#8d8985",
+                                            mx:
+                                                "auto",
 
-                                fontSize: {
-                                    xs: 10,
-                                    sm: 11,
-                                    md: 13,
-                                },
+                                            color:
+                                                scene.id ===
+                                                    "journey"
+                                                    ? "#ff5c35"
+                                                    : "#8d8985",
 
-                                lineHeight:
-                                    1.6,
+                                            fontSize: {
+                                                xs: 10,
+                                                sm: 11,
+                                                md: 13,
+                                            },
 
-                                fontWeight:
-                                    scene.id ===
-                                        "journey"
-                                        ? 800
-                                        : 400,
+                                            lineHeight:
+                                                1.6,
 
-                                letterSpacing:
-                                    scene.id ===
-                                        "journey"
-                                        ? 1.5
-                                        : 0,
-                            }}
-                        >
-                            {scene.description}
-                        </Typography>
+                                            fontWeight:
+                                                scene.id ===
+                                                    "journey"
+                                                    ? 800
+                                                    : 400,
+
+                                            letterSpacing:
+                                                scene.id ===
+                                                    "journey"
+                                                    ? 1.5
+                                                    : 0,
+                                        }}
+                                    >
+                                        {
+                                            scene.description
+                                        }
+                                    </Typography>
+                                </>
+                            )}
                     </Box>
 
                     {/* =================================================
-                        SHOWCASE + LEFT SCROLL INDICATOR + CONTROLS
+                        SHOWCASE + CONTROLS
                     ================================================= */}
 
                     <Box
@@ -894,7 +997,7 @@ const GrindWalkthrough = () => {
                         }}
                     >
                         {/* =================================================
-                            MULTIPLE DOWN ARROWS
+                            LEFT SCROLL INDICATOR
                         ================================================= */}
 
                         {isScrollableShowcase && (
@@ -932,52 +1035,85 @@ const GrindWalkthrough = () => {
 
                                     "@keyframes scrollArrowFlow":
                                     {
-                                        "0%": {
+                                        "0%":
+                                        {
                                             transform:
                                                 "translateY(-45px)",
 
                                             opacity: 0,
                                         },
 
-                                        "15%": {
+                                        "15%":
+                                        {
                                             opacity: 1,
                                         },
 
-                                        "70%": {
-                                            opacity: 0.45,
+                                        "70%":
+                                        {
+                                            opacity:
+                                                0.45,
                                         },
 
-                                        "100%": {
+                                        "100%":
+                                        {
                                             transform:
                                                 "translateY(65px)",
 
                                             opacity: 0,
                                         },
                                     },
-
-                                    "@media (prefers-reduced-motion: reduce)":
-                                    {
-                                        "& .scroll-arrow":
-                                        {
-                                            animation:
-                                                "none !important",
-
-                                            opacity:
-                                                0.6,
-
-                                            transform:
-                                                "none",
-                                        },
-                                    },
                                 }}
                             >
+                                {/* =================================================
+                                    SCROLL LABEL
+                                ================================================= */}
+
+                                <Typography
+                                    sx={{
+                                        position:
+                                            "absolute",
+
+                                        top: {
+                                            xs: 4,
+                                            sm: 6,
+                                            md: 8,
+                                        },
+
+                                        color:
+                                            "#68635f",
+
+                                        fontSize: {
+                                            xs: 5,
+                                            sm: 6,
+                                            md: 7,
+                                        },
+
+                                        fontWeight:
+                                            800,
+
+                                        letterSpacing:
+                                            1.5,
+
+                                        textTransform:
+                                            "uppercase",
+
+                                        zIndex: 2,
+
+                                        whiteSpace:
+                                            "nowrap",
+                                    }}
+                                >
+                                    SCROLL
+                                </Typography>
+
                                 {[0, 1, 2, 3].map(
-                                    (index) => (
+                                    (
+                                        index
+                                    ) => (
                                         <KeyboardArrowDownRoundedIcon
                                             key={
                                                 index
                                             }
-                                            className="scroll-arrow"
                                             sx={{
                                                 position:
                                                     "absolute",
@@ -1014,7 +1150,7 @@ const GrindWalkthrough = () => {
                         <Box
                             sx={{
                                 width:
-                                    isScrollableShowcase
+                                    isLargeShowcase
                                         ? {
                                             xs: "calc(100vw - 105px)",
                                             sm: "min(78vw, 760px)",
@@ -1029,12 +1165,12 @@ const GrindWalkthrough = () => {
                                         },
 
                                 maxWidth:
-                                    isScrollableShowcase
+                                    isLargeShowcase
                                         ? 1040
                                         : 820,
 
                                 height:
-                                    isScrollableShowcase
+                                    isLargeShowcase
                                         ? {
                                             xs: "min(58vh, 470px)",
                                             sm: "min(62vh, 560px)",
@@ -1090,7 +1226,9 @@ const GrindWalkthrough = () => {
                                         "100%",
 
                                     overflowY:
-                                        "auto",
+                                        isScrollableShowcase
+                                            ? "auto"
+                                            : "hidden",
 
                                     overflowX:
                                         "hidden",
@@ -1165,9 +1303,7 @@ const GrindWalkthrough = () => {
                                 },
                             }}
                         >
-                            {/* =================================================
-                                SOUND
-                            ================================================= */}
+                            {/* SOUND */}
 
                             <IconButton
                                 onClick={
@@ -1207,9 +1343,6 @@ const GrindWalkthrough = () => {
                                             ? "#ff5c35"
                                             : "#555",
 
-                                    transition:
-                                        "all 180ms ease",
-
                                     "&:hover":
                                     {
                                         borderColor:
@@ -1248,9 +1381,7 @@ const GrindWalkthrough = () => {
                                 )}
                             </IconButton>
 
-                            {/* =================================================
-                                PREVIOUS
-                            ================================================= */}
+                            {/* PREVIOUS */}
 
                             <IconButton
                                 onClick={
@@ -1286,9 +1417,6 @@ const GrindWalkthrough = () => {
                                     color:
                                         "#ff5c35",
 
-                                    transition:
-                                        "all 180ms ease",
-
                                     "&:hover":
                                     {
                                         backgroundColor:
@@ -1296,9 +1424,6 @@ const GrindWalkthrough = () => {
 
                                         color:
                                             "#fff",
-
-                                        transform:
-                                            "translateY(-2px)",
                                     },
 
                                     "&.Mui-disabled":
@@ -1326,9 +1451,7 @@ const GrindWalkthrough = () => {
                                 />
                             </IconButton>
 
-                            {/* =================================================
-                                PAUSE / PLAY
-                            ================================================= */}
+                            {/* PAUSE / PLAY */}
 
                             <IconButton
                                 onClick={
@@ -1368,9 +1491,6 @@ const GrindWalkthrough = () => {
                                             ? "#ff5c35"
                                             : "#888",
 
-                                    transition:
-                                        "all 180ms ease",
-
                                     "&:hover":
                                     {
                                         borderColor:
@@ -1378,9 +1498,6 @@ const GrindWalkthrough = () => {
 
                                         color:
                                             "#ff5c35",
-
-                                        backgroundColor:
-                                            "rgba(255,92,53,0.08)",
                                     },
                                 }}
                             >
@@ -1407,9 +1524,7 @@ const GrindWalkthrough = () => {
                                 </Typography>
                             </IconButton>
 
-                            {/* =================================================
-                                NEXT
-                            ================================================= */}
+                            {/* NEXT */}
 
                             <IconButton
                                 onClick={
@@ -1444,9 +1559,6 @@ const GrindWalkthrough = () => {
                                     color:
                                         "#ff5c35",
 
-                                    transition:
-                                        "all 180ms ease",
-
                                     "&:hover":
                                     {
                                         backgroundColor:
@@ -1454,9 +1566,6 @@ const GrindWalkthrough = () => {
 
                                         color:
                                             "#fff",
-
-                                        transform:
-                                            "translateY(2px)",
                                     },
 
                                     "&.Mui-disabled":
@@ -1671,174 +1780,6 @@ const GrindWalkthrough = () => {
                         {scene.id}
                     </Typography>
                 </Box>
-            </Box>
-        </Box>
-    );
-};
-
-/* ===============================================================
-   DASHBOARD PREVIEW
-================================================================ */
-
-interface DashboardPreviewProps {
-    label: string;
-    description: string;
-}
-
-const DashboardPreview = ({
-    label,
-    description,
-}: DashboardPreviewProps) => {
-    return (
-        <Box
-            sx={{
-                width:
-                    "100%",
-
-                height:
-                    "100%",
-
-                minHeight:
-                    "100%",
-
-                backgroundColor:
-                    "#101010",
-
-                display:
-                    "flex",
-
-                flexDirection:
-                    "column",
-
-                alignItems:
-                    "center",
-
-                justifyContent:
-                    "center",
-
-                px: 3,
-
-                position:
-                    "relative",
-
-                overflow:
-                    "hidden",
-            }}
-        >
-            {/* Background grid */}
-
-            <Box
-                sx={{
-                    position:
-                        "absolute",
-
-                    inset: 0,
-
-                    opacity: 0.35,
-
-                    backgroundImage:
-                        "linear-gradient(#252525 1px, transparent 1px), linear-gradient(90deg, #252525 1px, transparent 1px)",
-
-                    backgroundSize:
-                        "40px 40px",
-                }}
-            />
-
-            {/* Animated glow */}
-
-            <Box
-                sx={{
-                    position:
-                        "absolute",
-
-                    width: 180,
-
-                    height: 180,
-
-                    borderRadius:
-                        "50%",
-
-                    background:
-                        "radial-gradient(circle, rgba(255,92,53,0.12) 0%, rgba(255,92,53,0) 70%)",
-
-                    animation:
-                        "previewGlow 3s ease-in-out infinite",
-
-                    "@keyframes previewGlow":
-                    {
-                        "0%, 100%":
-                        {
-                            transform:
-                                "scale(0.9)",
-
-                            opacity: 0.6,
-                        },
-
-                        "50%":
-                        {
-                            transform:
-                                "scale(1.15)",
-
-                            opacity: 1,
-                        },
-                    },
-                }}
-            />
-
-            {/* Content */}
-
-            <Box
-                sx={{
-                    position:
-                        "relative",
-
-                    zIndex: 1,
-
-                    textAlign:
-                        "center",
-                }}
-            >
-                <Typography
-                    sx={{
-                        color:
-                            "#ff5c35",
-
-                        fontSize: {
-                            xs: 8,
-                            md: 9,
-                        },
-
-                        fontWeight:
-                            900,
-
-                        letterSpacing:
-                            1.5,
-
-                        mb: 1,
-                    }}
-                >
-                    {label}
-                </Typography>
-
-                <Typography
-                    sx={{
-                        color:
-                            "#777",
-
-                        fontSize: {
-                            xs: 10,
-                            md: 12,
-                        },
-
-                        maxWidth:
-                            400,
-
-                        lineHeight:
-                            1.6,
-                    }}
-                >
-                    {description}
-                </Typography>
             </Box>
         </Box>
     );

@@ -3,21 +3,86 @@ import axios from "axios";
 import type { DashboardResponse } from "../types/dashboard";
 import type { ProgressResponse } from "../types/progress";
 
-import { API_BASE_URL, DEV_TOKEN } from "../config/api";
+import { API_BASE_URL } from "../config/api";
+import { getToken } from "../utils/auth";
 
 /*
  * =========================================================
- * WORKOUT LOGGING TYPES
+ * AUTH CONFIG
  * =========================================================
  *
- * The frontend sends individual set states.
+ * The user's token is retrieved from localStorage.
  *
- * The backend is responsible for calculating:
+ * We also keep sending it as a query parameter for now
+ * because the existing backend already supports:
  *
- * - total_sets
- * - completed_sets
- * - completion_percent
- * - calories_burned
+ *     ?token=...
+ *
+ * This makes the migration safer and avoids changing the
+ * backend authentication flow at this stage.
+ */
+
+const getAuthConfig = () => {
+  const token = getToken();
+
+  return {
+    params: {
+      token: token ?? "",
+    },
+
+    headers: {
+      Authorization: token
+        ? `Bearer ${token}`
+        : undefined,
+    },
+  };
+};
+
+
+/*
+ * =========================================================
+ * DASHBOARD
+ * =========================================================
+ */
+
+export const getDashboard =
+  async (): Promise<DashboardResponse> => {
+    const response =
+      await axios.get<DashboardResponse>(
+        `${API_BASE_URL}/api/v1/portal/my-plan`,
+        getAuthConfig()
+      );
+
+    return response.data;
+  };
+
+
+/*
+ * =========================================================
+ * PROGRESS
+ * =========================================================
+ */
+
+export const getProgress =
+  async (): Promise<ProgressResponse> => {
+    const response =
+      await axios.get<ProgressResponse>(
+        `${API_BASE_URL}/api/v1/portal/progress`,
+        getAuthConfig()
+      );
+
+    return response.data;
+  };
+
+
+/*
+ * =========================================================
+ * LOG COMPLETE WORKOUT
+ * =========================================================
+ *
+ * Authentication is retrieved from localStorage.
+ *
+ * The backend identifies the client from the token.
  */
 
 export interface WorkoutSetLogInput {
@@ -31,11 +96,6 @@ export interface WorkoutLogPayload {
   week_no: number;
   day_id: number;
 
-  /*
-   * These are retained in the request shape for compatibility,
-   * but the backend calculates the authoritative values from
-   * the submitted set states.
-   */
   total_sets: number;
   completed_sets: number;
   calories_burned: number;
@@ -58,76 +118,6 @@ export interface WorkoutLogResponse {
   summary: WorkoutSummary;
 }
 
-
-/*
- * =========================================================
- * DASHBOARD
- * =========================================================
- */
-
-export const getDashboard =
-  async (): Promise<DashboardResponse> => {
-    const response =
-      await axios.get<DashboardResponse>(
-        `${API_BASE_URL}/api/v1/portal/my-plan`,
-        {
-          params: {
-            token: DEV_TOKEN,
-          },
-        }
-      );
-
-    return response.data;
-  };
-
-
-/*
- * =========================================================
- * PROGRESS
- * =========================================================
- */
-
-export const getProgress =
-  async (): Promise<ProgressResponse> => {
-    const response =
-      await axios.get<ProgressResponse>(
-        `${API_BASE_URL}/api/v1/portal/progress`,
-        {
-          params: {
-            token: DEV_TOKEN,
-          },
-        }
-      );
-
-    return response.data;
-  };
-
-
-/*
- * =========================================================
- * LOG COMPLETE WORKOUT
- * =========================================================
- *
- * One request represents one complete workout-day state.
- *
- * The frontend sends:
- *
- *     month
- *     week
- *     day
- *     individual set states
- *
- * The backend:
- *
- *     validates the workout
- *     saves workout_set_logs
- *     calculates the summary
- *     upserts workout_logs
- *
- * Authentication is handled by the backend using the
- * configured access token.
- */
-
 export const logWorkout =
   async (
     payload: WorkoutLogPayload
@@ -136,11 +126,7 @@ export const logWorkout =
       await axios.post<WorkoutLogResponse>(
         `${API_BASE_URL}/api/v1/workout/log`,
         payload,
-        {
-          params: {
-            token: DEV_TOKEN,
-          },
-        }
+        getAuthConfig()
       );
 
     return response.data;

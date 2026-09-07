@@ -1,8 +1,10 @@
 import axios from "axios";
+
 import {
   API_BASE_URL,
-  DEV_TOKEN,
 } from "../config/api";
+
+import { getToken } from "../utils/auth";
 
 /**
  * =========================================================
@@ -27,7 +29,7 @@ export interface WorkoutSetLogInput {
  *
  * Authorization: Bearer <token>
  *
- * or the query token.
+ * The token is retrieved from localStorage.
  */
 
 export interface WorkoutLogPayload {
@@ -85,28 +87,6 @@ export interface SavedWorkoutSet {
  * =========================================================
  * GET WORKOUT SETS RESPONSE
  * =========================================================
- *
- * IMPORTANT:
- *
- * The backend returns:
- *
- * {
- *   "success": true,
- *   "data": [
- *     {
- *       "id": 230,
- *       "client_id": 15,
- *       "month_no": 1,
- *       "week_no": 1,
- *       "day_id": 1,
- *       "exercise_id": 705,
- *       "set_no": 1,
- *       "completed": true
- *     }
- *   ]
- * }
- *
- * The frontend only needs the set information.
  */
 
 export interface WorkoutSetsResponse {
@@ -118,16 +98,31 @@ export interface WorkoutSetsResponse {
  * =========================================================
  * AUTH CONFIG
  * =========================================================
+ *
+ * The token comes from localStorage.
+ *
+ * We send it in both places for now:
+ *
+ * 1. Authorization header
+ * 2. Query parameter
+ *
+ * This keeps compatibility with the existing backend.
  */
 
-const authConfig = {
-  params: {
-    token: DEV_TOKEN,
-  },
+const getAuthConfig = () => {
+  const token = getToken();
 
-  headers: {
-    Authorization: `Bearer ${DEV_TOKEN}`,
-  },
+  return {
+    params: {
+      token: token ?? "",
+    },
+
+    headers: {
+      Authorization: token
+        ? `Bearer ${token}`
+        : undefined,
+    },
+  };
 };
 
 /**
@@ -149,10 +144,10 @@ export const getWorkoutSets = async (
     await axios.get<WorkoutSetsResponse>(
       `${API_BASE_URL}/api/v1/workout/sets`,
       {
-        ...authConfig,
+        ...getAuthConfig(),
 
         params: {
-          token: DEV_TOKEN,
+          ...getAuthConfig().params,
           month_no: month,
           week_no: week,
           day_id: dayId,
@@ -184,7 +179,7 @@ export const logWorkout = async (
     await axios.post<WorkoutLogResponse>(
       `${API_BASE_URL}/api/v1/workout/log`,
       payload,
-      authConfig
+      getAuthConfig()
     );
 
   return response.data;
