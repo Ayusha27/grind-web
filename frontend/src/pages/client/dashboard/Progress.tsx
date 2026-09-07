@@ -22,6 +22,7 @@ import DayBreakdown from "../../../components/progress/DayBreakdown";
 import WeeklySummary from "../../../components/progress/WeeklySummary";
 import WeeklyWeightTracker from "../../../components/progress/WeeklyWeightTracker";
 import ThreeMonthOverview from "../../../components/progress/ThreeMonthOverview";
+import GrindLoading from "../../../components/loading/GrindLoading";
 
 import { useDashboard } from "../../../context/DashboardContext";
 import { getProgress } from "../../../api/dashboardApi";
@@ -850,7 +851,7 @@ const Progress = () => {
     }, [progressData]);
 
   /* =========================================================
-     LOADING
+     LOADING - GRIND EXACT LOGO LOADER
   ========================================================= */
 
   if (
@@ -858,27 +859,7 @@ const Progress = () => {
     progressLoading
   ) {
     return (
-      <Box
-        sx={{
-          minHeight:
-            "calc(100vh - 194px)",
-
-          backgroundColor:
-            "#f5f2ed",
-
-          display: "flex",
-
-          alignItems:
-            "center",
-
-          justifyContent:
-            "center",
-        }}
-      >
-        <Box>
-          Loading your progress...
-        </Box>
-      </Box>
+      <GrindLoading/>
     );
   }
 
