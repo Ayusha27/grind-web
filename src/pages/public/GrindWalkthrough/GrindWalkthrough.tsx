@@ -580,7 +580,7 @@ const GrindWalkthrough = () => {
                                     "100%",
 
                                 objectFit:
-                                    "cover",
+                                    "contain",
 
                                 display:
                                     "block",
@@ -1153,7 +1153,7 @@ const GrindWalkthrough = () => {
                                             lg: "min(70vw, 1040px)",
                                         }
                                         : {
-                                            xs: "calc(100vw - 115px)",
+                                            xs: "calc(90vw)",
                                             sm: "min(62vw, 600px)",
                                             md: "min(58vw, 720px)",
                                             lg: "min(55vw, 820px)",
