@@ -977,23 +977,26 @@ const GrindWalkthrough = () => {
 
                     <Box
                         sx={{
-                            width:
-                                "100%",
+                            width: "100%",
 
-                            display:
-                                "flex",
+                            display: "flex",
 
-                            alignItems:
-                                "center",
+                            alignItems: "center",
 
-                            justifyContent:
-                                "center",
+                            justifyContent: "center",
+
+                            flexWrap: {
+                                xs: "wrap",
+                                sm: "nowrap",
+                            },
 
                             gap: {
                                 xs: 1,
                                 sm: 1.5,
                                 md: 2,
                             },
+                            position: "relative",
+
                         }}
                     >
                         {/* =================================================
@@ -1015,50 +1018,42 @@ const GrindWalkthrough = () => {
                                         md: 150,
                                     },
 
-                                    flexShrink:
-                                        0,
+                                    flexShrink: 0,
 
-                                    display:
-                                        "flex",
+                                    display: "flex",
 
-                                    alignItems:
-                                        "center",
+                                    alignItems: "center",
 
-                                    justifyContent:
-                                        "center",
+                                    justifyContent: "center",
 
-                                    position:
-                                        "relative",
+                                    position: {
+                                        xs: "absolute",
+                                        sm: "relative",
+                                    },
 
-                                    overflow:
-                                        "hidden",
+                                    left: {
+                                        xs: -2,
+                                        sm: "auto",
+                                    },
 
-                                    "@keyframes scrollArrowFlow":
-                                    {
-                                        "0%":
-                                        {
-                                            transform:
-                                                "translateY(-45px)",
+                                    overflow: "hidden",
 
+                                    "@keyframes scrollArrowFlow": {
+                                        "0%": {
+                                            transform: "translateY(-45px)",
                                             opacity: 0,
                                         },
 
-                                        "15%":
-                                        {
+                                        "15%": {
                                             opacity: 1,
                                         },
 
-                                        "70%":
-                                        {
-                                            opacity:
-                                                0.45,
+                                        "70%": {
+                                            opacity: 0.45,
                                         },
 
-                                        "100%":
-                                        {
-                                            transform:
-                                                "translateY(65px)",
-
+                                        "100%": {
+                                            transform: "translateY(65px)",
                                             opacity: 0,
                                         },
                                     },
@@ -1184,7 +1179,10 @@ const GrindWalkthrough = () => {
                                             lg: "min(55vh, 540px)",
                                         },
 
-                                flex: 1,
+                                flex: {
+                                    xs: "0 0 auto",
+                                    sm: 1,
+                                },
 
                                 minWidth: 0,
 
@@ -1274,32 +1272,41 @@ const GrindWalkthrough = () => {
                             RIGHT CONTROL PANEL
                         ================================================= */}
 
-                        <Box
+                      <Box
                             sx={{
                                 width: {
-                                    xs: 44,
+                                    xs: "100%",
                                     sm: 52,
                                     md: 60,
                                 },
 
                                 flexShrink: 0,
 
-                                display:
-                                    "flex",
+                                flexBasis: {
+                                    xs: "100%",
+                                    sm: "auto",
+                                },
 
-                                flexDirection:
-                                    "column",
+                                display: "flex",
 
-                                alignItems:
-                                    "center",
+                                flexDirection: {
+                                    xs: "row",
+                                    sm: "column",
+                                },
 
-                                justifyContent:
-                                    "center",
+                                alignItems: "center",
+
+                                justifyContent: "center",
 
                                 gap: {
-                                    xs: 0.8,
+                                    xs: 1.2,
                                     sm: 1,
                                     md: 1.1,
+                                },
+
+                                mt: {
+                                    xs: 1,
+                                    sm: 0,
                                 },
                             }}
                         >
