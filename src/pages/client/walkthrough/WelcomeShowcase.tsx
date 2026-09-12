@@ -211,7 +211,7 @@ const WelcomeShowcase = ({
 
                     <Box
                         component="img"
-                        src="/GrindMascot.svg"
+                        src="/GRIND/GrindMascot.svg"
                         alt="GRIND Mascot"
                         sx={{
                             position: "relative",

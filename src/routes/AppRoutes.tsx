@@ -20,8 +20,9 @@ import GlobalLoader from "../components/common/GlobalLoader";
 
 const AppRoutes = () => {
   console.log("🔥 APP ROUTES IS RENDERING");
+  const BASE_PATH = "/GRIND";
   return (
-    <BrowserRouter>
+      <BrowserRouter basename={BASE_PATH}>
       <GlobalLoader />
       <ScrollToHash />
 

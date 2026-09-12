@@ -565,7 +565,7 @@ const GrindWalkthrough = () => {
                     >
                         <video
                             ref={videoRef}
-                            src="/videos/grind-intro.mp4"
+                            src="/GRIND/videos/grind-intro.mp4"
                             autoPlay
                             playsInline
                             preload="auto"

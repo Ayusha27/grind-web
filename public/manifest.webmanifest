@@ -2,20 +2,20 @@
     "name": "GRIND",
     "short_name": "GRIND",
     "description": "Your personalized fitness journey with GRIND.",
-    "start_url": "/client/dashboard/workout",
-    "scope": "/",
+    "start_url": "/GRIND/client/dashboard/workout",
+    "scope": "/GRIND/",
     "display": "standalone",
     "orientation": "portrait-primary",
     "background_color": "#151515",
     "theme_color": "#151515",
     "icons": [
         {
-            "src": "/client/icons/grind-192.png",
+            "src": "/GRIND/icons/grind-192.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "/client/icons/grind-512.png",
+            "src": "/GRIND/icons/grind-512.png",
             "sizes": "512x512",
             "type": "image/png"
         }
