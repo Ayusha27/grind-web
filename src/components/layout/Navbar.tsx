@@ -1,4 +1,4 @@
-import { Box, Button, Container, Link, Stack } from "@mui/material";
+import { Box, Container, Link, Stack } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 
 const Navbar = () => {
@@ -72,10 +72,6 @@ const Navbar = () => {
             }}
             sx={{
               ml: "auto",
-              mr: {
-                xs: 3,
-                md: 7,
-              },
             }}
           >
             <Link
@@ -111,26 +107,6 @@ const Navbar = () => {
               MEMBERSHIP GUIDE
             </Link>
           </Stack>
-
-          {/* CTA */}
-          <Button
-            component={RouterLink}
-            to="/start-your-journey"
-            variant="contained"
-            color="primary"
-            sx={{
-              minWidth: {
-                xs: 160,
-                md: 175,
-              },
-              height: 48,
-              px: 3,
-              borderRadius: "4px",
-              fontSize: 14,
-            }}
-          >
-            START YOUR JOURNEY
-          </Button>
         </Box>
       </Container>
     </Box>

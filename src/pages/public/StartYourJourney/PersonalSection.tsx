@@ -5,15 +5,33 @@ import {
   Typography,
 } from "@mui/material";
 
-import { IntakeFormData } from "./types";
+import type {
+  IntakeFormData,
+} from "./types";
+
 
 interface PersonalSectionProps {
   data: IntakeFormData;
-  onChange: <K extends keyof IntakeFormData>(
+
+  onChange: <
+    K extends keyof IntakeFormData
+  >(
     field: K,
     value: IntakeFormData[K]
   ) => void;
+
+  errors?: {
+    fullName?: boolean;
+    email?: boolean;
+    age?: boolean;
+    gender?: boolean;
+  };
 }
+
+
+// ============================================================
+// INPUT STYLES
+// ============================================================
 
 const inputStyles = {
   "& .MuiInputBase-root": {
@@ -36,6 +54,10 @@ const inputStyles = {
     borderColor: "#ff7417",
   },
 
+  "& .Mui-error .MuiOutlinedInput-notchedOutline": {
+    borderColor: "#ff7417",
+  },
+
   "& .MuiInputBase-input": {
     py: 1,
   },
@@ -45,17 +67,32 @@ const inputStyles = {
   },
 };
 
+
+// ============================================================
+// NATIVE SELECT STYLES
+// ============================================================
+
 const nativeSelectStyles = {
   width: "100%",
+
   minHeight: 38,
+
   padding: "0 36px 0 12px",
+
   backgroundColor: "#151515",
+
   color: "#f5f5f0",
+
   border: "1px solid #292929",
+
   borderRadius: 0,
+
   outline: "none",
+
   fontSize: 12,
+
   fontFamily: "inherit",
+
   cursor: "pointer",
 
   "&:hover": {
@@ -72,18 +109,62 @@ const nativeSelectStyles = {
   },
 };
 
+
+// ============================================================
+// LABEL
+// ============================================================
+
 const labelStyles = {
   color: "#777",
+
   fontSize: 9,
+
   fontWeight: 700,
+
   letterSpacing: "0.7px",
+
   textTransform: "uppercase",
+
   mb: 0.7,
 };
+
+
+// ============================================================
+// ERROR MESSAGE
+// ============================================================
+
+const ErrorMessage = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  return (
+    <Typography
+      role="alert"
+      sx={{
+        color: "#ff7417",
+
+        fontSize: 8,
+
+        lineHeight: 1.4,
+
+        mt: 0.45,
+      }}
+    >
+      {children}
+    </Typography>
+  );
+};
+
+
+// ============================================================
+// PERSONAL SECTION
+// ============================================================
 
 const PersonalSection = ({
   data,
   onChange,
+  errors = {},
 }: PersonalSectionProps) => {
   return (
     <Box
@@ -94,21 +175,32 @@ const PersonalSection = ({
         },
       }}
     >
-      {/* Section heading */}
+
+      {/* ======================================================
+          SECTION HEADING
+      ====================================================== */}
+
       <Box
         sx={{
           display: "flex",
+
           alignItems: "center",
+
           gap: 1,
+
           mb: 2,
         }}
       >
         <Typography
           sx={{
             color: "#ff7417",
+
             fontSize: 8,
+
             fontWeight: 700,
+
             letterSpacing: "1.2px",
+
             whiteSpace: "nowrap",
           }}
         >
@@ -118,14 +210,36 @@ const PersonalSection = ({
         <Box
           sx={{
             flex: 1,
+
             height: "1px",
-            backgroundColor: "#292929",
+
+            backgroundColor:
+              "#292929",
           }}
         />
       </Box>
 
-      {/* Full name */}
-      <Box sx={{ mb: 1.6 }}>
+
+      {/* ======================================================
+          FULL NAME
+      ====================================================== */}
+
+      <Box
+        id="intake-full-name"
+        sx={{
+          mb: 1.6,
+
+          borderLeft:
+            errors.fullName
+              ? "2px solid #ff7417"
+              : "2px solid transparent",
+
+          pl:
+            errors.fullName
+              ? 1
+              : 0,
+        }}
+      >
         <Typography sx={labelStyles}>
           Full Name
         </Typography>
@@ -135,15 +249,48 @@ const PersonalSection = ({
           size="small"
           value={data.fullName}
           placeholder="Alex Carter"
+          error={
+            Boolean(
+              errors.fullName
+            )
+          }
           onChange={(event) =>
-            onChange("fullName", event.target.value)
+            onChange(
+              "fullName",
+              event.target.value
+            )
           }
           sx={inputStyles}
         />
+
+        {errors.fullName && (
+          <ErrorMessage>
+            Please enter your full name.
+          </ErrorMessage>
+        )}
       </Box>
 
-      {/* Email */}
-      <Box sx={{ mb: 1.6 }}>
+
+      {/* ======================================================
+          EMAIL
+      ====================================================== */}
+
+      <Box
+        id="intake-email"
+        sx={{
+          mb: 1.6,
+
+          borderLeft:
+            errors.email
+              ? "2px solid #ff7417"
+              : "2px solid transparent",
+
+          pl:
+            errors.email
+              ? 1
+              : 0,
+        }}
+      >
         <Typography sx={labelStyles}>
           Email Address
         </Typography>
@@ -154,15 +301,48 @@ const PersonalSection = ({
           type="email"
           value={data.email}
           placeholder="alex@example.com"
+          error={
+            Boolean(
+              errors.email
+            )
+          }
           onChange={(event) =>
-            onChange("email", event.target.value)
+            onChange(
+              "email",
+              event.target.value
+            )
           }
           sx={inputStyles}
         />
+
+        {errors.email && (
+          <ErrorMessage>
+            Please enter a valid email address.
+          </ErrorMessage>
+        )}
       </Box>
 
-      {/* Age */}
-      <Box sx={{ mb: 1.6 }}>
+
+      {/* ======================================================
+          AGE
+      ====================================================== */}
+
+      <Box
+        id="intake-age"
+        sx={{
+          mb: 1.6,
+
+          borderLeft:
+            errors.age
+              ? "2px solid #ff7417"
+              : "2px solid transparent",
+
+          pl:
+            errors.age
+              ? 1
+              : 0,
+        }}
+      >
         <Typography sx={labelStyles}>
           Age
         </Typography>
@@ -173,15 +353,55 @@ const PersonalSection = ({
           type="number"
           value={data.age}
           placeholder="28"
+          error={
+            Boolean(
+              errors.age
+            )
+          }
+          slotProps={{
+            htmlInput: {
+              min: 13,
+              max: 100,
+              step: 1,
+            },
+          }}
           onChange={(event) =>
-            onChange("age", event.target.value)
+            onChange(
+              "age",
+              event.target.value
+            )
           }
           sx={inputStyles}
         />
+
+        {errors.age && (
+          <ErrorMessage>
+            Please enter your age.
+          </ErrorMessage>
+        )}
       </Box>
 
-      {/* Gender */}
-      <Box sx={{ mb: 1.6 }}>
+
+      {/* ======================================================
+          GENDER
+      ====================================================== */}
+
+      <Box
+        id="intake-gender"
+        sx={{
+          mb: 1.6,
+
+          borderLeft:
+            errors.gender
+              ? "2px solid #ff7417"
+              : "2px solid transparent",
+
+          pl:
+            errors.gender
+              ? 1
+              : 0,
+        }}
+      >
         <Typography sx={labelStyles}>
           Gender
         </Typography>
@@ -190,24 +410,56 @@ const PersonalSection = ({
           component="select"
           value={data.gender}
           onChange={(event) =>
-            onChange("gender", event.target.value)
+            onChange(
+              "gender",
+              event.target.value
+            )
           }
           sx={{
             ...nativeSelectStyles,
+
             appearance: "auto",
+
+            borderColor:
+              errors.gender
+                ? "#ff7417"
+                : "#292929",
           }}
         >
-          <option value="">Select</option>
-          <option value="male">Male</option>
-          <option value="female">Female</option>
-          <option value="other">Other</option>
+          <option value="">
+            Select
+          </option>
+
+          <option value="male">
+            Male
+          </option>
+
+          <option value="female">
+            Female
+          </option>
+
+          <option value="other">
+            Other
+          </option>
+
           <option value="prefer-not-to-say">
             Prefer not to say
           </option>
         </Box>
+
+        {errors.gender && (
+          <ErrorMessage>
+            Please select your gender.
+          </ErrorMessage>
+        )}
       </Box>
 
-      {/* Occupation */}
+
+      {/* ======================================================
+          OCCUPATION
+          OPTIONAL
+      ====================================================== */}
+
       <Box>
         <Typography sx={labelStyles}>
           Occupation
@@ -216,10 +468,15 @@ const PersonalSection = ({
         <TextField
           fullWidth
           size="small"
-          value={data.occupation}
+          value={
+            data.occupation
+          }
           placeholder="Software Engineer"
           onChange={(event) =>
-            onChange("occupation", event.target.value)
+            onChange(
+              "occupation",
+              event.target.value
+            )
           }
           sx={inputStyles}
         />
@@ -227,17 +484,21 @@ const PersonalSection = ({
         <Typography
           sx={{
             mt: 0.5,
+
             color: "#666",
+
             fontSize: 8,
+
             fontStyle: "italic",
           }}
         >
-          Helps us understand your daily activity & stress
-          levels.
+          Helps us understand your daily
+          activity & stress levels.
         </Typography>
       </Box>
     </Box>
   );
 };
+
 
 export default PersonalSection;

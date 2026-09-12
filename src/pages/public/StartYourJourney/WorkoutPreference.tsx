@@ -9,6 +9,7 @@ interface WorkoutPreferenceProps {
     field: K,
     value: IntakeFormData[K]
   ) => void;
+  error?: boolean;
 }
 
 const preferences = [
@@ -35,6 +36,7 @@ const preferences = [
 const WorkoutPreference = ({
   data,
   onChange,
+  error = false,
 }: WorkoutPreferenceProps) => {
   return (
     <Box
@@ -48,20 +50,89 @@ const WorkoutPreference = ({
           xs: 2,
           sm: 2.5,
         },
+        borderLeft: error
+          ? "2px solid #ff7417"
+          : "2px solid transparent",
       }}
     >
-      <Typography
+      <Box
         sx={{
-          color: "#777",
-          fontSize: 9,
-          fontWeight: 700,
-          letterSpacing: "1px",
-          textTransform: "uppercase",
+          display: "flex",
+          alignItems: "center",
+          gap: 2,
           mb: 1.5,
         }}
       >
-        Workout Preference
-      </Typography>
+        <Typography
+          sx={{
+            color: "#777",
+
+            fontSize: 9,
+
+            fontWeight: 700,
+
+            letterSpacing: "1px",
+
+            textTransform:
+              "uppercase",
+          }}
+        >
+          Workout Preference
+        </Typography>
+        <Box
+          sx={{
+            flex: 1,
+
+            height: "1px",
+
+            backgroundColor:
+              "#292929",
+          }}
+        />
+
+        {error && (
+          <Typography
+            sx={{
+              color:
+                "primary.main",
+
+              fontSize: 8,
+
+              fontWeight: 700,
+
+              letterSpacing:
+                "0.8px",
+
+              textTransform:
+                "uppercase",
+
+              whiteSpace:
+                "nowrap",
+            }}
+          >
+            Required
+          </Typography>
+        )}
+      </Box>
+
+      {error && (
+        <Typography
+          role="alert"
+          sx={{
+            color: "#ff7417",
+
+            fontSize: 9,
+
+            lineHeight: 1.5,
+
+            mb: 1.5,
+          }}
+        >
+          Please select a workout
+          preference.
+        </Typography>
+      )}
+
 
       <Box
         sx={{

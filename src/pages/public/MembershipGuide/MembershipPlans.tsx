@@ -4,6 +4,7 @@ interface Plan {
   duration: string;
   name: string;
   price: string;
+  monthlyPrice: string;
   description: string;
   features: string[];
   badge?: string;
@@ -18,7 +19,9 @@ const plans: Plan[] = [
     duration: "3M KICKSTART",
     name: "",
     price: "₹3,499",
+    monthlyPrice: "₹875 / month*",
     description: "Perfect for beginners building consistency.",
+    badge: "FOUNDATION",
     features: [
       "Personalized Workout Programme",
       "AI Nutrition Guidance",
@@ -30,6 +33,7 @@ const plans: Plan[] = [
     duration: "6M TRANSFORMATION",
     name: "",
     price: "₹7,999",
+    monthlyPrice: "₹725 / month*",
     description:
       "For noticeable transformation and lifestyle change.",
     badge: "MOST POPULAR",
@@ -52,6 +56,7 @@ const plans: Plan[] = [
     duration: "12M LIFESTYLE EVOLUTION",
     name: "",
     price: "₹12,999",
+    monthlyPrice: "₹494 / month*",
     description: "For long-term health and performance.",
     badge: "BEST VALUE",
     features: [
@@ -121,8 +126,7 @@ const MembershipPlans = () => {
           }}
         >
           {plans.map((plan) => {
-            const highlighted =
-              plan.badge === "MOST POPULAR";
+            const highlighted = plan.badge === "MOST POPULAR";
 
             return (
               <Box
@@ -164,20 +168,61 @@ const MembershipPlans = () => {
                   {plan.duration}
                 </Typography>
 
-                <Typography
+                {/* Pricing */}
+                <Box
                   sx={{
-                    color: "primary.main",
-                    fontSize: {
-                      xs: 40,
-                      md: 44,
-                    },
-                    fontWeight: 800,
-                    lineHeight: 1,
+                    display: "flex",
+                    alignItems: "baseline",
+                    justifyContent: "space-between",
+                    gap: 2,
                     mb: 2.5,
                   }}
                 >
-                  {plan.price}
-                </Typography>
+                  {/* Main plan price */}
+                  <Typography
+                    sx={{
+                      color: "primary.main",
+                      fontSize: {
+                        xs: 36,
+                        md: 40,
+                      },
+                      fontWeight: 800,
+                      lineHeight: 1,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {plan.price}
+                  </Typography>
+
+                  {/* Effective monthly price */}
+                  <Typography
+                    sx={{
+                      color: "primary.main",
+                      fontSize: {
+                        xs: 15,
+                        md: 16,
+                      },
+                      fontWeight: 800,
+                      lineHeight: 1.2,
+                      whiteSpace: "nowrap",
+                      animation:
+                        "monthlyPricePulse 1.8s ease-in-out infinite",
+
+                      "@keyframes monthlyPricePulse": {
+                        "0%, 100%": {
+                          opacity: 1,
+                          transform: "scale(1)",
+                        },
+                        "50%": {
+                          opacity: 0.65,
+                          transform: "scale(1.04)",
+                        },
+                      },
+                    }}
+                  >
+                    {plan.monthlyPrice}
+                  </Typography>
+                </Box>
 
                 <Typography
                   sx={{
@@ -274,6 +319,52 @@ const MembershipPlans = () => {
               </Box>
             );
           })}
+        </Box>
+
+        {/* Pricing explanation */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 2,
+            mt: 4,
+          }}
+        >
+          <Box
+            sx={{
+              height: "1px",
+              flex: 1,
+              maxWidth: 100,
+              backgroundColor: "rgba(255,122,0,0.45)",
+            }}
+          />
+
+          <Typography
+            sx={{
+              color: "text.secondary",
+              textAlign: "center",
+              fontSize: {
+                xs: 11,
+                md: 13,
+              },
+              lineHeight: 1.7,
+              maxWidth: 850,
+              px: 1,
+            }}
+          >
+            *Monthly pricing is calculated based on the benefits included and
+            the duration of your dashboard access.
+          </Typography>
+
+          <Box
+            sx={{
+              height: "1px",
+              flex: 1,
+              maxWidth: 100,
+              backgroundColor: "rgba(255,122,0,0.45)",
+            }}
+          />
         </Box>
       </Container>
     </Box>

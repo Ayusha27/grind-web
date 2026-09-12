@@ -9,6 +9,7 @@ interface TrainingGoalsSectionProps {
     field: K,
     value: IntakeFormData[K]
   ) => void;
+  error?: boolean;
 }
 
 const goals = [
@@ -41,6 +42,7 @@ const goals = [
 const TrainingGoalsSection = ({
   data,
   onChange,
+  error = false,
 }: TrainingGoalsSectionProps) => {
   const selectedGoals = data.trainingGoals ?? [];
 
@@ -62,10 +64,13 @@ const TrainingGoalsSection = ({
           sm: 3,
         },
         py: 3.5,
+
         borderTop: "1px solid #292929",
+        borderLeft: error
+          ? "2px solid #ff7417"
+          : "2px solid transparent",
       }}
     >
-      {/* Section heading */}
       <Box
         sx={{
           display: "flex",
@@ -94,9 +99,50 @@ const TrainingGoalsSection = ({
             flex: 1,
           }}
         />
+
+        {error && (
+          <Typography
+            sx={{
+              color:
+                "primary.main",
+
+              fontSize: 8,
+
+              fontWeight: 700,
+
+              letterSpacing:
+                "0.8px",
+
+              textTransform:
+                "uppercase",
+
+              whiteSpace:
+                "nowrap",
+            }}
+          >
+            Required
+          </Typography>
+        )}
       </Box>
 
-      {/* Goal cards */}
+      {error && (
+        <Typography
+          role="alert"
+          sx={{
+            color: "#ff7417",
+
+            fontSize: 9,
+
+            lineHeight: 1.5,
+
+            mb: 1.5,
+          }}
+        >
+          Please select at least one
+          training goal.
+        </Typography>
+      )}
+
       <Box
         sx={{
           display: "grid",
@@ -142,7 +188,6 @@ const TrainingGoalsSection = ({
                 },
               }}
             >
-              {/* Icon */}
               <Box
                 sx={{
                   width: 32,
@@ -161,7 +206,6 @@ const TrainingGoalsSection = ({
                 {goal.icon}
               </Box>
 
-              {/* Text */}
               <Box>
                 <Typography
                   sx={{
@@ -186,7 +230,6 @@ const TrainingGoalsSection = ({
                 </Typography>
               </Box>
 
-              {/* Selected check */}
               {selected && (
                 <Box
                   sx={{

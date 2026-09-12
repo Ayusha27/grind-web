@@ -8,6 +8,11 @@ interface HealthLifestyleSectionProps {
     field: K,
     value: IntakeFormData[K]
   ) => void;
+
+  dietError?: boolean;
+  healthError?: boolean;
+  dietSectionId?: string;
+  healthSectionId?: string;
 }
 
 const injuries = [
@@ -20,6 +25,10 @@ const injuries = [
 const HealthLifestyleSection = ({
   data,
   onChange,
+  dietError = false,
+  healthError = false,
+  dietSectionId = "intake-diet-lifestyle",
+  healthSectionId = "intake-health-limitations",
 }: HealthLifestyleSectionProps) => {
   const selectedInjuries = data.injuries ?? [];
 
@@ -48,6 +57,27 @@ const HealthLifestyleSection = ({
     onChange("injuries", updated);
   };
 
+  const errorBorder = (hasError: boolean) => {
+    if (!hasError) {
+      return {};
+    }
+
+    return {
+      borderLeft:
+        "2px solid #ff7417",
+
+      pl: {
+        xs: 2.5,
+        sm: 3,
+      },
+
+      ml: {
+        xs: -2.5,
+        sm: -3,
+      },
+    };
+  };
+
   return (
     <Box
       sx={{
@@ -68,10 +98,14 @@ const HealthLifestyleSection = ({
         },
       }}
     >
-      {/* =====================================================
-          HEALTH & LIMITATIONS
-      ===================================================== */}
-      <Box>
+      <Box
+        id={healthSectionId}
+        sx={{
+          ...errorBorder(
+            healthError
+          ),
+        }}
+      >
         <Box
           sx={{
             display: "flex",
@@ -100,7 +134,52 @@ const HealthLifestyleSection = ({
               flex: 1,
             }}
           />
+
+          {healthError && (
+            <Typography
+              sx={{
+                color:
+                  "primary.main",
+
+                fontSize: 8,
+
+                fontWeight: 700,
+
+                letterSpacing:
+                  "0.8px",
+
+                textTransform:
+                  "uppercase",
+
+                whiteSpace:
+                  "nowrap",
+              }}
+            >
+              Required
+            </Typography>
+          )}
         </Box>
+
+        {healthError && (
+          <Typography
+            role="alert"
+            sx={{
+              color:
+                "#ff7417",
+
+              fontSize: 9,
+
+              lineHeight: 1.5,
+
+              mb: 1.5,
+            }}
+          >
+            Please select an option.
+            If you have an injury or
+            limitation, describe it
+            below.
+          </Typography>
+        )}
 
         <Typography
           sx={{
@@ -219,10 +298,14 @@ const HealthLifestyleSection = ({
         />
       </Box>
 
-      {/* =====================================================
-          DIET & LIFESTYLE
-      ===================================================== */}
-      <Box>
+      <Box
+        id={dietSectionId}
+        sx={{
+          ...errorBorder(
+            dietError
+          ),
+        }}
+      >
         <Box
           sx={{
             display: "flex",
@@ -251,7 +334,50 @@ const HealthLifestyleSection = ({
               flex: 1,
             }}
           />
+
+          {dietError && (
+            <Typography
+              sx={{
+                color:
+                  "primary.main",
+
+                fontSize: 8,
+
+                fontWeight: 700,
+
+                letterSpacing:
+                  "0.8px",
+
+                textTransform:
+                  "uppercase",
+
+                whiteSpace:
+                  "nowrap",
+              }}
+            >
+              Required
+            </Typography>
+          )}
         </Box>
+        {dietError && (
+          <Typography
+            role="alert"
+            sx={{
+              color:
+                "#ff7417",
+
+              fontSize: 9,
+
+              lineHeight: 1.5,
+
+              mb: 1.5,
+            }}
+          >
+            Please complete your
+            dietary preference,
+            sleep, and stress level.
+          </Typography>
+        )}
 
         <Typography
           sx={{
