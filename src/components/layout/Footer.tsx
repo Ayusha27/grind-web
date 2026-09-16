@@ -1,4 +1,5 @@
 import { Box, Container, Typography } from "@mui/material";
+import InstagramIcon from "@mui/icons-material/Instagram";
 
 interface FooterProps {
   variant?: "public" | "dashboard";
@@ -69,15 +70,7 @@ const DashboardFooter = () => {
               },
             }}
           >
-            <span
-              style={{
-                fontSize: "22px",
-                lineHeight: 1,
-              }}
-            >
-              ◎
-            </span>
-
+            <InstagramIcon sx={{ fontSize: 22 }} />
             Follow us on Instagram
           </Typography>
 

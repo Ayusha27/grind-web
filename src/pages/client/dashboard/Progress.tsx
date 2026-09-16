@@ -22,7 +22,7 @@ import DayBreakdown from "../../../components/progress/DayBreakdown";
 import WeeklySummary from "../../../components/progress/WeeklySummary";
 import WeeklyWeightTracker from "../../../components/progress/WeeklyWeightTracker";
 import ThreeMonthOverview from "../../../components/progress/ThreeMonthOverview";
-import GrindLoading from "../../../components/loading/GrindLoading";
+// import GrindLoading from "../../../components/loading/GrindLoading";
 
 import { useDashboard } from "../../../context/DashboardContext";
 import { getProgress } from "../../../api/dashboardApi";
@@ -854,14 +854,14 @@ const Progress = () => {
      LOADING - GRIND EXACT LOGO LOADER
   ========================================================= */
 
-  if (
-    !dashboard ||
-    progressLoading
-  ) {
-    return (
-      <GrindLoading/>
-    );
-  }
+  // if (
+  //   !dashboard ||
+  //   progressLoading
+  // ) {
+  //   return (
+  //     // <GrindLoading/>
+  //   );
+  // }
 
   /* =========================================================
      RENDER

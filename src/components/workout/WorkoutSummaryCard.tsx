@@ -22,7 +22,6 @@ interface WorkoutSummaryCardProps {
   minimumCalories: number;
   maximumCalories: number;
   earnedCalories: number;
-  onReset: () => void;
 }
 
 interface SummaryStatProps {
@@ -139,7 +138,6 @@ const WorkoutSummaryCard = ({
   minimumCalories,
   maximumCalories,
   earnedCalories,
-  onReset,
 }: WorkoutSummaryCardProps) => {
   /*
    * =========================================================
@@ -662,85 +660,6 @@ const WorkoutSummaryCard = ({
             </Box>
           </Box>
 
-          {/* =================================================
-              RESET
-              ================================================= */}
-
-          <Button
-            onClick={onReset}
-            variant="outlined"
-            size="small"
-            startIcon={
-              <RestartAltOutlinedIcon />
-            }
-            sx={{
-              minWidth: {
-                xs: 68,
-                sm: 72,
-                md: 78,
-              },
-
-              height: {
-                xs: 28,
-                sm: 30,
-                md: 31,
-              },
-
-              px: {
-                xs: 0.8,
-                sm: 1,
-                md: 1.1,
-              },
-
-              borderColor:
-                "#d8d3cd",
-
-              borderRadius: "8px",
-
-              color: "#706b67",
-
-              fontSize: {
-                xs: 9,
-                sm: 9.5,
-                md: 10,
-              },
-
-              fontWeight: 700,
-
-              textTransform:
-                "none",
-
-              whiteSpace:
-                "nowrap",
-
-              "& .MuiButton-startIcon":
-                {
-                  marginLeft: 0,
-
-                  marginRight: {
-                    xs: 0.25,
-                    sm: 0.4,
-                  },
-
-                  "& svg": {
-                    fontSize:
-                      "14px !important",
-                  },
-                },
-
-              "&:hover": {
-                borderColor:
-                  "#ff5b38",
-
-                color: "#ff5b38",
-
-                backgroundColor:
-                  "#fff8f5",
-              },
-            }}
-          >
-            Reset
-          </Button>
         </Box>
       </Box>
 

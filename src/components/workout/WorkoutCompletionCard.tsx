@@ -97,7 +97,7 @@ const WorkoutCompletionCard = ({
               color: "#16823f",
             }}
           >
-            Synced to Month {month} · Week {week} automatically.
+            Synced to Month {month} · Week {week}.
           </Typography>
         </Box>
       </Box>

@@ -666,10 +666,12 @@ export default function Enrollment() {
 
         if (!valid) {
             showValidationDialog();
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth",
-            });
+            document
+                .getElementById("enrollment-details-section")
+                ?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
             return;
         }
 
@@ -762,10 +764,12 @@ export default function Enrollment() {
         if (!valid) {
             showValidationDialog();
 
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth",
-            });
+            document
+                .getElementById("enrollment-details-section")
+                ?.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
 
             return;
         }
@@ -899,16 +903,24 @@ export default function Enrollment() {
                         >
                             <Typography
                                 sx={{
+                                    color: "#f5f5f0",
+                                    fontFamily:
+                                        '"Bebas Neue", sans-serif',
                                     fontSize: {
-                                        xs: "24px",
-                                        sm: "28px",
+                                        xs: 32,
+                                        sm: 38,
                                     },
-                                    fontWeight: 900,
-                                    letterSpacing:
-                                        "-0.04em",
+                                    lineHeight: 1,
+                                    letterSpacing: "-0.5px",
                                 }}
                             >
                                 GRIND
+                                <Box
+                                    component="span"
+                                    sx={{ color: "#ff8a2a" }}
+                                >
+                                    .
+                                </Box>
                             </Typography>
 
                             <Typography
@@ -975,16 +987,24 @@ export default function Enrollment() {
                     >
                         <Typography
                             sx={{
+                                color: "#f5f5f0",
+                                fontFamily:
+                                    '"Bebas Neue", sans-serif',
                                 fontSize: {
-                                    xs: "24px",
-                                    sm: "28px",
+                                    xs: 32,
+                                    sm: 38,
                                 },
-                                fontWeight: 900,
-                                letterSpacing:
-                                    "-0.04em",
+                                lineHeight: 1,
+                                letterSpacing: "-0.5px",
                             }}
                         >
                             GRIND
+                            <Box
+                                component="span"
+                                sx={{ color: "#ff8a2a" }}
+                            >
+                                .
+                            </Box>
                         </Typography>
 
                         <Typography
@@ -1002,95 +1022,6 @@ export default function Enrollment() {
                     </Box>
                 </Container>
             </Box>
-
-            <Container maxWidth="lg">
-                <Box
-                    sx={{
-                        display: "grid",
-                        gridTemplateColumns: {
-                            xs: "1fr 1fr",
-                            sm: "repeat(4, 1fr)",
-                        },
-                        gap: 1,
-                        py: {
-                            xs: 2,
-                            sm: 3,
-                        },
-                        borderBottom:
-                            "1px solid #242424",
-                    }}
-                >
-                    {[
-                        ["01", "INTAKE"],
-                        [
-                            "02",
-                            "ASSESSMENT",
-                        ],
-                        [
-                            "03",
-                            "PROGRAMME",
-                        ],
-                        [
-                            "04",
-                            "ENROLLMENT",
-                        ],
-                    ].map(
-                        (
-                            [
-                                number,
-                                label,
-                            ],
-                            index
-                        ) => (
-                            <Box
-                                key={number}
-                                sx={{
-                                    display:
-                                        "flex",
-                                    alignItems:
-                                        "center",
-                                    gap: 1,
-                                    color:
-                                        index ===
-                                            3
-                                            ? "#f5f5f0"
-                                            : "#666666",
-                                }}
-                            >
-                                <Typography
-                                    sx={{
-                                        fontSize:
-                                            "11px",
-                                        fontWeight:
-                                            800,
-                                        letterSpacing:
-                                            "0.08em",
-                                    }}
-                                >
-                                    {
-                                        number
-                                    }
-                                </Typography>
-
-                                <Typography
-                                    sx={{
-                                        fontSize:
-                                            "10px",
-                                        fontWeight:
-                                            700,
-                                        letterSpacing:
-                                            "0.08em",
-                                    }}
-                                >
-                                    {
-                                        label
-                                    }
-                                </Typography>
-                            </Box>
-                        )
-                    )}
-                </Box>
-            </Container>
 
             <Box
                 sx={{
@@ -1120,6 +1051,11 @@ export default function Enrollment() {
                                 "100%",
                             maxWidth:
                                 850,
+                            mx: "auto",
+                            textAlign: "center",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
                             pt: {
                                 xs: 10,
                                 sm: 12,
@@ -1131,29 +1067,6 @@ export default function Enrollment() {
                             },
                         }}
                     >
-                        <Typography
-                            sx={{
-                                color:
-                                    "#ff8a2a",
-                                fontFamily:
-                                    '"Inter", sans-serif',
-                                fontSize: {
-                                    xs: 11,
-                                    md: 13,
-                                },
-                                fontWeight:
-                                    500,
-                                letterSpacing:
-                                    "2px",
-                                mb: {
-                                    xs: 2,
-                                    md: 2.5,
-                                },
-                            }}
-                        >
-                            STEP 04 — ENROLLMENT
-                        </Typography>
-
                         <Typography
                             component="h1"
                             sx={{
@@ -1239,6 +1152,7 @@ export default function Enrollment() {
             </Box>
 
             <Container
+                id="enrollment-details-section"
                 maxWidth="lg"
                 sx={{
                     py: {
@@ -1368,6 +1282,7 @@ export default function Enrollment() {
                 onClose={closeValidationDialog}
                 fullWidth
                 maxWidth="xs"
+                disableRestoreFocus
                 slotProps={{
                     paper: {
                         sx: {

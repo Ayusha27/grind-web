@@ -92,6 +92,11 @@ const Workout = () => {
     >
   >({});
 
+  const [
+    loggedDays,
+    setLoggedDays,
+  ] = useState<Record<string, boolean>>({});
+
   /**
    * =========================================================
    * ACCORDION STATE
@@ -304,6 +309,15 @@ const Workout = () => {
                 savedSets,
             })
           );
+
+          if (response.data.length > 0) {
+            setLoggedDays(
+              (previous) => ({
+                ...previous,
+                [workoutStateKey]: true,
+              })
+            );
+          }
         } catch (error) {
           if (!cancelled) {
             console.error(
@@ -675,6 +689,10 @@ const Workout = () => {
         selectedWorkout.id
       );
 
+    if (loggedDays[workoutStateKey]) {
+      return;
+    }
+
     setCompletedSetsByDay(
       (current) => {
         const currentDayState =
@@ -966,6 +984,13 @@ const Workout = () => {
             })
           );
 
+          setLoggedDays(
+            (previous) => ({
+              ...previous,
+              [workoutStateKey]: true,
+            })
+          );
+
           setCompletionSuccess(
             true
           );
@@ -1151,14 +1176,7 @@ const Workout = () => {
           />
         )}
 
-        {/* =================================================
-            LOGGING NOTICE
-            ================================================= */}
 
-        <LoggingNotice
-          month={month}
-          week={week}
-        />
 
         {/* =================================================
             WORKOUT SUMMARY
@@ -1195,10 +1213,6 @@ const Workout = () => {
 
           earnedCalories={
             earnedCalories
-          }
-
-          onReset={
-            handleResetDay
           }
         />
 
@@ -1312,8 +1326,9 @@ const Workout = () => {
 
             disabled={
               completedSets ===
-              0 ||
-              isSubmitting
+                0 ||
+              isSubmitting ||
+              loggedDays[getWorkoutStateKey(month, week, selectedWorkout.id)]
             }
 
             fullWidth
@@ -1366,7 +1381,11 @@ const Workout = () => {
               },
             }}
           >
-            ✓ Mark Workout Complete
+            {isSubmitting
+              ? "Syncing..."
+              : loggedDays[getWorkoutStateKey(month, week, selectedWorkout.id)]
+              ? "✓ Already Logged"
+              : "✓ Mark Workout Complete"}
           </Button>
         </Box>
 

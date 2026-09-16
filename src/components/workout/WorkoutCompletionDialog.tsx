@@ -384,7 +384,7 @@ const WorkoutCompletionDialog = ({
               }}
             >
               {isSubmitting
-                ? "Saving..."
+                ? "Syncing..."
                 : "Mark Complete"}
             </Button>
           </DialogActions>

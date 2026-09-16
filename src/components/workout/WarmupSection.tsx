@@ -99,11 +99,7 @@ const WarmUpSection = ({
               color: "#6c6762",
             }}
           >
-            A proper warm-up gradually raises your heart rate,
-            improves blood flow and prepares your joints and
-            muscles for the workout. It can improve movement
-            quality and reduce the risk of strain. Complete
-            these before starting your working sets.
+            Prepare your joints and muscles for the workout to reduce the risk of strain. Complete these before starting your working sets.
           </Typography>
         </Box>
       </Box>

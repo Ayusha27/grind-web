@@ -229,7 +229,7 @@ const EnrollmentExpertServices = ({
 
                             <Box
                                 sx={{
-                                    mt: 3,
+                                    mt: "auto",
                                     pt: 2,
                                     borderTop:
                                         "1px solid #242424",
