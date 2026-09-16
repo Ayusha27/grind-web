@@ -19,6 +19,22 @@ import GrindWalkthrough from "../pages/public/GrindWalkthrough/GrindWalkthrough"
 import GlobalLoader from "../components/common/GlobalLoader";
 import Enrollment from "../pages/public/Enrollment/Enrollment";
 
+// 🚀 Newly Added Auth & Admin Pages
+import Login from "../pages/auth/Login";
+import AdminLogin from "../pages/admin/AdminLogin";
+import AdminLayout from "../components/admin/AdminLayout";
+import ProtectedRoute from "../components/auth/ProtectedRoute";
+import DashboardOverview from "../pages/admin/DashboardOverview";
+import ClientsList from "../pages/admin/clients/ClientsList";
+import CreateClient from "../pages/admin/clients/CreateClient";
+import ClientDetails from "../pages/admin/clients/ClientDetails";
+import CreatePlan from "../pages/admin/plans/CreatePlan";
+import ImportWorkout from "../pages/admin/plans/ImportWorkout";
+import AddProgress from "../pages/admin/progress/AddProgress";
+import AddDiet from "../pages/admin/progress/AddDiet";
+import Coupons from "../pages/admin/business/Coupons";
+import AffiliateDashboard from "../pages/admin/business/AffiliateDashboard";
+
 const AppRoutes = () => {
   console.log("🔥 APP ROUTES IS RENDERING");
   const BASE_PATH = "/GRIND";
@@ -58,10 +74,12 @@ const AppRoutes = () => {
           element={<SubmissionSuccess />}
         />
 
+        {/* Auth */}
         <Route
           path="/login"
-          element={<div>Login</div>}
+          element={<Login />}
         />
+        <Route path="/client/login" element={<Navigate to="/login" replace />} />
 
         {/* Client Dashboard */}
         <Route
@@ -98,16 +116,32 @@ const AppRoutes = () => {
           element={<Enrollment />}
         />
 
-        {/* Admin */}
+        {/* Admin Login */}
         <Route
           path="/admin/login"
-          element={<div>Admin Login</div>}
+          element={<AdminLogin />}
         />
 
-        <Route
-          path="/admin/dashboard"
-          element={<div>Admin Dashboard</div>}
-        />
+        {/* Admin Dashboard */}
+        <Route element={<ProtectedRoute fallbackPath="/admin/login" />}>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Navigate to="/admin/dashboard" replace />} />
+            <Route path="dashboard" element={<DashboardOverview />} />
+
+            <Route path="clients" element={<ClientsList />} />
+            <Route path="clients/create" element={<CreateClient />} />
+            <Route path="clients/details/:id" element={<ClientDetails />} />
+
+            <Route path="plans/create" element={<CreatePlan />} />
+            <Route path="plans/import" element={<ImportWorkout />} />
+
+            <Route path="progress/add" element={<AddProgress />} />
+            <Route path="diet/add" element={<AddDiet />} />
+
+            <Route path="business/coupons" element={<Coupons />} />
+            <Route path="business/affiliate" element={<AffiliateDashboard />} />
+          </Route>
+        </Route>
       </Routes>
     </BrowserRouter>
   );
