@@ -17,12 +17,13 @@ import Diet from "../pages/client/dashboard/Diet";
 import Progress from "../pages/client/dashboard/Progress";
 import GrindWalkthrough from "../pages/public/GrindWalkthrough/GrindWalkthrough";
 import GlobalLoader from "../components/common/GlobalLoader";
+import Enrollment from "../pages/public/Enrollment/Enrollment";
 
 const AppRoutes = () => {
   console.log("🔥 APP ROUTES IS RENDERING");
   const BASE_PATH = "/GRIND";
   return (
-      <BrowserRouter basename={BASE_PATH}>
+    <BrowserRouter basename={BASE_PATH}>
       <GlobalLoader />
       <ScrollToHash />
 
@@ -90,6 +91,11 @@ const AppRoutes = () => {
         <Route
           path="/grind-walkthrough"
           element={<GrindWalkthrough />}
+        />
+
+        <Route
+          path="/enrollment"
+          element={<Enrollment />}
         />
 
         {/* Admin */}
