@@ -94,7 +94,7 @@ const AppRoutes = () => {
         />
 
         <Route
-          path="/enrollment"
+          path="/client/enrollment"
           element={<Enrollment />}
         />
 
