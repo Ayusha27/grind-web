@@ -46,7 +46,7 @@ const IntakeFooter = () => {
           <Typography
             sx={{
               color: "#555",
-              fontSize: 8,
+              fontSize: 11,
               fontWeight: 500,
             }}
           >
@@ -56,7 +56,7 @@ const IntakeFooter = () => {
           <Typography
             sx={{
               color: "#555",
-              fontSize: 8,
+              fontSize: 11,
               fontWeight: 500,
             }}
           >

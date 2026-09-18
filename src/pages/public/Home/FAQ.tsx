@@ -83,7 +83,7 @@ const FAQ = () => {
           <Typography
             sx={{
               color: "primary.main",
-              fontSize: 14,
+              fontSize: 20,
               fontWeight: 500,
               mb: 1.5,
             }}

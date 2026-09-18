@@ -21,7 +21,7 @@ import Enrollment from "../pages/public/Enrollment/Enrollment";
 
 const AppRoutes = () => {
   console.log("🔥 APP ROUTES IS RENDERING");
-  const BASE_PATH = "/GRIND";
+  const BASE_PATH = "/GRIND/";
   return (
     <BrowserRouter basename={BASE_PATH}>
       <GlobalLoader />

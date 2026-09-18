@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import WhatshotIcon from "@mui/icons-material/Whatshot";
 
 interface WorkoutCompletionCardProps {
   dayNumber: number;
@@ -49,21 +50,21 @@ const WorkoutCompletionCard = ({
           minWidth: 0,
         }}
       >
-        <Typography
-          component="span"
+        <Box
           sx={{
             mr: 1.5,
-
-            fontSize: {
-              xs: 30,
-              sm: 34,
-            },
-
-            lineHeight: 1,
+            width: { xs: 44, sm: 48 },
+            height: { xs: 44, sm: 48 },
+            flexShrink: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: "10px",
+            backgroundColor: "transparent",
           }}
         >
-          🔥
-        </Typography>
+          <WhatshotIcon sx={{ color: "#ff7417", fontSize: { xs: 26, sm: 30 } }} />
+        </Box>
 
         <Box sx={{ minWidth: 0 }}>
           <Typography

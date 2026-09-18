@@ -1,4 +1,8 @@
 import { Box, Typography } from "@mui/material";
+import WhatshotIcon from "@mui/icons-material/Whatshot";
+import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
+import MonitorWeightIcon from "@mui/icons-material/MonitorWeight";
+import BoltIcon from "@mui/icons-material/Bolt";
 import CheckIcon from "@mui/icons-material/Check";
 
 import { IntakeFormData } from "./types";
@@ -17,25 +21,25 @@ const goals = [
     value: "fat_loss",
     title: "Fat Loss",
     description: "Burn, shred, recompose",
-    icon: "🔥",
+    icon: <WhatshotIcon sx={{ color: "#ff7417", fontSize: 24 }} />,
   },
   {
     value: "muscle_gain",
     title: "Muscle Gain",
     description: "Size, mass, hypertrophy",
-    icon: "💪",
+    icon: <MonitorWeightIcon sx={{ color: "#ff7417", fontSize: 24 }} />,
   },
   {
     value: "strength",
     title: "Strength",
     description: "Power, lifts, PRs",
-    icon: "🏋️",
+    icon: <FitnessCenterIcon sx={{ color: "#ff7417", fontSize: 24 }} />,
   },
   {
     value: "general_fitness",
     title: "General Fitness",
     description: "Move better, feel better",
-    icon: "⚡",
+    icon: <BoltIcon sx={{ color: "#ff7417", fontSize: 24 }} />,
   },
 ];
 
@@ -82,14 +86,14 @@ const TrainingGoalsSection = ({
         <Typography
           sx={{
             color: "primary.main",
-            fontSize: 9,
+            fontSize: 12,
             fontWeight: 700,
             letterSpacing: "2px",
             textTransform: "uppercase",
             whiteSpace: "nowrap",
           }}
         >
-          Training Goals
+          Training Goals <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
         </Typography>
 
         <Box
@@ -106,7 +110,7 @@ const TrainingGoalsSection = ({
               color:
                 "primary.main",
 
-              fontSize: 8,
+              fontSize: 11,
 
               fontWeight: 700,
 
@@ -131,7 +135,7 @@ const TrainingGoalsSection = ({
           sx={{
             color: "#ff7417",
 
-            fontSize: 9,
+            fontSize: 12,
 
             lineHeight: 1.5,
 
@@ -200,7 +204,7 @@ const TrainingGoalsSection = ({
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: 16,
+                  fontSize: 22,
                 }}
               >
                 {goal.icon}
@@ -210,7 +214,7 @@ const TrainingGoalsSection = ({
                 <Typography
                   sx={{
                     color: "#f5f5f0",
-                    fontSize: 12,
+                    fontSize: 16,
                     fontWeight: 700,
                     lineHeight: 1.2,
                   }}
@@ -221,7 +225,7 @@ const TrainingGoalsSection = ({
                 <Typography
                   sx={{
                     color: "#777",
-                    fontSize: 9,
+                    fontSize: 12,
                     lineHeight: 1.4,
                     mt: 0.35,
                   }}
@@ -248,7 +252,7 @@ const TrainingGoalsSection = ({
                   <CheckIcon
                     sx={{
                       color: "#fff",
-                      fontSize: 12,
+                      fontSize: 16,
                     }}
                   />
                 </Box>

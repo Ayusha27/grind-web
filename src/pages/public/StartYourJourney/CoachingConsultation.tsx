@@ -4,7 +4,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import { useNavigate } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 
 import { IntakeFormData } from "./types";
 
@@ -23,7 +23,7 @@ const CoachingConsultation = ({
   data,
   onChange,
 }: CoachingConsultationProps) => {
-  const navigate = useNavigate();
+
 
   return (
     <Box
@@ -52,7 +52,7 @@ const CoachingConsultation = ({
         <Typography
           sx={{
             color: "#ff7417",
-            fontSize: 8,
+            fontSize: 11,
             fontWeight: 700,
             letterSpacing: "1.2px",
             whiteSpace: "nowrap",
@@ -129,7 +129,7 @@ const CoachingConsultation = ({
             sx={{
               color: "#f5f5f0",
 
-              fontSize: 10,
+              fontSize: 14,
 
               fontWeight: 700,
 
@@ -146,7 +146,7 @@ const CoachingConsultation = ({
 
               color: "#666",
 
-              fontSize: 8,
+              fontSize: 11,
 
               lineHeight: 1.45,
             }}
@@ -167,7 +167,7 @@ const CoachingConsultation = ({
 
               color: "#555",
 
-              fontSize: 7.5,
+              fontSize: 10,
 
               lineHeight: 1.4,
             }}
@@ -185,13 +185,10 @@ const CoachingConsultation = ({
             on the{" "}
 
             <Box
-              component="button"
-              type="button"
-              onClick={() =>
-                navigate(
-                  "/membership-guide"
-                )
-              }
+              component={RouterLink}
+              to="/membership-guide"
+              target="_blank"
+              rel="noopener noreferrer"
               sx={{
                 display: "inline",
 

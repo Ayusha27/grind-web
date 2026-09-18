@@ -117,7 +117,7 @@ const HealthLifestyleSection = ({
           <Typography
             sx={{
               color: "primary.main",
-              fontSize: 9,
+              fontSize: 12,
               fontWeight: 700,
               letterSpacing: "2px",
               textTransform: "uppercase",
@@ -141,7 +141,7 @@ const HealthLifestyleSection = ({
                 color:
                   "primary.main",
 
-                fontSize: 8,
+                fontSize: 11,
 
                 fontWeight: 700,
 
@@ -167,7 +167,7 @@ const HealthLifestyleSection = ({
               color:
                 "#ff7417",
 
-              fontSize: 9,
+              fontSize: 12,
 
               lineHeight: 1.5,
 
@@ -184,14 +184,14 @@ const HealthLifestyleSection = ({
         <Typography
           sx={{
             color: "#777",
-            fontSize: 9,
+            fontSize: 12,
             fontWeight: 700,
             letterSpacing: "1px",
             textTransform: "uppercase",
             mb: 1,
           }}
         >
-          Any injuries or physical limitations?
+          Any injuries or physical limitations? <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
         </Typography>
 
         <Box>
@@ -232,7 +232,7 @@ const HealthLifestyleSection = ({
                     },
 
                     "& .MuiSvgIcon-root": {
-                      fontSize: 20,
+                      fontSize: 27,
                     },
                   }}
                 />
@@ -240,7 +240,7 @@ const HealthLifestyleSection = ({
                 <Typography
                   sx={{
                     color: selected ? "#f5f5f0" : "#777",
-                    fontSize: 10,
+                    fontSize: 14,
                     fontWeight: selected ? 500 : 400,
                   }}
                 >
@@ -254,7 +254,7 @@ const HealthLifestyleSection = ({
         <Typography
           sx={{
             color: "#777",
-            fontSize: 9,
+            fontSize: 12,
             fontWeight: 700,
             letterSpacing: "1px",
             textTransform: "uppercase",
@@ -283,7 +283,7 @@ const HealthLifestyleSection = ({
             px: 1.5,
             py: 1.25,
             fontFamily: "inherit",
-            fontSize: 10,
+            fontSize: 14,
             outline: "none",
 
             "&::placeholder": {
@@ -317,7 +317,7 @@ const HealthLifestyleSection = ({
           <Typography
             sx={{
               color: "primary.main",
-              fontSize: 9,
+              fontSize: 12,
               fontWeight: 700,
               letterSpacing: "2px",
               textTransform: "uppercase",
@@ -341,7 +341,7 @@ const HealthLifestyleSection = ({
                 color:
                   "primary.main",
 
-                fontSize: 8,
+                fontSize: 11,
 
                 fontWeight: 700,
 
@@ -366,7 +366,7 @@ const HealthLifestyleSection = ({
               color:
                 "#ff7417",
 
-              fontSize: 9,
+              fontSize: 12,
 
               lineHeight: 1.5,
 
@@ -382,14 +382,14 @@ const HealthLifestyleSection = ({
         <Typography
           sx={{
             color: "#777",
-            fontSize: 9,
+            fontSize: 12,
             fontWeight: 700,
             letterSpacing: "1px",
             textTransform: "uppercase",
             mb: 1,
           }}
         >
-          Dietary Preference
+          Dietary Preference <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
         </Typography>
 
         <Box
@@ -406,7 +406,7 @@ const HealthLifestyleSection = ({
             color: "#f5f5f0",
             px: 1.5,
             fontFamily: "inherit",
-            fontSize: 10,
+            fontSize: 14,
             outline: "none",
 
             "&:focus": {
@@ -425,7 +425,7 @@ const HealthLifestyleSection = ({
         <Typography
           sx={{
             color: "#777",
-            fontSize: 9,
+            fontSize: 12,
             fontWeight: 700,
             letterSpacing: "1px",
             textTransform: "uppercase",
@@ -433,7 +433,7 @@ const HealthLifestyleSection = ({
             mb: 1,
           }}
         >
-          Average Sleep (Hours/Night)
+          Average Sleep (Hours/Night) <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
         </Typography>
 
         <Box
@@ -450,7 +450,7 @@ const HealthLifestyleSection = ({
             color: "#f5f5f0",
             px: 1.5,
             fontFamily: "inherit",
-            fontSize: 10,
+            fontSize: 14,
             outline: "none",
 
             "&:focus": {
@@ -472,7 +472,7 @@ const HealthLifestyleSection = ({
         <Typography
           sx={{
             color: "#777",
-            fontSize: 9,
+            fontSize: 12,
             fontWeight: 700,
             letterSpacing: "1px",
             textTransform: "uppercase",
@@ -480,7 +480,7 @@ const HealthLifestyleSection = ({
             mb: 1,
           }}
         >
-          Stress Level (Daily)
+          Stress Level (Daily) <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
         </Typography>
 
         <Box
@@ -497,7 +497,7 @@ const HealthLifestyleSection = ({
             color: "#f5f5f0",
             px: 1.5,
             fontFamily: "inherit",
-            fontSize: 10,
+            fontSize: 14,
             outline: "none",
 
             "&:focus": {

@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import WhatshotIcon from "@mui/icons-material/Whatshot";
 
 interface CalorieCardProps {
   minimumCalories: number;
@@ -41,14 +42,17 @@ const CalorieCard = ({
       >
         <Box
           sx={{
-            fontSize: {
-              xs: 25,
-              sm: 30,
-            },
-            lineHeight: 1,
+            width: { xs: 38, sm: 44 },
+            height: { xs: 38, sm: 44 },
+            flexShrink: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            borderRadius: "10px",
+            backgroundColor: "transparent",
           }}
         >
-          🔥
+          <WhatshotIcon sx={{ color: "#ff7417", fontSize: { xs: 22, sm: 26 } }} />
         </Box>
 
         <Box>
