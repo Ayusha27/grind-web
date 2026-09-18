@@ -4,12 +4,8 @@ import api from '../../../services/api';
 
 const AddDiet = () => {
     const [formData, setFormData] = useState({
-        clientId: '',
-        calories: '',
-        protein: '',
-        carbs: '',
-        fats: '',
-        notes: ''
+        access_token: '',
+        diet_json: ''
     });
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState('');
@@ -28,7 +24,7 @@ const AddDiet = () => {
         try {
             await api.post('/admin/diet', formData);
             setSuccess('Diet protocol logged successfully!');
-            setFormData({ clientId: '', calories: '', protein: '', carbs: '', fats: '', notes: '' });
+            setFormData({ access_token: '', diet_json: '' });
         } catch (err: any) {
             setError(err.response?.data?.message || 'Failed to log diet');
         } finally {
@@ -46,29 +42,35 @@ const AddDiet = () => {
 
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={3}>
-                        <Grid item xs={12}>
-                            <TextField fullWidth label="Client ID" name="clientId" value={formData.clientId} onChange={handleChange} variant="filled" required />
+                        <Grid size={{ xs: 12 }}>
+                            <TextField
+                                fullWidth
+                                label="Access Token"
+                                name="access_token"
+                                value={formData.access_token}
+                                onChange={handleChange}
+                                variant="filled"
+                                required
+                            />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField fullWidth label="Daily Calories Target" name="calories" value={formData.calories} onChange={handleChange} type="number" variant="filled" required />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField fullWidth label="Protein (g)" name="protein" value={formData.protein} onChange={handleChange} type="number" variant="filled" />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField fullWidth label="Carbs (g)" name="carbs" value={formData.carbs} onChange={handleChange} type="number" variant="filled" />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField fullWidth label="Fats (g)" name="fats" value={formData.fats} onChange={handleChange} type="number" variant="filled" />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField fullWidth label="Nutrition Notes / Meal Timings" name="notes" value={formData.notes} onChange={handleChange} multiline rows={4} variant="filled" />
+                        <Grid size={{ xs: 12 }}>
+                            <TextField
+                                fullWidth
+                                label="Diet JSON (Paste raw JSON data here)"
+                                name="diet_json"
+                                value={formData.diet_json}
+                                onChange={handleChange}
+                                multiline
+                                rows={10}
+                                variant="filled"
+                                required
+                            />
                         </Grid>
                     </Grid>
                     <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-                        <Button variant="outlined" color="inherit">Cancel</Button>
+                        <Button variant="outlined" color="inherit" onClick={() => setFormData({ access_token: '', diet_json: '' })}>Cancel</Button>
                         <Button type="submit" variant="contained" color="primary" disabled={loading}>
-                            {loading ? 'Logging...' : 'Save Diet'}
+                            {loading ? 'Saving...' : 'Save Diet'}
                         </Button>
                     </Box>
                 </form>

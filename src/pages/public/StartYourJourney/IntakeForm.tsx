@@ -652,14 +652,12 @@ const IntakeForm = () => {
       <Container
         maxWidth={false}
         sx={{
-          maxWidth: 800,
-
           mx: "auto",
 
           px: {
             xs: 1.5,
             sm: 2,
-            md: 0,
+            md: 4,
           },
         }}
       >

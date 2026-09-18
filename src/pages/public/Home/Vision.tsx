@@ -1,6 +1,6 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 
-import visionImage from "../../../assets/vision-image.jpg";
+import visionsImage from "../../../assets/visions-image.jpg";
 
 const Vision = () => {
   return (
@@ -34,8 +34,8 @@ const Vision = () => {
             md: 7,
           }}
           sx={{
-          alignItems: "center",
-        }}
+            alignItems: "center",
+          }}
         >
           {/* Image */}
           <Grid
@@ -46,7 +46,7 @@ const Vision = () => {
           >
             <Box
               component="img"
-              src={visionImage}
+              src={visionsImage}
               alt="Person standing in front of a mountain at sunrise"
               sx={{
                 width: "100%",

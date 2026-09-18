@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
-import { Box, Typography, Card, TextField, Button, Grid, MenuItem, Alert } from '@mui/material';
+import { Box, Typography, Card, TextField, Button, Grid, Alert } from '@mui/material';
 import api from '../../../services/api';
 
 const CreatePlan = () => {
     const [formData, setFormData] = useState({
-        title: '',
-        type: 'Workout',
-        duration: '',
-        description: ''
+        client_id: '',
+        plan_name: '',
+        workout_json: ''
     });
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState('');
@@ -24,9 +23,12 @@ const CreatePlan = () => {
         setError('');
 
         try {
-            await api.post('/admin/plans', formData);
+            await api.post('/admin/plans', {
+                ...formData,
+                client_id: parseInt(formData.client_id, 10)
+            });
             setSuccess('Plan created successfully!');
-            setFormData({ title: '', type: 'Workout', duration: '', description: '' });
+            setFormData({ client_id: '', plan_name: '', workout_json: '' });
         } catch (err: any) {
             setError(err.response?.data?.message || 'Failed to create plan');
         } finally {
@@ -44,25 +46,45 @@ const CreatePlan = () => {
 
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={3}>
-                        <Grid item xs={12}>
-                            <TextField fullWidth label="Plan Title" name="title" value={formData.title} onChange={handleChange} variant="filled" required />
+                        <Grid size={{ xs: 12, sm: 6 }}>
+                            <TextField
+                                fullWidth
+                                label="Client ID"
+                                name="client_id"
+                                value={formData.client_id}
+                                onChange={handleChange}
+                                type="number"
+                                variant="filled"
+                                required
+                            />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField select fullWidth label="Plan Type" name="type" value={formData.type} onChange={handleChange} variant="filled" required>
-                                <MenuItem value="Workout">Workout</MenuItem>
-                                <MenuItem value="Diet">Diet</MenuItem>
-                                <MenuItem value="Hybrid">Hybrid</MenuItem>
-                            </TextField>
+                        <Grid size={{ xs: 12, sm: 6 }}>
+                            <TextField
+                                fullWidth
+                                label="Plan Name"
+                                name="plan_name"
+                                value={formData.plan_name}
+                                onChange={handleChange}
+                                variant="filled"
+                                required
+                            />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField fullWidth label="Duration (Weeks)" name="duration" value={formData.duration} onChange={handleChange} type="number" variant="filled" required />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField fullWidth label="Detailed Description" name="description" value={formData.description} onChange={handleChange} multiline rows={6} variant="filled" required />
+                        <Grid size={{ xs: 12 }}>
+                            <TextField
+                                fullWidth
+                                label="Workout JSON (Paste raw JSON data here)"
+                                name="workout_json"
+                                value={formData.workout_json}
+                                onChange={handleChange}
+                                multiline
+                                rows={10}
+                                variant="filled"
+                                required
+                            />
                         </Grid>
                     </Grid>
                     <Box sx={{ mt: 4, display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-                        <Button variant="outlined" color="inherit">Cancel</Button>
+                        <Button variant="outlined" color="inherit" onClick={() => setFormData({ client_id: '', plan_name: '', workout_json: '' })}>Cancel</Button>
                         <Button type="submit" variant="contained" color="primary" disabled={loading}>
                             {loading ? 'Publishing...' : 'Publish Plan'}
                         </Button>

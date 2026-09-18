@@ -1,7 +1,7 @@
 import { Box, Grid, List, ListItem, ListItemText, Typography } from "@mui/material";
 import Section from "../../../components/ui/Section";
 
-import problemSection from "../../../assets/problem-section.jpg";
+import problemSection from "../../../assets/problems-section.jpg";
 
 const WhyPlansFail = () => {
   const problems = [
@@ -73,15 +73,15 @@ const WhyPlansFail = () => {
                 }}
               >
                 <Typography
-                sx={{
+                  sx={{
                     fontSize: {
-                    xs: 16,
-                    md: 17,
+                      xs: 16,
+                      md: 17,
                     },
                     lineHeight: 1.5,
-                }}
+                  }}
                 >
-                {problem}
+                  {problem}
                 </Typography>
               </ListItem>
             ))}

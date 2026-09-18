@@ -1,4 +1,5 @@
 import { Box, Typography } from "@mui/material";
+import WhatshotIcon from "@mui/icons-material/Whatshot";
 
 export interface WarmUpExercise {
   id: number;
@@ -61,12 +62,10 @@ const WarmUpSection = ({
             justifyContent: "center",
 
             borderRadius: "12px",
-            backgroundColor: "#fff0eb",
-
-            fontSize: 27,
+            backgroundColor: "transparent",
           }}
         >
-          🔥
+          <WhatshotIcon sx={{ color: "#ff7417", fontSize: 27 }} />
         </Box>
 
         {/* Header text */}

@@ -37,7 +37,7 @@ import AffiliateDashboard from "../pages/admin/business/AffiliateDashboard";
 
 const AppRoutes = () => {
   console.log("🔥 APP ROUTES IS RENDERING");
-  const BASE_PATH = "/GRIND";
+  const BASE_PATH = "/GRIND/";
   return (
     <BrowserRouter basename={BASE_PATH}>
       <GlobalLoader />

@@ -66,7 +66,7 @@ const FinalCTA = () => {
           {/* CTA */}
           <Button
             component={RouterLink}
-            to="/start"
+            to="/start-your-journey"
             variant="contained"
             sx={{
               backgroundColor: "#0b0b0b",
