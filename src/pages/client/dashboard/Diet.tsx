@@ -63,9 +63,7 @@ const Diet = () => {
    * undefined = nothing selected.
    */
   const [selectedMeals, setSelectedMeals] =
-    useState<Record<string, number | undefined>>({
-      Breakfast: 0,
-    });
+    useState<Record<string, number | undefined>>({});
 
   /*
    * =========================================================
