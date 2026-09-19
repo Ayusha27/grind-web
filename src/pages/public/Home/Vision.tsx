@@ -1,6 +1,6 @@
 import { Box, Container, Grid, Typography } from "@mui/material";
 
-import visionsImage from "../../../assets/visions-image.jpg";
+import visionsImage from "../../../assets/vision.jpeg";
 
 const Vision = () => {
   return (
