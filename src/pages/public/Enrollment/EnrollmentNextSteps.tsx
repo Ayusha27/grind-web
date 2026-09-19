@@ -70,13 +70,29 @@ const EnrollmentNextSteps = () => {
             {/* Steps */}
             <Box
                 sx={{
+                    width: "100%",
+                    minWidth: 0,
                     display: "grid",
                     gridTemplateColumns: {
-                        xs: "1fr",
+                        xs: "none",
                         sm: "repeat(2, 1fr)",
                         lg: "repeat(6, 1fr)",
                     },
                     gap: 1,
+
+                    "@media (max-width:599px)": {
+                        display: "flex",
+                        overflowX: "auto",
+                        flexWrap: "nowrap",
+                        gap: 1.25,
+                        pb: 1,
+                        scrollSnapType: "x mandatory",
+                        WebkitOverflowScrolling: "touch",
+                        scrollbarWidth: "none",
+                        "&::-webkit-scrollbar": {
+                            display: "none",
+                        },
+                    },
                 }}
             >
                 {steps.map((step) => (
@@ -96,6 +112,12 @@ const EnrollmentNextSteps = () => {
                             },
                             display: "flex",
                             flexDirection: "column",
+                            
+                            "@media (max-width:599px)": {
+                                flex: "0 0 82%",
+                                maxWidth: "82%",
+                                scrollSnapAlign: "start",
+                            },
                         }}
                     >
                         {/* Number */}
@@ -146,6 +168,39 @@ const EnrollmentNextSteps = () => {
                         </Typography>
                     </Box>
                 ))}
+            </Box>
+
+            {/* Mobile swipe hint */}
+            <Box
+                sx={{
+                    display: { xs: "flex", sm: "none" },
+                    alignItems: "center",
+                    justifyContent: "flex-end",
+                    gap: 0.75,
+                    mt: 1,
+                    pr: 1
+                }}
+            >
+                <Typography
+                    sx={{
+                        fontSize: 9,
+                        color: "#666",
+                        textTransform: "uppercase",
+                        fontWeight: 700,
+                        letterSpacing: 0.2,
+                    }}
+                >
+                    Swipe for next steps
+                </Typography>
+                <Typography
+                    sx={{
+                        fontSize: 10,
+                        color: "#ff8a2a",
+                        lineHeight: 1,
+                    }}
+                >
+                    →
+                </Typography>
             </Box>
         </Box>
     );
