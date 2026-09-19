@@ -7,6 +7,7 @@ interface Plan {
   monthlyPrice: string;
   description: string;
   features: string[];
+  subtitle?: string;
   badge?: string;
   bonus?: {
     items: string[];
@@ -21,7 +22,7 @@ const plans: Plan[] = [
     price: "₹3,499",
     monthlyPrice: "₹875 / month*",
     description: "Perfect for beginners building consistency.",
-    badge: "FOUNDATION",
+    subtitle: "FOUNDATION",
     features: [
       "Personalized Workout Programme",
       "AI Nutrition Guidance",
@@ -36,7 +37,8 @@ const plans: Plan[] = [
     monthlyPrice: "₹725 / month*",
     description:
       "For noticeable transformation and lifestyle change.",
-    badge: "MOST POPULAR",
+    subtitle: "MOST POPULAR",
+    badge: "MOST RECOMMENDED",
     features: [
       "Everything in Kickstart",
       "1 Complimentary Lifestyle Consultation",
@@ -58,7 +60,7 @@ const plans: Plan[] = [
     price: "₹12,999",
     monthlyPrice: "₹494 / month*",
     description: "For long-term health and performance.",
-    badge: "BEST VALUE",
+    subtitle: "BEST VALUE",
     features: [
       "Everything in Transformation",
       "2 Complimentary Lifestyle Consultations",
@@ -126,7 +128,7 @@ const MembershipPlans = () => {
           }}
         >
           {plans.map((plan) => {
-            const highlighted = plan.badge === "MOST POPULAR";
+            const highlighted = plan.subtitle === "MOST POPULAR";
 
             return (
               <Box
@@ -141,9 +143,35 @@ const MembershipPlans = () => {
                   p: 3.5,
                   display: "flex",
                   flexDirection: "column",
+                  overflow: "hidden",
                 }}
               >
                 {plan.badge && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      backgroundColor: "primary.main",
+                      color: "#050505",
+                      px: 1.5,
+                      py: 0.7,
+                      borderBottomLeftRadius: 8,
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontSize: 10,
+                        fontWeight: 800,
+                        letterSpacing: "0.8px",
+                      }}
+                    >
+                      {plan.badge}
+                    </Typography>
+                  </Box>
+                )}
+
+                {plan.subtitle && (
                   <Typography
                     sx={{
                       color: "primary.main",
@@ -153,7 +181,7 @@ const MembershipPlans = () => {
                       textTransform: "uppercase",
                     }}
                   >
-                    {plan.badge}
+                    {plan.subtitle}
                   </Typography>
                 )}
 

@@ -1,7 +1,7 @@
 import { Box, Grid, List, ListItem, ListItemText, Typography } from "@mui/material";
 import Section from "../../../components/ui/Section";
 
-import problemSection from "../../../assets/problems-section.jpg";
+import problemSection from "../../../assets/problems-section.jpeg";
 
 const WhyPlansFail = () => {
   const problems = [

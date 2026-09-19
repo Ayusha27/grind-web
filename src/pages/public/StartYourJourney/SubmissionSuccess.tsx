@@ -172,7 +172,6 @@ const SubmissionSuccess = () => {
       <Container
         maxWidth={false}
         sx={{
-          maxWidth: 620,
           mx: "auto",
           px: 3,
           py: {
