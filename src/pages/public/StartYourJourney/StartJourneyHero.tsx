@@ -1,4 +1,5 @@
 import { Box, Container, Typography } from "@mui/material";
+import { Link } from "react-router-dom";
 
 const StartJourneyHero = () => {
   return (
@@ -33,13 +34,17 @@ const StartJourneyHero = () => {
           }}
         >
           <Typography
+            component={Link}
+            to="/"
             sx={{
               fontFamily: '"Bebas Neue", sans-serif',
               fontSize: {
-                xs: 34,
-                md: 42,
+                xs: 46,
+                md: 57,
               },
               lineHeight: 1,
+              textDecoration: "none",
+              color: "inherit",
             }}
           >
             GRIND
@@ -56,7 +61,7 @@ const StartJourneyHero = () => {
           <Typography
             sx={{
               color: "#666",
-              fontSize: 11,
+              fontSize: 15,
               letterSpacing: 1,
             }}
           >
@@ -89,8 +94,8 @@ const StartJourneyHero = () => {
             transform: "translateY(-50%)",
             fontFamily: '"Bebas Neue", sans-serif',
             fontSize: {
-              xs: 150,
-              md: 230,
+              xs: 203,
+              md: 311,
             },
             lineHeight: 1,
             color: "#111",
@@ -119,8 +124,8 @@ const StartJourneyHero = () => {
             sx={{
               color: "primary.main",
               fontSize: {
-                xs: 10,
-                md: 11,
+                xs: 14,
+                md: 15,
               },
               fontWeight: 600,
               letterSpacing: 2,
@@ -136,9 +141,9 @@ const StartJourneyHero = () => {
             sx={{
               fontFamily: '"Bebas Neue", sans-serif',
               fontSize: {
-                xs: 58,
-                sm: 78,
-                md: 105,
+                xs: 78,
+                sm: 105,
+                md: 142,
               },
               lineHeight: 0.9,
               letterSpacing: -1,
@@ -153,8 +158,8 @@ const StartJourneyHero = () => {
               maxWidth: 540,
               color: "#777",
               fontSize: {
-                xs: 13,
-                md: 14,
+                xs: 18,
+                md: 19,
               },
               lineHeight: 1.75,
             }}

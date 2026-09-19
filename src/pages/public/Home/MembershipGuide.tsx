@@ -93,7 +93,7 @@ const MembershipGuide = () => {
           {/* CTA */}
           <Button
             component={RouterLink}
-            to="/membership"
+            to="/membership-guide"
             variant="contained"
             color="primary"
             sx={{

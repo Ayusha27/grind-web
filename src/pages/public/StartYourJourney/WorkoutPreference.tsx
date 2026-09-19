@@ -1,4 +1,7 @@
 import { Box, Typography } from "@mui/material";
+import BusinessIcon from "@mui/icons-material/Business";
+import HomeIcon from "@mui/icons-material/Home";
+import SyncIcon from "@mui/icons-material/Sync";
 import CheckIcon from "@mui/icons-material/Check";
 
 import { IntakeFormData } from "./types";
@@ -17,19 +20,19 @@ const preferences = [
     value: "gym",
     title: "Gym",
     description: "Full equipment access",
-    icon: "🏢",
+    icon: <BusinessIcon sx={{ color: "#ff7417", fontSize: 24 }} />,
   },
   {
     value: "home",
     title: "Home",
     description: "Minimal or no equipment",
-    icon: "🏠",
+    icon: <HomeIcon sx={{ color: "#ff7417", fontSize: 24 }} />,
   },
   {
     value: "both",
     title: "Both",
     description: "Mix of gym & home",
-    icon: "🔄",
+    icon: <SyncIcon sx={{ color: "#ff7417", fontSize: 24 }} />,
   },
 ];
 
@@ -67,7 +70,7 @@ const WorkoutPreference = ({
           sx={{
             color: "#777",
 
-            fontSize: 9,
+            fontSize: 12,
 
             fontWeight: 700,
 
@@ -77,7 +80,7 @@ const WorkoutPreference = ({
               "uppercase",
           }}
         >
-          Workout Preference
+          Workout Preference <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
         </Typography>
         <Box
           sx={{
@@ -96,7 +99,7 @@ const WorkoutPreference = ({
               color:
                 "primary.main",
 
-              fontSize: 8,
+              fontSize: 11,
 
               fontWeight: 700,
 
@@ -121,7 +124,7 @@ const WorkoutPreference = ({
           sx={{
             color: "#ff7417",
 
-            fontSize: 9,
+            fontSize: 12,
 
             lineHeight: 1.5,
 
@@ -189,7 +192,7 @@ const WorkoutPreference = ({
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: 15,
+                  fontSize: 20,
                 }}
               >
                 {preference.icon}
@@ -199,7 +202,7 @@ const WorkoutPreference = ({
                 <Typography
                   sx={{
                     color: "#f5f5f0",
-                    fontSize: 11,
+                    fontSize: 15,
                     fontWeight: 700,
                     lineHeight: 1.2,
                   }}
@@ -210,7 +213,7 @@ const WorkoutPreference = ({
                 <Typography
                   sx={{
                     color: "#777",
-                    fontSize: 8,
+                    fontSize: 11,
                     lineHeight: 1.4,
                     mt: 0.3,
                   }}
@@ -237,7 +240,7 @@ const WorkoutPreference = ({
                   <CheckIcon
                     sx={{
                       color: "#fff",
-                      fontSize: 12,
+                      fontSize: 16,
                     }}
                   />
                 </Box>

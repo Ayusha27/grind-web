@@ -57,8 +57,8 @@ const SubmissionSuccess = () => {
               color: "#f5f5f0",
               fontFamily: '"Bebas Neue", sans-serif',
               fontSize: {
-                xs: 34,
-                md: 42,
+                xs: 46,
+                md: 57,
               },
               lineHeight: 1,
               flexShrink: 0,
@@ -108,9 +108,9 @@ const SubmissionSuccess = () => {
                 borderRadius: 0,
                 color: "#777",
                 fontSize: {
-                  xs: 8,
-                  sm: 9,
-                  md: 10,
+                  xs: 11,
+                  sm: 12,
+                  md: 14,
                 },
                 fontWeight: 700,
                 letterSpacing: "0.7px",
@@ -145,9 +145,9 @@ const SubmissionSuccess = () => {
                 borderColor: "#292929",
                 color: "#f5f5f0",
                 fontSize: {
-                  xs: 8,
-                  sm: 9,
-                  md: 10,
+                  xs: 11,
+                  sm: 12,
+                  md: 14,
                 },
                 fontWeight: 700,
                 letterSpacing: "0.7px",
@@ -207,7 +207,7 @@ const SubmissionSuccess = () => {
             <CheckIcon
               sx={{
                 color: "primary.main",
-                fontSize: 28,
+                fontSize: 38,
               }}
             />
           </Box>
@@ -218,7 +218,7 @@ const SubmissionSuccess = () => {
           <Typography
             sx={{
               color: "primary.main",
-              fontSize: 10,
+              fontSize: 14,
               fontWeight: 700,
               letterSpacing: "2px",
               textTransform: "uppercase",
@@ -236,9 +236,9 @@ const SubmissionSuccess = () => {
             sx={{
               fontFamily: '"Bebas Neue", sans-serif',
               fontSize: {
-                xs: 58,
-                sm: 68,
-                md: 76,
+                xs: 78,
+                sm: 92,
+                md: 103,
               },
               lineHeight: 0.9,
               letterSpacing: "-1px",
@@ -258,7 +258,7 @@ const SubmissionSuccess = () => {
           <Typography
             sx={{
               color: "#777",
-              fontSize: 13,
+              fontSize: 18,
               lineHeight: 1.7,
               maxWidth: 390,
             }}
@@ -292,7 +292,7 @@ const SubmissionSuccess = () => {
             <Typography
               sx={{
                 color: "#777",
-                fontSize: 9,
+                fontSize: 12,
                 fontWeight: 700,
                 letterSpacing: "1px",
                 textTransform: "uppercase",
@@ -337,7 +337,7 @@ const SubmissionSuccess = () => {
               <CheckIcon
                 sx={{
                   color: "#f5f5f0",
-                  fontSize: 18,
+                  fontSize: 24,
                   mt: 0.3,
                   flexShrink: 0,
                 }}
@@ -346,7 +346,7 @@ const SubmissionSuccess = () => {
               <Box>
                 <Typography
                   sx={{
-                    fontSize: 12,
+                    fontSize: 16,
                     fontWeight: 700,
                     color: "#f5f5f0",
                     mb: 1,
@@ -358,7 +358,7 @@ const SubmissionSuccess = () => {
                 <Typography
                   sx={{
                     color: "#777",
-                    fontSize: 11,
+                    fontSize: 15,
                     lineHeight: 1.7,
                   }}
                 >
@@ -371,7 +371,7 @@ const SubmissionSuccess = () => {
                 <Typography
                   sx={{
                     color: "primary.main",
-                    fontSize: 11,
+                    fontSize: 15,
                     lineHeight: 1.7,
                     mt: 2,
                   }}
@@ -383,7 +383,7 @@ const SubmissionSuccess = () => {
                 <Typography
                   sx={{
                     color: "#777",
-                    fontSize: 11,
+                    fontSize: 15,
                     lineHeight: 1.7,
                     mt: 2,
                   }}
@@ -414,7 +414,7 @@ const SubmissionSuccess = () => {
             <InstagramIcon
               sx={{
                 color: "primary.main",
-                fontSize: 24,
+                fontSize: 32,
                 mb: 1.5,
               }}
             />
@@ -422,7 +422,7 @@ const SubmissionSuccess = () => {
             <Typography
               sx={{
                 color: "#f5f5f0",
-                fontSize: 12,
+                fontSize: 16,
                 fontWeight: 700,
                 letterSpacing: "0.5px",
                 mb: 1.5,
@@ -443,7 +443,7 @@ const SubmissionSuccess = () => {
                 height: 32,
                 px: 2,
                 borderRadius: "3px",
-                fontSize: 10,
+                fontSize: 14,
                 fontWeight: 700,
               }}
             >

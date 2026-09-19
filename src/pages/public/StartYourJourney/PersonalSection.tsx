@@ -38,7 +38,7 @@ const inputStyles = {
     backgroundColor: "#151515",
     color: "#f5f5f0",
     borderRadius: 0,
-    fontSize: 12,
+    fontSize: 16,
     minHeight: 38,
   },
 
@@ -89,7 +89,7 @@ const nativeSelectStyles = {
 
   outline: "none",
 
-  fontSize: 12,
+  fontSize: 16,
 
   fontFamily: "inherit",
 
@@ -117,7 +117,7 @@ const nativeSelectStyles = {
 const labelStyles = {
   color: "#777",
 
-  fontSize: 9,
+  fontSize: 12,
 
   fontWeight: 700,
 
@@ -144,7 +144,7 @@ const ErrorMessage = ({
       sx={{
         color: "#ff7417",
 
-        fontSize: 8,
+        fontSize: 11,
 
         lineHeight: 1.4,
 
@@ -195,7 +195,7 @@ const PersonalSection = ({
           sx={{
             color: "#ff7417",
 
-            fontSize: 8,
+            fontSize: 11,
 
             fontWeight: 700,
 
@@ -241,7 +241,7 @@ const PersonalSection = ({
         }}
       >
         <Typography sx={labelStyles}>
-          Full Name
+          Full Name <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
         </Typography>
 
         <TextField
@@ -292,7 +292,7 @@ const PersonalSection = ({
         }}
       >
         <Typography sx={labelStyles}>
-          Email Address
+          Email Address <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
         </Typography>
 
         <TextField
@@ -344,7 +344,7 @@ const PersonalSection = ({
         }}
       >
         <Typography sx={labelStyles}>
-          Age
+          Age <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
         </Typography>
 
         <TextField
@@ -403,7 +403,7 @@ const PersonalSection = ({
         }}
       >
         <Typography sx={labelStyles}>
-          Gender
+          Gender <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
         </Typography>
 
         <Box
@@ -487,7 +487,7 @@ const PersonalSection = ({
 
             color: "#666",
 
-            fontSize: 8,
+            fontSize: 11,
 
             fontStyle: "italic",
           }}

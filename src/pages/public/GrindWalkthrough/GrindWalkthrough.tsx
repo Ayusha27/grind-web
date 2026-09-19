@@ -5,6 +5,8 @@ import {
     useState,
 } from "react";
 
+import { useNavigate } from "react-router-dom";
+
 import {
     Box,
     Button,
@@ -73,6 +75,8 @@ const SCENES = [
 type SceneId = (typeof SCENES)[number]["id"];
 
 const GrindWalkthrough = () => {
+    const navigate = useNavigate();
+
     const [sceneIndex, setSceneIndex] =
         useState(0);
 
@@ -505,8 +509,7 @@ const GrindWalkthrough = () => {
     const handleHowGrindWorks = () => {
         stopNarration();
 
-        window.location.href =
-            "/#how-grind-works";
+        navigate("/#how-grind-works");
     };
 
     /*

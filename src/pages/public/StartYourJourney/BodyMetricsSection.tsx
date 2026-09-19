@@ -38,7 +38,7 @@ const inputStyles = {
     backgroundColor: "#151515",
     color: "#f5f5f0",
     borderRadius: 0,
-    fontSize: 12,
+    fontSize: 16,
     minHeight: 38,
   },
 
@@ -89,7 +89,7 @@ const nativeSelectStyles = {
 
   outline: "none",
 
-  fontSize: 12,
+  fontSize: 16,
 
   fontFamily: "inherit",
 
@@ -117,7 +117,7 @@ const nativeSelectStyles = {
 const labelStyles = {
   color: "#777",
 
-  fontSize: 9,
+  fontSize: 12,
 
   fontWeight: 700,
 
@@ -144,7 +144,7 @@ const ErrorMessage = ({
       sx={{
         color: "#ff7417",
 
-        fontSize: 8,
+        fontSize: 11,
 
         lineHeight: 1.4,
 
@@ -215,7 +215,7 @@ const BodyMetricsSection = ({
           sx={{
             color: "#ff7417",
 
-            fontSize: 8,
+            fontSize: 11,
 
             fontWeight: 700,
 
@@ -255,7 +255,7 @@ const BodyMetricsSection = ({
         }}
       >
         <Typography sx={labelStyles}>
-          Weight Unit
+          Weight <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
         </Typography>
 
 
@@ -293,7 +293,7 @@ const BodyMetricsSection = ({
                   "kg"
                   ? "#ff7417"
                   : "#111",
-              fontSize: 8,
+              fontSize: 11,
               fontWeight: 700,
               boxShadow: "none",
 
@@ -337,7 +337,7 @@ const BodyMetricsSection = ({
                   "lbs"
                   ? "#ff7417"
                   : "#111",
-              fontSize: 8,
+              fontSize: 11,
               fontWeight: 700,
               boxShadow: "none",
 
@@ -405,7 +405,7 @@ const BodyMetricsSection = ({
         }}
       >
         <Typography sx={labelStyles}>
-          Height Unit
+          Height <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
         </Typography>
 
 
@@ -443,7 +443,7 @@ const BodyMetricsSection = ({
                   "cm"
                   ? "#ff7417"
                   : "#111",
-              fontSize: 8,
+              fontSize: 11,
               fontWeight: 700,
               boxShadow: "none",
 
@@ -487,7 +487,7 @@ const BodyMetricsSection = ({
                   "ft/in"
                   ? "#ff7417"
                   : "#111",
-              fontSize: 8,
+              fontSize: 11,
               fontWeight: 700,
               boxShadow: "none",
 
@@ -640,7 +640,7 @@ const BodyMetricsSection = ({
         }}
       >
         <Typography sx={labelStyles}>
-          Current Fitness Level
+          Current Fitness Level <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
         </Typography>
 
 
@@ -699,7 +699,7 @@ const BodyMetricsSection = ({
                       ? "#ff7417"
                       : "#111",
 
-                  fontSize: 8,
+                  fontSize: 11,
 
                   fontWeight: 700,
 
@@ -750,7 +750,7 @@ const BodyMetricsSection = ({
         }}
       >
         <Typography sx={labelStyles}>
-          Available Training Days / Week
+          Available Training Days / Week <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
         </Typography>
 
 

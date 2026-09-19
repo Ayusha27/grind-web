@@ -28,7 +28,7 @@ const IntakeSubmit = () => {
         sx={{
           maxWidth: 310,
           color: "#666",
-          fontSize: 8,
+          fontSize: 11,
           lineHeight: 1.5,
         }}
       >
@@ -57,7 +57,7 @@ const IntakeSubmit = () => {
           borderRadius: 0,
           backgroundColor: "#ff7417",
           color: "#fff",
-          fontSize: 11,
+          fontSize: 15,
           fontWeight: 800,
           letterSpacing: "0.5px",
 

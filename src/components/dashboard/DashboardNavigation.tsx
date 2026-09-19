@@ -1,4 +1,7 @@
 import { Box, Typography } from "@mui/material";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import RestaurantIcon from "@mui/icons-material/Restaurant";
+import BarChartIcon from "@mui/icons-material/BarChart";
 import {
   useLocation,
   useNavigate,
@@ -12,7 +15,7 @@ type DashboardTab =
 interface NavigationTab {
   id: DashboardTab;
   label: string;
-  icon: string;
+  icon: React.ReactNode;
   path: string;
 }
 
@@ -20,19 +23,19 @@ const TABS: NavigationTab[] = [
   {
     id: "workout",
     label: "WORKOUT",
-    icon: "🏆",
+    icon: <EmojiEventsIcon sx={{ fontSize: 16 }} />,
     path: "/client/dashboard/workout",
   },
   {
     id: "diet",
     label: "DIET",
-    icon: "🍽",
+    icon: <RestaurantIcon sx={{ fontSize: 16 }} />,
     path: "/client/dashboard/diet",
   },
   {
     id: "progress",
     label: "PROGRESS",
-    icon: "📊",
+    icon: <BarChartIcon sx={{ fontSize: 16 }} />,
     path: "/client/dashboard/progress",
   },
 ];

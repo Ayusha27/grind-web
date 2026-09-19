@@ -149,6 +149,10 @@ const Workout = () => {
     periodResetKey?: number;
   }>();
 
+  useEffect(() => {
+    setWarmUpExercises(WARM_UP_EXERCISES);
+  }, [month, week, selectedDay]);
+
   /**
    * =========================================================
    * WORKOUT STATE KEY

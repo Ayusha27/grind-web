@@ -1,7 +1,6 @@
 import { Box, Button, Container, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 
-import heroImage from "../../../assets/problem-section.jpg";
 
 const Hero = () => {
   return (
@@ -19,15 +18,7 @@ const Hero = () => {
         textAlign: "center",
         overflow: "hidden",
 
-        backgroundImage: `
-          linear-gradient(
-            rgba(0, 0, 0, 0.78),
-            rgba(0, 0, 0, 0.88)
-          ),
-          url(${heroImage})
-        `,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        backgroundColor: "#0b0b0b",
       }}
     >
       <Container
