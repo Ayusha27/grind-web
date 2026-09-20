@@ -39,9 +39,9 @@ const AdminLayout = () => {
     ];
 
     const planItems = [
-        { title: 'Create Plan (Diet/Workout)', path: '/admin/plans/create', icon: <FitnessCenterIcon /> },
-        { title: 'Import Workout', path: '/admin/plans/import', icon: <FitnessCenterIcon /> },
-        { title: 'Add Progress', path: '/admin/progress/add', icon: <MonitorHeartIcon /> },
+        { title: 'Create Workout Plan', path: '/admin/plans/create', icon: <FitnessCenterIcon /> },
+        // { title: 'Import Workout', path: '/admin/plans/import', icon: <FitnessCenterIcon /> },
+        // { title: 'Add Progress', path: '/admin/progress/add', icon: <MonitorHeartIcon /> },
         { title: 'Add Diet', path: '/admin/diet/add', icon: <MonitorHeartIcon /> },
     ];
 
