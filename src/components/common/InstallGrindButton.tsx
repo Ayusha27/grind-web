@@ -18,7 +18,8 @@ const InstallGrindButton: React.FC<
         canInstall,
         isInstalled,
         installApp,
-        isIOS
+        isIOS,
+        isSafari
     } = useInstallPrompt();
 
     const [iosDialogOpen, setIosDialogOpen] = useState(false);
@@ -30,13 +31,13 @@ const InstallGrindButton: React.FC<
     }
 
     // Chrome hasn't made the PWA install prompt
-    // available yet, and we are not on iOS.
-    if (!canInstall && !isIOS) {
+    // available yet, and we are not on iOS or Safari.
+    if (!canInstall && !isIOS && !isSafari) {
         return null;
     }
 
     const handleInstall = async () => {
-        if (isIOS) {
+        if (isIOS || isSafari) {
             setIosDialogOpen(true);
             return;
         }
@@ -102,26 +103,50 @@ const InstallGrindButton: React.FC<
             </DialogTitle>
             <DialogContent>
                 <Typography sx={{ color: "text.secondary", mb: 3, fontSize: 15, lineHeight: 1.6 }}>
-                    To install the GRIND app on your iPhone or iPad for the best experience:
+                    To install the GRIND app on your {isIOS ? "iPhone or iPad" : "Mac"} for the best experience:
                 </Typography>
                 
-                <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
-                    <Box sx={{ backgroundColor: "rgba(255,255,255,0.05)", p: 1.5, borderRadius: 2 }}>
-                        <IosShareIcon sx={{ color: "#007AFF" }} />
+                {isIOS ? (
+                    <>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
+                        <Box sx={{ backgroundColor: "rgba(255,255,255,0.05)", p: 1.5, borderRadius: 2 }}>
+                            <IosShareIcon sx={{ color: "#007AFF" }} />
+                        </Box>
+                        <Typography sx={{ fontSize: 15 }}>
+                            <strong>1.</strong> Tap the <strong>Share</strong> button at the bottom of Safari.
+                        </Typography>
                     </Box>
-                    <Typography sx={{ fontSize: 15 }}>
-                        <strong>1.</strong> Tap the <strong>Share</strong> button at the bottom of Safari.
-                    </Typography>
-                </Box>
-                
-                <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
-                    <Box sx={{ backgroundColor: "rgba(255,255,255,0.05)", p: 1.5, borderRadius: 2 }}>
-                        <AddBoxOutlinedIcon sx={{ color: "text.secondary" }} />
+                    
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
+                        <Box sx={{ backgroundColor: "rgba(255,255,255,0.05)", p: 1.5, borderRadius: 2 }}>
+                            <AddBoxOutlinedIcon sx={{ color: "text.secondary" }} />
+                        </Box>
+                        <Typography sx={{ fontSize: 15 }}>
+                            <strong>2.</strong> Scroll down and select <strong>Add to Home Screen</strong>.
+                        </Typography>
                     </Box>
-                    <Typography sx={{ fontSize: 15 }}>
-                        <strong>2.</strong> Scroll down and select <strong>Add to Home Screen</strong>.
-                    </Typography>
-                </Box>
+                    </>
+                ) : (
+                    <>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 3 }}>
+                        <Box sx={{ backgroundColor: "rgba(255,255,255,0.05)", p: 1.5, borderRadius: 2 }}>
+                            <InstallDesktopRoundedIcon sx={{ color: "primary.main" }} />
+                        </Box>
+                        <Typography sx={{ fontSize: 15 }}>
+                            <strong>1.</strong> Click <strong>File</strong> in the top menu bar of Safari.
+                        </Typography>
+                    </Box>
+                    
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
+                        <Box sx={{ backgroundColor: "rgba(255,255,255,0.05)", p: 1.5, borderRadius: 2 }}>
+                            <AddBoxOutlinedIcon sx={{ color: "text.secondary" }} />
+                        </Box>
+                        <Typography sx={{ fontSize: 15 }}>
+                            <strong>2.</strong> Select <strong>Add to Dock...</strong>
+                        </Typography>
+                    </Box>
+                    </>
+                )}
             </DialogContent>
             <DialogActions sx={{ p: 3, pt: 1 }}>
                 <Button 
