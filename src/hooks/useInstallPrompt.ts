@@ -25,6 +25,7 @@ export const useInstallPrompt = () => {
         useState(false);
 
     const [isIOS, setIsIOS] = useState(false);
+    const [isSafari, setIsSafari] = useState(false);
 
     useEffect(() => {
         const handleBeforeInstallPrompt = (
@@ -62,7 +63,13 @@ export const useInstallPrompt = () => {
             return isIosDevice;
         };
 
+        const checkIsSafari = () => {
+            const userAgent = window.navigator.userAgent || "";
+            return userAgent.includes("Safari") && !userAgent.includes("Chrome") && !userAgent.includes("Edg");
+        };
+
         setIsIOS(checkIsIOS());
+        setIsSafari(checkIsSafari());
 
         window.addEventListener(
             "beforeinstallprompt",
@@ -110,6 +117,7 @@ export const useInstallPrompt = () => {
         isInstalled,
         installApp,
         isIOS,
+        isSafari,
     };
 };
 
