@@ -24,6 +24,8 @@ export const useInstallPrompt = () => {
     const [isInstalled, setIsInstalled] =
         useState(false);
 
+    const [isIOS, setIsIOS] = useState(false);
+
     useEffect(() => {
         const handleBeforeInstallPrompt = (
             event: BeforeInstallPromptEvent
@@ -51,6 +53,16 @@ export const useInstallPrompt = () => {
             }).standalone === true;
 
         setIsInstalled(standalone);
+
+        // Detect iOS (for custom install guide)
+        const checkIsIOS = () => {
+            const userAgent = window.navigator.userAgent || "";
+            const isIosDevice = /iPad|iPhone|iPod/.test(userAgent) || (userAgent.includes("Mac") && "ontouchend" in document);
+            // Verify it's actually Safari/WebKit to avoid showing on browsers that don't support add to home screen well
+            return isIosDevice;
+        };
+
+        setIsIOS(checkIsIOS());
 
         window.addEventListener(
             "beforeinstallprompt",
@@ -97,6 +109,7 @@ export const useInstallPrompt = () => {
         canInstall: !!installPrompt && !isInstalled,
         isInstalled,
         installApp,
+        isIOS,
     };
 };
 
