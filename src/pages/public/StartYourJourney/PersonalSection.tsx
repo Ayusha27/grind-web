@@ -4,7 +4,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import { FaWhatsapp } from "react-icons/fa";
+import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 
 import type { IntakeFormData } from "./types";
 
@@ -260,8 +260,8 @@ const PersonalSection = ({
             gap: 0.7,
           }}
         >
-          <FaWhatsapp
-            style={{
+          <WhatsAppIcon
+            sx={{
               color: "#25D366",
               fontSize: 16,
               flexShrink: 0,
