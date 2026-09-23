@@ -81,7 +81,7 @@ const GrindWalkthrough = () => {
         useState(0);
 
     const [isPaused, setIsPaused] =
-        useState(false);
+        useState(true);
 
     const [voiceEnabled, setVoiceEnabled] =
         useState(true);
@@ -1509,6 +1509,23 @@ const GrindWalkthrough = () => {
                                         color:
                                             "#ff5c35",
                                     },
+
+                                    animation:
+                                        isPaused && sceneIndex === 0
+                                            ? "walkthroughPulse 2s infinite"
+                                            : "none",
+
+                                    "@keyframes walkthroughPulse": {
+                                        "0%": {
+                                            boxShadow: "0 0 0 0 rgba(255, 92, 53, 0.6)",
+                                        },
+                                        "70%": {
+                                            boxShadow: "0 0 0 15px rgba(255, 92, 53, 0)",
+                                        },
+                                        "100%": {
+                                            boxShadow: "0 0 0 0 rgba(255, 92, 53, 0)",
+                                        },
+                                    }
                                 }}
                             >
                                 <Typography
