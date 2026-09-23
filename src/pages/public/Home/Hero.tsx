@@ -1,7 +1,6 @@
 import { Box, Button, Container, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 
-
 const Hero = () => {
   return (
     <Box
@@ -18,7 +17,7 @@ const Hero = () => {
         textAlign: "center",
         overflow: "hidden",
 
-        backgroundColor: "#0b0b0b",
+        backgroundColor: "background.default",
       }}
     >
       <Container
@@ -34,20 +33,26 @@ const Hero = () => {
         <Typography
           variant="h1"
           sx={{
+            fontFamily: '"Bebas Neue", sans-serif',
+
             fontSize: {
               xs: 48,
               sm: 64,
               md: 82,
               lg: 92,
             },
+
             lineHeight: 0.92,
+
             maxWidth: 1100,
             mx: "auto",
+
+            color: "text.primary",
           }}
         >
-          FITNESS ISN'T ABOUT MOTIVATION.
+          FITNESS ISN&apos;T ABOUT MOTIVATION.
           <br />
-          IT'S ABOUT HAVING A PLAN.
+          IT&apos;S ABOUT HAVING A PLAN.
         </Typography>
 
         <Typography
@@ -56,17 +61,21 @@ const Hero = () => {
             mx: "auto",
             mt: 3,
             mb: 3.5,
+
             fontSize: {
               xs: 16,
               md: 18,
             },
+
             lineHeight: 1.5,
-            color: "#f5f5f0",
+
+            color: "text.primary",
+            opacity: 0.7,
           }}
         >
-          Most people don't fail because they lack discipline. They fail
-          because they're following random workouts, generic diets and advice
-          that wasn't built for them.
+          Most people don&apos;t fail because they lack discipline. They fail
+          because they&apos;re following random workouts, generic diets and
+          advice that wasn&apos;t built for them.
         </Typography>
 
         <Button

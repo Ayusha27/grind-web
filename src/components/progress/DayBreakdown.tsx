@@ -45,23 +45,53 @@ const DayBreakdown = ({
   }, [week]);
 
   return (
-    <Box>
+    <Box
+      sx={{
+        width: "100%",
+        minWidth: 0,
+      }}
+    >
+      {/* =====================================================
+          SECTION TITLE
+      ===================================================== */}
+
       <Typography
         sx={{
           mb: 1.5,
-          fontSize: 15,
+
+          fontSize: {
+            xs: 15,
+            sm: 16,
+            md: 17,
+          },
+
+          lineHeight: 1.2,
+
+          fontFamily:
+            "Archivo Black, sans-serif",
+
           fontWeight: 900,
-          color: "#1a1714",
+
+          color: "#13131A",
         }}
       >
         Week {week} — Day Breakdown
       </Typography>
 
+      {/* =====================================================
+          DAY CAROUSEL
+      ===================================================== */}
+
       <Box
         ref={carouselRef}
         sx={{
           display: "flex",
-          gap: 1.2,
+
+          gap: {
+            xs: 1.2,
+            sm: 1.3,
+            md: 1.4,
+          },
 
           overflowX: {
             xs: "auto",
@@ -91,7 +121,10 @@ const DayBreakdown = ({
         {days.map((day, index) => {
           const completion = Math.min(
             100,
-            Math.max(0, day.completion ?? 0)
+            Math.max(
+              0,
+              day.completion ?? 0
+            )
           );
 
           const isComplete =
@@ -119,10 +152,11 @@ const DayBreakdown = ({
                 sx={{
                   minHeight: 136,
 
-                  backgroundColor: "#ffffff",
+                  backgroundColor:
+                    "#ffffff",
 
                   border:
-                    "1px solid #e0dbd4",
+                    "1px solid #4C4A49",
 
                   borderRadius: "12px",
 
@@ -132,7 +166,8 @@ const DayBreakdown = ({
 
                   display: "flex",
 
-                  flexDirection: "column",
+                  flexDirection:
+                    "column",
 
                   alignItems: "center",
 
@@ -144,61 +179,117 @@ const DayBreakdown = ({
                   width: "100%",
                 }}
               >
-                {/* STATUS */}
+                {/* =================================================
+                    STATUS
+                ================================================= */}
 
                 <Typography
                   sx={{
-                    fontSize: 22,
+                    fontSize: {
+                      xs: 22,
+                      sm: 23,
+                      md: 24,
+                    },
+
                     lineHeight: 1,
+
                     color: isComplete
                       ? "#16b85a"
-                      : "#77716b",
-                    fontWeight: 400,
+                      : "#4C4A49",
+
+                    fontFamily:
+                      "Archivo, sans-serif",
+
+                    fontWeight: 700,
                   }}
                 >
-                  {isComplete ? "✓" : "—"}
+                  {isComplete
+                    ? "✓"
+                    : "—"}
                 </Typography>
 
-                {/* DAY */}
+                {/* =================================================
+                    DAY
+                ================================================= */}
 
                 <Typography
                   sx={{
                     mt: 1,
-                    fontSize: 12,
+
+                    fontSize: {
+                      xs: 11,
+                      sm: 12,
+                      md: 12,
+                    },
+
+                    lineHeight: 1.1,
+
+                    fontFamily:
+                      "Archivo Black, sans-serif",
+
                     fontWeight: 900,
-                    color: "#77716b",
+
+                    color: "#13131A",
                   }}
                 >
                   Day {day.day}
                 </Typography>
 
-                {/* NAME */}
+                {/* =================================================
+                    NAME
+                ================================================= */}
 
                 <Typography
                   sx={{
                     mt: 0.6,
+
                     minHeight: 25,
-                    fontSize: 8.5,
+
+                    fontSize: {
+                      xs: 8.5,
+                      sm: 9,
+                      md: 9,
+                    },
+
                     lineHeight: 1.25,
+
+                    fontFamily:
+                      "Archivo, sans-serif",
+
                     fontWeight: 700,
+
                     letterSpacing: 0.4,
+
                     color:
                       DAY_COLORS[
-                        index % DAY_COLORS.length
+                        index %
+                          DAY_COLORS.length
                       ],
                   }}
                 >
                   {day.name}
                 </Typography>
 
-                {/* COMPLETION */}
+                {/* =================================================
+                    COMPLETION
+                ================================================= */}
 
                 <Typography
                   sx={{
                     mt: 0.6,
-                    fontSize: 9,
-                    color: "#aaa39c",
-                    fontFamily: "monospace",
+
+                    fontSize: {
+                      xs: 8.5,
+                      sm: 9,
+                      md: 9,
+                    },
+
+                    lineHeight: 1.2,
+
+                    color: "#4C4A49",
+
+                    fontFamily:
+                      "JetBrains Mono, monospace",
                   }}
                 >
                   Completion:{" "}
@@ -207,14 +298,26 @@ const DayBreakdown = ({
                     : "-"}
                 </Typography>
 
-                {/* CALORIES */}
+                {/* =================================================
+                    CALORIES
+                ================================================= */}
 
                 <Typography
                   sx={{
                     mt: 0.25,
-                    fontSize: 9,
-                    color: "#aaa39c",
-                    fontFamily: "monospace",
+
+                    fontSize: {
+                      xs: 8.5,
+                      sm: 9,
+                      md: 9,
+                    },
+
+                    lineHeight: 1.2,
+
+                    color: "#4C4A49",
+
+                    fontFamily:
+                      "JetBrains Mono, monospace",
                   }}
                 >
                   Calories:{" "}
@@ -223,24 +326,37 @@ const DayBreakdown = ({
                     : "-"}
                 </Typography>
 
-                {/* PROGRESS BAR */}
+                {/* =================================================
+                    PROGRESS BAR
+                ================================================= */}
 
                 <Box
                   sx={{
                     width: "100%",
+
                     height: 4,
+
                     mt: "auto",
+
                     borderRadius: 3,
-                    backgroundColor: "#ebe7e1",
+
+                    backgroundColor:
+                      "#e8e5e1",
+
                     overflow: "hidden",
                   }}
                 >
                   <Box
                     sx={{
                       width: `${completion}%`,
+
                       height: "100%",
-                      backgroundColor: "#ff5c35",
+
+                      backgroundColor:
+                        "#FF5C35",
+
                       borderRadius: 3,
+
                       transition:
                         "width 250ms ease",
                     }}

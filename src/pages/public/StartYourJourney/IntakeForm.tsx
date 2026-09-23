@@ -25,6 +25,7 @@ import {
 type ValidationErrors = {
   // Personal
   fullName: boolean;
+  phoneNumber: boolean;
   email: boolean;
   age: boolean;
   gender: boolean;
@@ -47,10 +48,39 @@ type ValidationErrors = {
 // EMAIL VALIDATION
 // ============================================================
 
+//when email was required field, kept if later required
+
+// const isValidEmail = (email: string) => {
+//   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
+//     email.trim()
+//   );
+// };
+
+
 const isValidEmail = (email: string) => {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(
-    email.trim()
-  );
+  const value = email.trim();
+
+  // Email is optional.
+  if (!value) {
+    return true;
+  }
+
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+};
+
+
+// ============================================================
+// PHONE NUMBER VALIDATION
+// ============================================================
+
+const isValidPhoneNumber = (phoneNumber: string) => {
+  const value = phoneNumber.trim();
+
+  // Remove formatting characters.
+  const digits = value.replace(/\D/g, "");
+
+  // Require between 10 and 15 digits.
+  return digits.length >= 10 && digits.length <= 15;
 };
 
 
@@ -67,6 +97,7 @@ const IntakeForm = () => {
   const [validationErrors, setValidationErrors] =
     useState<ValidationErrors>({
       fullName: false,
+      phoneNumber: false,
       email: false,
       age: false,
       gender: false,
@@ -116,6 +147,13 @@ const IntakeForm = () => {
       if (field === "fullName") {
         next.fullName =
           !updatedData.fullName.trim();
+      }
+
+      if (field === "phoneNumber") {
+        next.phoneNumber =
+          !isValidPhoneNumber(
+            updatedData.phoneNumber
+          );
       }
 
       if (field === "email") {
@@ -345,6 +383,11 @@ const IntakeForm = () => {
       fullName:
         !formData.fullName.trim(),
 
+      phoneNumber:
+        !isValidPhoneNumber(
+          formData.phoneNumber
+        ),
+  
       email:
         !isValidEmail(
           formData.email
@@ -426,8 +469,10 @@ const IntakeForm = () => {
      */
 
     const sectionId =
-      errors.fullName
-        ? "intake-full-name"
+    errors.fullName
+      ? "intake-full-name"
+      : errors.phoneNumber
+        ? "intake-phone-number"
         : errors.email
           ? "intake-email"
           : errors.age
@@ -547,6 +592,7 @@ const IntakeForm = () => {
     try {
       const payload = {
         name: formData.fullName,
+        phone_number: formData.phoneNumber,
         email: formData.email,
         age: formData.age,
 
@@ -717,6 +763,9 @@ const IntakeForm = () => {
               errors={{
                 fullName:
                   validationErrors.fullName,
+                
+                phoneNumber:
+                  validationErrors.phoneNumber,
 
                 email:
                   validationErrors.email,

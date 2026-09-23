@@ -63,7 +63,15 @@ const WorkoutCompletionCard = ({
             backgroundColor: "transparent",
           }}
         >
-          <WhatshotIcon sx={{ color: "#ff7417", fontSize: { xs: 26, sm: 30 } }} />
+          <WhatshotIcon
+            sx={{
+              color: "#ff7417",
+              fontSize: {
+                xs: 26,
+                sm: 30,
+              },
+            }}
+          />
         </Box>
 
         <Box sx={{ minWidth: 0 }}>
@@ -79,6 +87,9 @@ const WorkoutCompletionCard = ({
               fontWeight: 900,
 
               color: "#16763d",
+
+              fontFamily:
+                "Archivo Black, sans-serif",
             }}
           >
             Day {dayNumber} Crushed!
@@ -96,9 +107,33 @@ const WorkoutCompletionCard = ({
               lineHeight: 1.2,
 
               color: "#16823f",
+
+              fontFamily:
+                "Archivo, sans-serif",
             }}
           >
-            Synced to Month {month} · Week {week}.
+            Synced to Month{" "}
+            <Box
+              component="span"
+              sx={{
+                fontFamily:
+                  "JetBrains Mono, monospace",
+              }}
+            >
+              {month}
+            </Box>
+            {" · "}
+            Week{" "}
+            <Box
+              component="span"
+              sx={{
+                fontFamily:
+                  "JetBrains Mono, monospace",
+              }}
+            >
+              {week}
+            </Box>
+            .
           </Typography>
         </Box>
       </Box>
@@ -123,6 +158,9 @@ const WorkoutCompletionCard = ({
             fontWeight: 900,
 
             color: "#ef2525",
+
+            fontFamily:
+              "JetBrains Mono, monospace",
           }}
         >
           {earnedCalories} kcal
@@ -142,6 +180,9 @@ const WorkoutCompletionCard = ({
             letterSpacing: 1.2,
 
             color: "#68635e",
+
+            fontFamily:
+              "Archivo, sans-serif",
           }}
         >
           EST. BURNED

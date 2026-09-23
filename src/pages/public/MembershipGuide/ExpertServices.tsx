@@ -54,6 +54,7 @@ const ExpertServices = () => {
         <Typography
           component="h2"
           sx={{
+            fontFamily: "Bebas Neue",
             fontSize: { xs: 38, md: 50 },
             fontWeight: 800,
             lineHeight: 1,
@@ -66,6 +67,7 @@ const ExpertServices = () => {
 
         <Typography
           sx={{
+            opacity: 0.65,
             color: "text.secondary",
             maxWidth: 900,
             fontSize: { xs: 14, md: 16 },
@@ -101,6 +103,7 @@ const ExpertServices = () => {
             >
               <Typography
                 sx={{
+                  fontFamily: '"Syne", sans-serif',
                   fontSize: 18,
                   fontWeight: 700,
                   mb: 2.5,
@@ -111,6 +114,7 @@ const ExpertServices = () => {
 
               <Typography
                 sx={{
+                  fontFamily: '"Syne", sans-serif',
                   color: "primary.main",
                   fontSize: {
                     xs: 38,
@@ -126,6 +130,8 @@ const ExpertServices = () => {
 
               <Typography
                 sx={{
+                  fontFamily: '"Syne", sans-serif',
+                  opacity: 0.65,
                   color: "text.secondary",
                   fontSize: 14,
                   lineHeight: 1.8,
@@ -156,6 +162,7 @@ const ExpertServices = () => {
               {service.note && (
                 <Typography
                   sx={{
+                    fontFamily: '"Syne", sans-serif',
                     color: "primary.main",
                     fontSize: 13,
                     lineHeight: 1.8,

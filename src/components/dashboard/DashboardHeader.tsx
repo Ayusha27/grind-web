@@ -18,9 +18,16 @@ const DashboardHeader = () => {
     <Box
       component="header"
       sx={{
-        minHeight: 72,
-        backgroundColor: "#171614",
-        borderBottom: "1px solid #252321",
+        minHeight: {
+          xs: 64,
+          sm: 72,
+          md: 88,
+        },
+
+        backgroundColor: "#13131A",
+
+        borderBottom:
+          "1px solid #4C4A49",
 
         display: "flex",
         alignItems: "center",
@@ -42,25 +49,35 @@ const DashboardHeader = () => {
       <Box
         sx={{
           flexShrink: 0,
+
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
         }}
       >
         <Typography
+          component="div"
           sx={{
+            fontFamily:
+              "'Archivo Black', sans-serif",
+
             fontSize: {
-              xs: 22,
-              md: 28,
+              xs: 20,
+              sm: 21,
+              md: 23,
             },
+
+            fontWeight: 400,
 
             lineHeight: 1,
 
-            fontWeight: 900,
+            letterSpacing: {
+              xs: 4,
+              sm: 4.5,
+              md: 5,
+            },
 
-            letterSpacing: 5,
-
-            color: "#ffffff",
+            color: "#FFFFFF",
 
             whiteSpace: "nowrap",
           }}
@@ -69,7 +86,7 @@ const DashboardHeader = () => {
           <Box
             component="span"
             sx={{
-              color: "#ff5c35",
+              color: "#FF5C35",
             }}
           >
             .
@@ -78,26 +95,39 @@ const DashboardHeader = () => {
 
         <Typography
           sx={{
-            mt: 0.35,
+            mt: 0.5,
 
-            fontSize: 8,
+            fontFamily:
+              "'Archivo', sans-serif",
+
+            fontSize: {
+              xs: 7,
+              sm: 8,
+              md: 9,
+            },
 
             lineHeight: 1,
 
-            letterSpacing: 2.5,
+            letterSpacing: {
+              xs: 2,
+              sm: 2.2,
+              md: 2.5,
+            },
 
-            fontWeight: 700,
+            fontWeight: 600,
 
-            color: "#716d69",
+            color: "#4C4A49",
 
             whiteSpace: "nowrap",
+
+            textTransform: "uppercase",
           }}
         >
           POWERED BY{" "}
           <Box
             component="span"
             sx={{
-              color: "#ff5c35",
+              color: "#FF5C35",
             }}
           >
             TREND
@@ -114,6 +144,7 @@ const DashboardHeader = () => {
           sx={{
             display: "flex",
             alignItems: "center",
+
             gap: {
               xs: 1,
               sm: 1.5,
@@ -126,20 +157,25 @@ const DashboardHeader = () => {
             onClick={handleInstall}
             sx={{
               border: 0,
+
               background: "transparent",
+
               padding: 0,
 
               cursor: "pointer",
 
-              color: "#ff5c35",
+              color: "#FF5C35",
+
+              fontFamily:
+                "'Archivo', sans-serif",
 
               fontSize: {
-                xs: 13,
-                sm: 15,
-                md: 17,
+                xs: 12,
+                sm: 13,
+                md: 15,
               },
 
-              fontWeight: 800,
+              fontWeight: 600,
 
               lineHeight: 1,
 
@@ -163,23 +199,23 @@ const DashboardHeader = () => {
             aria-label="Get Grind App"
             sx={{
               width: {
-                xs: 42,
-                sm: 48,
-                md: 52,
+                xs: 40,
+                sm: 44,
+                md: 48,
               },
 
               height: {
-                xs: 42,
-                sm: 48,
-                md: 52,
+                xs: 40,
+                sm: 44,
+                md: 48,
               },
 
-              borderRadius: 1.5,
+              borderRadius: "4px",
 
-              color: "#ff5c35",
+              color: "#FF5C35",
 
               border:
-                "1px solid #ff5c35",
+                "1px solid #FF5C35",
 
               backgroundColor:
                 "rgba(255, 92, 53, 0.04)",
@@ -191,7 +227,7 @@ const DashboardHeader = () => {
                 backgroundColor:
                   "rgba(255, 92, 53, 0.12)",
 
-                color: "#ff5c35",
+                color: "#FF5C35",
 
                 transform:
                   "translateY(-1px)",
@@ -199,7 +235,7 @@ const DashboardHeader = () => {
 
               "&:focus-visible": {
                 outline:
-                  "2px solid #ff5c35",
+                  "2px solid #FF5C35",
 
                 outlineOffset: 2,
               },
@@ -208,9 +244,9 @@ const DashboardHeader = () => {
             <DownloadRoundedIcon
               sx={{
                 fontSize: {
-                  xs: 23,
-                  sm: 26,
-                  md: 28,
+                  xs: 21,
+                  sm: 23,
+                  md: 25,
                 },
               }}
             />

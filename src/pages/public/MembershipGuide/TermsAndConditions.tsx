@@ -21,6 +21,7 @@ const TermsAndConditions = () => {
           <Typography
             component="h2"
             sx={{
+              fontFamily: "Bebas Neue",
               fontSize: { xs: 38, md: 50 },
               fontWeight: 800,
               lineHeight: 1,

@@ -1,4 +1,10 @@
-import { Box, Grid, List, ListItem, ListItemText, Typography } from "@mui/material";
+import {
+  Box,
+  Grid,
+  List,
+  ListItem,
+  Typography,
+} from "@mui/material";
 import Section from "../../../components/ui/Section";
 
 import problemSection from "../../../assets/problems-section.jpeg";
@@ -29,6 +35,7 @@ const WhyPlansFail = () => {
           <Typography
             sx={{
               color: "primary.main",
+              fontFamily: '"DM Sans", sans-serif',
               fontSize: 16,
               fontWeight: 500,
               mb: 1.5,
@@ -40,11 +47,14 @@ const WhyPlansFail = () => {
           <Typography
             variant="h2"
             sx={{
+              fontFamily: '"Bebas Neue", sans-serif',
+
               fontSize: {
                 xs: 48,
                 sm: 58,
                 md: 68,
               },
+
               lineHeight: 0.95,
               mb: 3.5,
             }}
@@ -78,6 +88,7 @@ const WhyPlansFail = () => {
                       xs: 16,
                       md: 17,
                     },
+
                     lineHeight: 1.5,
                   }}
                 >
@@ -90,10 +101,12 @@ const WhyPlansFail = () => {
           <Typography
             sx={{
               color: "primary.main",
+              fontFamily: '"DM Sans", sans-serif',
               fontSize: {
                 xs: 20,
                 md: 23,
               },
+
               fontWeight: 700,
               mb: 0.5,
             }}
@@ -107,6 +120,7 @@ const WhyPlansFail = () => {
                 xs: 16,
                 md: 18,
               },
+
               lineHeight: 1.7,
             }}
           >

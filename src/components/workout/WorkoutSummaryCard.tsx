@@ -86,17 +86,20 @@ const SummaryStat = ({
         <Typography
           component="span"
           sx={{
+            fontFamily:
+              "'JetBrains Mono', monospace",
+
             fontSize: {
-              xs: 12,
-              sm: 13,
-              md: 14,
+              xs: 11,
+              sm: 12,
+              md: 13,
             },
 
             lineHeight: 1.1,
 
             fontWeight: 700,
 
-            color: "#252321",
+            color: "#13131A",
 
             whiteSpace: "nowrap",
           }}
@@ -109,15 +112,18 @@ const SummaryStat = ({
           sx={{
             ml: 0.4,
 
+            fontFamily:
+              "'Archivo', sans-serif",
+
             fontSize: {
-              xs: 10,
-              sm: 11,
-              md: 12,
+              xs: 9,
+              sm: 10,
+              md: 11,
             },
 
             lineHeight: 1.1,
 
-            color: "#77716b",
+            color: "#4C4A49",
 
             whiteSpace: "nowrap",
           }}
@@ -349,7 +355,8 @@ const WorkoutSummaryCard = ({
                 xs: 10,
                 sm: 11,
               },
-
+              fontFamily:
+                "'Archivo', sans-serif",
               fontWeight: 800,
 
               letterSpacing: 0.3,
@@ -379,25 +386,22 @@ const WorkoutSummaryCard = ({
                 md: 1.1,
               },
 
+              fontFamily:
+                "'Archivo Black', sans-serif",
+
               fontSize: {
-                xs: 21,
-                sm: 24,
-                md: 27,
+                xs: 20,
+                sm: 22,
+                md: 24,
               },
 
               lineHeight: 1.12,
 
-              fontWeight: 900,
+              fontWeight: 400,
 
-              letterSpacing:
-                "-0.35px",
+              letterSpacing: "-0.25px",
 
-              color: "#1c1b19",
-
-              maxWidth: {
-                xs: "100%",
-                md: "900px",
-              },
+              color: "#13131A",
             }}
           >
             {title}

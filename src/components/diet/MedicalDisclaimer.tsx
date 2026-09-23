@@ -32,6 +32,7 @@ const MedicalDisclaimer = () => {
 
         <Typography
           sx={{
+            fontFamily: "'Archivo', sans-serif",
             fontSize: 11,
             fontWeight: 800,
             color: "#9a5600",
@@ -44,6 +45,7 @@ const MedicalDisclaimer = () => {
       <Typography
         sx={{
           mt: 0.5,
+          fontFamily: "'Archivo', sans-serif",
           fontSize: 10,
           lineHeight: 1.5,
           color: "#9a5600",

@@ -20,19 +20,19 @@ const preferences = [
     value: "gym",
     title: "Gym",
     description: "Full equipment access",
-    icon: <BusinessIcon sx={{ color: "#ff7417", fontSize: 24 }} />,
+    icon: <BusinessIcon sx={{ color: "primary.main", fontSize: 24 }} />,
   },
   {
     value: "home",
     title: "Home",
     description: "Minimal or no equipment",
-    icon: <HomeIcon sx={{ color: "#ff7417", fontSize: 24 }} />,
+    icon: <HomeIcon sx={{ color: "primary.main", fontSize: 24 }} />,
   },
   {
     value: "both",
     title: "Both",
     description: "Mix of gym & home",
-    icon: <SyncIcon sx={{ color: "#ff7417", fontSize: 24 }} />,
+    icon: <SyncIcon sx={{ color: "primary.main", fontSize: 24 }} />,
   },
 ];
 
@@ -53,11 +53,16 @@ const WorkoutPreference = ({
           xs: 2,
           sm: 2.5,
         },
+
         borderLeft: error
-          ? "2px solid #ff7417"
+          ? "2px solid"
           : "2px solid transparent",
+        borderLeftColor: error
+          ? "primary.main"
+          : "transparent",
       }}
     >
+      {/* Section Header */}
       <Box
         sx={{
           display: "flex",
@@ -68,49 +73,43 @@ const WorkoutPreference = ({
       >
         <Typography
           sx={{
-            color: "#777",
-
+            color: "text.primary",
+            opacity: 0.55,
             fontSize: 12,
-
             fontWeight: 700,
-
             letterSpacing: "1px",
-
-            textTransform:
-              "uppercase",
+            textTransform: "uppercase",
           }}
         >
-          Workout Preference <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
+          Workout Preference{" "}
+          <Box
+            component="span"
+            sx={{
+              color: "primary.main",
+              opacity: 1,
+            }}
+          >
+            *
+          </Box>
         </Typography>
+
         <Box
           sx={{
             flex: 1,
-
             height: "1px",
-
-            backgroundColor:
-              "#292929",
+            backgroundColor: "divider",
           }}
         />
 
         {error && (
           <Typography
             sx={{
-              color:
-                "primary.main",
-
+              color: "primary.main",
               fontSize: 11,
-
               fontWeight: 700,
-
-              letterSpacing:
-                "0.8px",
-
-              textTransform:
-                "uppercase",
-
-              whiteSpace:
-                "nowrap",
+              letterSpacing: "0.8px",
+              textTransform: "uppercase",
+              whiteSpace: "nowrap",
             }}
           >
             Required
@@ -118,25 +117,22 @@ const WorkoutPreference = ({
         )}
       </Box>
 
+      {/* Error Message */}
       {error && (
         <Typography
           role="alert"
           sx={{
-            color: "#ff7417",
-
+            color: "primary.main",
             fontSize: 12,
-
             lineHeight: 1.5,
-
             mb: 1.5,
           }}
         >
-          Please select a workout
-          preference.
+          Please select a workout preference.
         </Typography>
       )}
 
-
+      {/* Preferences */}
       <Box
         sx={{
           display: "grid",
@@ -169,13 +165,18 @@ const WorkoutPreference = ({
                 gap: 1.25,
                 textAlign: "left",
                 cursor: "pointer",
-                color: "#f5f5f0",
-                border: selected
-                  ? "1px solid #ff7a1a"
-                  : "1px solid #292929",
+
+                color: "text.primary",
+
+                border: "1px solid",
+                borderColor: selected
+                  ? "primary.main"
+                  : "divider",
+
                 backgroundColor: selected
-                  ? "rgba(255, 122, 26, 0.10)"
-                  : "#111",
+                  ? "rgba(255, 92, 53, 0.10)"
+                  : "background.paper",
+
                 transition: "all 0.2s ease",
                 fontFamily: "inherit",
 
@@ -184,6 +185,7 @@ const WorkoutPreference = ({
                 },
               }}
             >
+              {/* Icon */}
               <Box
                 sx={{
                   width: 28,
@@ -198,10 +200,11 @@ const WorkoutPreference = ({
                 {preference.icon}
               </Box>
 
+              {/* Text */}
               <Box>
                 <Typography
                   sx={{
-                    color: "#f5f5f0",
+                    color: "text.primary",
                     fontSize: 15,
                     fontWeight: 700,
                     lineHeight: 1.2,
@@ -212,7 +215,8 @@ const WorkoutPreference = ({
 
                 <Typography
                   sx={{
-                    color: "#777",
+                    color: "text.primary",
+                    opacity: 0.55,
                     fontSize: 11,
                     lineHeight: 1.4,
                     mt: 0.3,
@@ -222,6 +226,7 @@ const WorkoutPreference = ({
                 </Typography>
               </Box>
 
+              {/* Selected Check */}
               {selected && (
                 <Box
                   sx={{
@@ -232,6 +237,7 @@ const WorkoutPreference = ({
                     height: 16,
                     borderRadius: "50%",
                     backgroundColor: "primary.main",
+
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -239,7 +245,7 @@ const WorkoutPreference = ({
                 >
                   <CheckIcon
                     sx={{
-                      color: "#fff",
+                      color: "primary.contrastText",
                       fontSize: 16,
                     }}
                   />

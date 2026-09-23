@@ -12,7 +12,8 @@ const HowGrindWorks = () => {
           xs: 8,
           md: 12,
         },
-        backgroundColor: "#0b0b0b",
+
+        backgroundColor: "background.default",
       }}
     >
       <Container
@@ -69,11 +70,15 @@ const HowGrindWorks = () => {
               maxWidth: 720,
               mx: "auto",
               mt: 3,
-              color: "text.secondary",
+
+              color: "text.primary",
+              opacity: 0.7,
+
               fontSize: {
                 xs: 15,
                 md: 17,
               },
+
               lineHeight: 1.7,
             }}
           >

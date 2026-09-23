@@ -21,13 +21,20 @@ const SetTracker = ({
       <Typography
         sx={{
           mb: 1,
+
+          fontFamily:
+            "'Archivo', sans-serif",
+
           fontSize: {
-            xs: 11,
-            sm: 13,
+            xs: 10,
+            sm: 11,
           },
-          fontWeight: 700,
-          letterSpacing: 2,
-          color: "#77716c",
+
+          fontWeight: 600,
+
+          letterSpacing: 1.5,
+
+          color: "#4C4A49",
         }}
       >
         TRACK YOUR SETS
@@ -146,18 +153,21 @@ const SetItem = ({
       <Box>
         <Typography
           sx={{
+            fontFamily:
+              "'Archivo', sans-serif",
+
             fontSize: {
-              xs: 10,
-              sm: 11,
+              xs: 9,
+              sm: 10,
             },
 
             lineHeight: 1.1,
 
             color: set.completed
-              ? "#3e9661"
-              : "#68635e",
+              ? "#4C4A49"
+              : "#4C4A49",
 
-            letterSpacing: 0.8,
+            letterSpacing: 0.5,
           }}
         >
           {set.label}
@@ -168,19 +178,20 @@ const SetItem = ({
             mt: 0.3,
 
             fontSize: {
-              xs: 14,
-              sm: 15,
+              xs: 13,
+              sm: 14,
             },
 
             lineHeight: 1,
 
-            fontWeight: 800,
+            fontWeight: 700,
 
-            fontFamily: "monospace",
+            fontFamily:
+              "'JetBrains Mono', monospace",
 
             color: set.completed
-              ? "#16823f"
-              : "#282522",
+              ? "#FF5C35"
+              : "#13131A",
           }}
         >
           {set.target}

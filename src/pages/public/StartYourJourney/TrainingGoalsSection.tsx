@@ -21,25 +21,25 @@ const goals = [
     value: "fat_loss",
     title: "Fat Loss",
     description: "Burn, shred, recompose",
-    icon: <WhatshotIcon sx={{ color: "#ff7417", fontSize: 24 }} />,
+    icon: <WhatshotIcon sx={{ color: "primary.main", fontSize: 24 }} />,
   },
   {
     value: "muscle_gain",
     title: "Muscle Gain",
     description: "Size, mass, hypertrophy",
-    icon: <MonitorWeightIcon sx={{ color: "#ff7417", fontSize: 24 }} />,
+    icon: <MonitorWeightIcon sx={{ color: "primary.main", fontSize: 24 }} />,
   },
   {
     value: "strength",
     title: "Strength",
     description: "Power, lifts, PRs",
-    icon: <FitnessCenterIcon sx={{ color: "#ff7417", fontSize: 24 }} />,
+    icon: <FitnessCenterIcon sx={{ color: "primary.main", fontSize: 24 }} />,
   },
   {
     value: "general_fitness",
     title: "General Fitness",
     description: "Move better, feel better",
-    icon: <BoltIcon sx={{ color: "#ff7417", fontSize: 24 }} />,
+    icon: <BoltIcon sx={{ color: "primary.main", fontSize: 24 }} />,
   },
 ];
 
@@ -69,12 +69,18 @@ const TrainingGoalsSection = ({
         },
         py: 3.5,
 
-        borderTop: "1px solid #292929",
+        borderTop: "1px solid",
+        borderTopColor: "divider",
+
         borderLeft: error
-          ? "2px solid #ff7417"
+          ? "2px solid"
           : "2px solid transparent",
+        borderLeftColor: error
+          ? "primary.main"
+          : "transparent",
       }}
     >
+      {/* Section Header */}
       <Box
         sx={{
           display: "flex",
@@ -93,13 +99,21 @@ const TrainingGoalsSection = ({
             whiteSpace: "nowrap",
           }}
         >
-          Training Goals <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
+          Training Goals{" "}
+          <Box
+            component="span"
+            sx={{
+              color: "primary.main",
+            }}
+          >
+            *
+          </Box>
         </Typography>
 
         <Box
           sx={{
             height: "1px",
-            backgroundColor: "#292929",
+            backgroundColor: "divider",
             flex: 1,
           }}
         />
@@ -107,21 +121,12 @@ const TrainingGoalsSection = ({
         {error && (
           <Typography
             sx={{
-              color:
-                "primary.main",
-
+              color: "primary.main",
               fontSize: 11,
-
               fontWeight: 700,
-
-              letterSpacing:
-                "0.8px",
-
-              textTransform:
-                "uppercase",
-
-              whiteSpace:
-                "nowrap",
+              letterSpacing: "0.8px",
+              textTransform: "uppercase",
+              whiteSpace: "nowrap",
             }}
           >
             Required
@@ -129,24 +134,22 @@ const TrainingGoalsSection = ({
         )}
       </Box>
 
+      {/* Error Message */}
       {error && (
         <Typography
           role="alert"
           sx={{
-            color: "#ff7417",
-
+            color: "primary.main",
             fontSize: 12,
-
             lineHeight: 1.5,
-
             mb: 1.5,
           }}
         >
-          Please select at least one
-          training goal.
+          Please select at least one training goal.
         </Typography>
       )}
 
+      {/* Goals */}
       <Box
         sx={{
           display: "grid",
@@ -177,13 +180,18 @@ const TrainingGoalsSection = ({
                 gap: 1.25,
                 textAlign: "left",
                 cursor: "pointer",
-                color: "#f5f5f0",
-                border: selected
-                  ? "1px solid #ff7a1a"
-                  : "1px solid #292929",
+
+                color: "text.primary",
+
+                border: "1px solid",
+                borderColor: selected
+                  ? "primary.main"
+                  : "divider",
+
                 backgroundColor: selected
-                  ? "rgba(255, 122, 26, 0.10)"
-                  : "#111",
+                  ? "rgba(255, 92, 53, 0.10)"
+                  : "background.paper",
+
                 transition: "all 0.2s ease",
                 fontFamily: "inherit",
 
@@ -192,15 +200,20 @@ const TrainingGoalsSection = ({
                 },
               }}
             >
+              {/* Icon Box */}
               <Box
                 sx={{
                   width: 32,
                   height: 32,
                   flexShrink: 0,
-                  border: selected
-                    ? "1px solid #ff7a1a"
-                    : "1px solid #292929",
-                  backgroundColor: "#151515",
+
+                  border: "1px solid",
+                  borderColor: selected
+                    ? "primary.main"
+                    : "divider",
+
+                  backgroundColor: "background.default",
+
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -210,10 +223,11 @@ const TrainingGoalsSection = ({
                 {goal.icon}
               </Box>
 
+              {/* Goal Text */}
               <Box>
                 <Typography
                   sx={{
-                    color: "#f5f5f0",
+                    color: "text.primary",
                     fontSize: 16,
                     fontWeight: 700,
                     lineHeight: 1.2,
@@ -224,7 +238,8 @@ const TrainingGoalsSection = ({
 
                 <Typography
                   sx={{
-                    color: "#777",
+                    color: "text.primary",
+                    opacity: 0.55,
                     fontSize: 12,
                     lineHeight: 1.4,
                     mt: 0.35,
@@ -234,6 +249,7 @@ const TrainingGoalsSection = ({
                 </Typography>
               </Box>
 
+              {/* Selected Check */}
               {selected && (
                 <Box
                   sx={{
@@ -244,6 +260,7 @@ const TrainingGoalsSection = ({
                     height: 16,
                     borderRadius: "50%",
                     backgroundColor: "primary.main",
+
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -251,7 +268,7 @@ const TrainingGoalsSection = ({
                 >
                   <CheckIcon
                     sx={{
-                      color: "#fff",
+                      color: "primary.contrastText",
                       fontSize: 16,
                     }}
                   />

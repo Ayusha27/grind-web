@@ -9,7 +9,6 @@ import type {
   IntakeFormData,
 } from "./types";
 
-
 interface BodyMetricsSectionProps {
   data: IntakeFormData;
 
@@ -28,34 +27,33 @@ interface BodyMetricsSectionProps {
   };
 }
 
-
 // ============================================================
 // INPUT STYLES
 // ============================================================
 
 const inputStyles = {
   "& .MuiInputBase-root": {
-    backgroundColor: "#151515",
-    color: "#f5f5f0",
+    backgroundColor: "background.paper",
+    color: "text.primary",
     borderRadius: 0,
     fontSize: 16,
     minHeight: 38,
   },
 
   "& .MuiOutlinedInput-notchedOutline": {
-    borderColor: "#292929",
+    borderColor: "divider",
   },
 
   "&:hover .MuiOutlinedInput-notchedOutline": {
-    borderColor: "#3a3a3a",
+    borderColor: "secondary.main",
   },
 
   "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
-    borderColor: "#ff7417",
+    borderColor: "primary.main",
   },
 
   "& .Mui-error .MuiOutlinedInput-notchedOutline": {
-    borderColor: "#ff7417",
+    borderColor: "primary.main",
   },
 
   "& .MuiInputBase-input": {
@@ -63,10 +61,14 @@ const inputStyles = {
   },
 
   "& .MuiSelect-icon": {
-    color: "#777",
+    color: "secondary.main",
+  },
+
+  "& .MuiInputBase-input::placeholder": {
+    color: "text.primary",
+    opacity: 0.45,
   },
 };
-
 
 // ============================================================
 // NATIVE SELECT STYLES
@@ -74,48 +76,46 @@ const inputStyles = {
 
 const nativeSelectStyles = {
   width: "100%",
-
   minHeight: 38,
 
   padding: "0 36px 0 12px",
 
-  backgroundColor: "#151515",
+  backgroundColor: "background.paper",
+  color: "text.primary",
 
-  color: "#f5f5f0",
-
-  border: "1px solid #292929",
+  border: "1px solid",
+  borderColor: "divider",
 
   borderRadius: 0,
 
   outline: "none",
 
   fontSize: 16,
-
   fontFamily: "inherit",
 
   cursor: "pointer",
 
   "&:hover": {
-    borderColor: "#3a3a3a",
+    borderColor: "secondary.main",
   },
 
   "&:focus": {
-    borderColor: "#ff7417",
+    borderColor: "primary.main",
   },
 
   "& option": {
-    backgroundColor: "#1a1a1a",
-    color: "#f5f5f0",
+    backgroundColor: "background.paper",
+    color: "text.primary",
   },
 };
-
 
 // ============================================================
 // LABEL
 // ============================================================
 
 const labelStyles = {
-  color: "#777",
+  color: "text.primary",
+  opacity: 0.55,
 
   fontSize: 12,
 
@@ -127,7 +127,6 @@ const labelStyles = {
 
   mb: 0.7,
 };
-
 
 // ============================================================
 // ERROR MESSAGE
@@ -142,7 +141,7 @@ const ErrorMessage = ({
     <Typography
       role="alert"
       sx={{
-        color: "#ff7417",
+        color: "primary.main",
 
         fontSize: 11,
 
@@ -156,7 +155,6 @@ const ErrorMessage = ({
   );
 };
 
-
 // ============================================================
 // ERROR WRAPPER
 // ============================================================
@@ -165,14 +163,15 @@ const errorWrapperStyles = (
   hasError?: boolean
 ) => ({
   borderLeft: hasError
-    ? "2px solid #ff7417"
+    ? "2px solid"
     : "2px solid transparent",
 
-  pl: hasError
-    ? 1
-    : 0,
-});
+  borderColor: hasError
+    ? "primary.main"
+    : "transparent",
 
+  pl: hasError ? 1 : 0,
+});
 
 // ============================================================
 // BODY METRICS SECTION
@@ -191,11 +190,10 @@ const BodyMetricsSection = ({
           md: 2.5,
         },
 
-        borderBottom:
-          "1px solid #292929",
+        borderBottom: "1px solid",
+        borderColor: "divider",
       }}
     >
-
       {/* ======================================================
           SECTION HEADING
       ====================================================== */}
@@ -203,17 +201,14 @@ const BodyMetricsSection = ({
       <Box
         sx={{
           display: "flex",
-
           alignItems: "center",
-
           gap: 1,
-
           mb: 2,
         }}
       >
         <Typography
           sx={{
-            color: "#ff7417",
+            color: "primary.main",
 
             fontSize: 11,
 
@@ -233,12 +228,10 @@ const BodyMetricsSection = ({
 
             height: "1px",
 
-            backgroundColor:
-              "#292929",
+            backgroundColor: "divider",
           }}
         />
       </Box>
-
 
       {/* ======================================================
           WEIGHT
@@ -247,33 +240,32 @@ const BodyMetricsSection = ({
       <Box
         id="intake-weight"
         sx={{
-          ...errorWrapperStyles(
-            errors.weight
-          ),
-
+          ...errorWrapperStyles(errors.weight),
           mb: 1.6,
         }}
       >
         <Typography sx={labelStyles}>
-          Weight <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
+          Weight{" "}
+          <Box
+            component="span"
+            sx={{
+              color: "primary.main",
+            }}
+          >
+            *
+          </Box>
         </Typography>
-
 
         <Box
           sx={{
             display: "flex",
-
             mb: 0.8,
           }}
         >
-
           <Button
             type="button"
             onClick={() =>
-              onChange(
-                "weightUnit",
-                "kg"
-              )
+              onChange("weightUnit", "kg")
             }
             sx={{
               minWidth: 35,
@@ -281,28 +273,30 @@ const BodyMetricsSection = ({
               px: 1,
               py: 0.3,
               borderRadius: 0,
-              border:
-                "1px solid #292929",
+
+              border: "1px solid",
+              borderColor: "divider",
+
               color:
-                data.weightUnit ===
-                  "kg"
-                  ? "#fff"
-                  : "#666",
+                data.weightUnit === "kg"
+                  ? "text.primary"
+                  : "secondary.main",
+
               backgroundColor:
-                data.weightUnit ===
-                  "kg"
-                  ? "#ff7417"
-                  : "#111",
+                data.weightUnit === "kg"
+                  ? "primary.main"
+                  : "background.default",
+
               fontSize: 11,
               fontWeight: 700,
               boxShadow: "none",
 
               "&:hover": {
                 backgroundColor:
-                  data.weightUnit ===
-                    "kg"
-                    ? "#ff7417"
-                    : "#1a1a1a",
+                  data.weightUnit === "kg"
+                    ? "primary.main"
+                    : "background.paper",
+
                 boxShadow: "none",
               },
             }}
@@ -310,14 +304,10 @@ const BodyMetricsSection = ({
             KG
           </Button>
 
-
           <Button
             type="button"
             onClick={() =>
-              onChange(
-                "weightUnit",
-                "lbs"
-              )
+              onChange("weightUnit", "lbs")
             }
             sx={{
               minWidth: 35,
@@ -325,28 +315,30 @@ const BodyMetricsSection = ({
               px: 1,
               py: 0.3,
               borderRadius: 0,
-              border:
-                "1px solid #292929",
+
+              border: "1px solid",
+              borderColor: "divider",
+
               color:
-                data.weightUnit ===
-                  "lbs"
-                  ? "#fff"
-                  : "#666",
+                data.weightUnit === "lbs"
+                  ? "text.primary"
+                  : "secondary.main",
+
               backgroundColor:
-                data.weightUnit ===
-                  "lbs"
-                  ? "#ff7417"
-                  : "#111",
+                data.weightUnit === "lbs"
+                  ? "primary.main"
+                  : "background.default",
+
               fontSize: 11,
               fontWeight: 700,
               boxShadow: "none",
 
               "&:hover": {
                 backgroundColor:
-                  data.weightUnit ===
-                    "lbs"
-                    ? "#ff7417"
-                    : "#1a1a1a",
+                  data.weightUnit === "lbs"
+                    ? "primary.main"
+                    : "background.paper",
+
                 boxShadow: "none",
               },
             }}
@@ -355,18 +347,13 @@ const BodyMetricsSection = ({
           </Button>
         </Box>
 
-
         <TextField
           fullWidth
           size="small"
           type="number"
           value={data.weight}
           placeholder="75"
-          error={
-            Boolean(
-              errors.weight
-            )
-          }
+          error={Boolean(errors.weight)}
           slotProps={{
             htmlInput: {
               min: 1,
@@ -389,7 +376,6 @@ const BodyMetricsSection = ({
         )}
       </Box>
 
-
       {/* ======================================================
           HEIGHT
       ====================================================== */}
@@ -397,33 +383,32 @@ const BodyMetricsSection = ({
       <Box
         id="intake-height"
         sx={{
-          ...errorWrapperStyles(
-            errors.height
-          ),
-
+          ...errorWrapperStyles(errors.height),
           mb: 1.6,
         }}
       >
         <Typography sx={labelStyles}>
-          Height <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
+          Height{" "}
+          <Box
+            component="span"
+            sx={{
+              color: "primary.main",
+            }}
+          >
+            *
+          </Box>
         </Typography>
-
 
         <Box
           sx={{
             display: "flex",
-
             mb: 0.8,
           }}
         >
-
           <Button
             type="button"
             onClick={() =>
-              onChange(
-                "heightUnit",
-                "cm"
-              )
+              onChange("heightUnit", "cm")
             }
             sx={{
               minWidth: 35,
@@ -431,28 +416,30 @@ const BodyMetricsSection = ({
               px: 1,
               py: 0.3,
               borderRadius: 0,
-              border:
-                "1px solid #292929",
+
+              border: "1px solid",
+              borderColor: "divider",
+
               color:
-                data.heightUnit ===
-                  "cm"
-                  ? "#fff"
-                  : "#666",
+                data.heightUnit === "cm"
+                  ? "text.primary"
+                  : "secondary.main",
+
               backgroundColor:
-                data.heightUnit ===
-                  "cm"
-                  ? "#ff7417"
-                  : "#111",
+                data.heightUnit === "cm"
+                  ? "primary.main"
+                  : "background.default",
+
               fontSize: 11,
               fontWeight: 700,
               boxShadow: "none",
 
               "&:hover": {
                 backgroundColor:
-                  data.heightUnit ===
-                    "cm"
-                    ? "#ff7417"
-                    : "#1a1a1a",
+                  data.heightUnit === "cm"
+                    ? "primary.main"
+                    : "background.paper",
+
                 boxShadow: "none",
               },
             }}
@@ -460,14 +447,10 @@ const BodyMetricsSection = ({
             CM
           </Button>
 
-
           <Button
             type="button"
             onClick={() =>
-              onChange(
-                "heightUnit",
-                "ft/in"
-              )
+              onChange("heightUnit", "ft/in")
             }
             sx={{
               minWidth: 35,
@@ -475,28 +458,30 @@ const BodyMetricsSection = ({
               px: 1,
               py: 0.3,
               borderRadius: 0,
-              border:
-                "1px solid #292929",
+
+              border: "1px solid",
+              borderColor: "divider",
+
               color:
-                data.heightUnit ===
-                  "ft/in"
-                  ? "#fff"
-                  : "#666",
+                data.heightUnit === "ft/in"
+                  ? "text.primary"
+                  : "secondary.main",
+
               backgroundColor:
-                data.heightUnit ===
-                  "ft/in"
-                  ? "#ff7417"
-                  : "#111",
+                data.heightUnit === "ft/in"
+                  ? "primary.main"
+                  : "background.default",
+
               fontSize: 11,
               fontWeight: 700,
               boxShadow: "none",
 
               "&:hover": {
                 backgroundColor:
-                  data.heightUnit ===
-                    "ft/in"
-                    ? "#ff7417"
-                    : "#1a1a1a",
+                  data.heightUnit === "ft/in"
+                    ? "primary.main"
+                    : "background.paper",
+
                 boxShadow: "none",
               },
             }}
@@ -505,24 +490,14 @@ const BodyMetricsSection = ({
           </Button>
         </Box>
 
-
-        {/* ====================================================
-            CM
-        ==================================================== */}
-
-        {data.heightUnit ===
-          "cm" ? (
+        {data.heightUnit === "cm" ? (
           <TextField
             fullWidth
             size="small"
             type="number"
             value={data.height}
             placeholder="178"
-            error={
-              Boolean(
-                errors.height
-              )
-            }
+            error={Boolean(errors.height)}
             slotProps={{
               htmlInput: {
                 min: 1,
@@ -538,35 +513,20 @@ const BodyMetricsSection = ({
             sx={inputStyles}
           />
         ) : (
-
-          /* =================================================
-             FT / IN
-          ================================================= */
-
           <Box
             sx={{
               display: "grid",
-
-              gridTemplateColumns:
-                "1fr 1fr",
-
+              gridTemplateColumns: "1fr 1fr",
               gap: 1,
             }}
           >
-
             <TextField
               fullWidth
               size="small"
               type="number"
-              value={
-                data.heightFt
-              }
+              value={data.heightFt}
               placeholder="5"
-              error={
-                Boolean(
-                  errors.height
-                )
-              }
+              error={Boolean(errors.height)}
               slotProps={{
                 htmlInput: {
                   min: 0,
@@ -583,20 +543,13 @@ const BodyMetricsSection = ({
               sx={inputStyles}
             />
 
-
             <TextField
               fullWidth
               size="small"
               type="number"
-              value={
-                data.heightIn
-              }
+              value={data.heightIn}
               placeholder="10"
-              error={
-                Boolean(
-                  errors.height
-                )
-              }
+              error={Boolean(errors.height)}
               slotProps={{
                 htmlInput: {
                   min: 0,
@@ -612,10 +565,8 @@ const BodyMetricsSection = ({
               }
               sx={inputStyles}
             />
-
           </Box>
         )}
-
 
         {errors.height && (
           <ErrorMessage>
@@ -623,7 +574,6 @@ const BodyMetricsSection = ({
           </ErrorMessage>
         )}
       </Box>
-
 
       {/* ======================================================
           FITNESS LEVEL
@@ -635,36 +585,36 @@ const BodyMetricsSection = ({
           ...errorWrapperStyles(
             errors.fitnessLevel
           ),
-
           mb: 1.6,
         }}
       >
         <Typography sx={labelStyles}>
-          Current Fitness Level <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
+          Current Fitness Level{" "}
+          <Box
+            component="span"
+            sx={{
+              color: "primary.main",
+            }}
+          >
+            *
+          </Box>
         </Typography>
-
 
         <Box
           sx={{
             display: "flex",
-
             flexWrap: "wrap",
-
             gap: 0.6,
           }}
         >
-
           {[
             "beginner",
             "intermediate",
             "advanced",
             "athlete",
           ].map((level) => {
-
             const selected =
-              data.fitnessLevel ===
-              level;
-
+              data.fitnessLevel === level;
 
             return (
               <Button
@@ -678,44 +628,34 @@ const BodyMetricsSection = ({
                 }
                 sx={{
                   minWidth: 35,
-
                   minHeight: 24,
-
                   px: 1,
-
                   py: 0.3,
-
                   borderRadius: 0,
 
-                  border:
-                    "1px solid #292929",
+                  border: "1px solid",
+                  borderColor: "divider",
 
                   color: selected
-                    ? "#fff"
-                    : "#666",
+                    ? "text.primary"
+                    : "secondary.main",
 
-                  backgroundColor:
-                    selected
-                      ? "#ff7417"
-                      : "#111",
+                  backgroundColor: selected
+                    ? "primary.main"
+                    : "background.default",
 
                   fontSize: 11,
-
                   fontWeight: 700,
-
                   boxShadow: "none",
 
-                  textTransform:
-                    "uppercase",
+                  textTransform: "uppercase",
 
                   "&:hover": {
-                    backgroundColor:
-                      selected
-                        ? "#ff7417"
-                        : "#1a1a1a",
+                    backgroundColor: selected
+                      ? "primary.main"
+                      : "background.paper",
 
-                    boxShadow:
-                      "none",
+                    boxShadow: "none",
                   },
                 }}
               >
@@ -723,9 +663,7 @@ const BodyMetricsSection = ({
               </Button>
             );
           })}
-
         </Box>
-
 
         {errors.fitnessLevel && (
           <ErrorMessage>
@@ -733,7 +671,6 @@ const BodyMetricsSection = ({
           </ErrorMessage>
         )}
       </Box>
-
 
       {/* ======================================================
           TRAINING DAYS
@@ -745,20 +682,24 @@ const BodyMetricsSection = ({
           ...errorWrapperStyles(
             errors.trainingDays
           ),
-
           mb: 1.6,
         }}
       >
         <Typography sx={labelStyles}>
-          Available Training Days / Week <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
+          Available Training Days / Week{" "}
+          <Box
+            component="span"
+            sx={{
+              color: "primary.main",
+            }}
+          >
+            *
+          </Box>
         </Typography>
-
 
         <Box
           component="select"
-          value={
-            data.trainingDays
-          }
+          value={data.trainingDays}
           onChange={(event) =>
             onChange(
               "trainingDays",
@@ -770,41 +711,20 @@ const BodyMetricsSection = ({
 
             appearance: "auto",
 
-            borderColor:
-              errors.trainingDays
-                ? "#ff7417"
-                : "#292929",
+            borderColor: errors.trainingDays
+              ? "primary.main"
+              : "divider",
           }}
         >
-          <option value="">
-            Select
-          </option>
+          <option value="">Select</option>
 
-          <option value="2 days">
-            2 days
-          </option>
-
-          <option value="3 days">
-            3 days
-          </option>
-
-          <option value="4 days">
-            4 days
-          </option>
-
-          <option value="5 days">
-            5 days
-          </option>
-
-          <option value="6 days">
-            6 days
-          </option>
-
-          <option value="7 days">
-            7 days
-          </option>
+          <option value="2 days">2 days</option>
+          <option value="3 days">3 days</option>
+          <option value="4 days">4 days</option>
+          <option value="5 days">5 days</option>
+          <option value="6 days">6 days</option>
+          <option value="7 days">7 days</option>
         </Box>
-
 
         {errors.trainingDays && (
           <ErrorMessage>
@@ -812,7 +732,6 @@ const BodyMetricsSection = ({
           </ErrorMessage>
         )}
       </Box>
-
 
       {/* ======================================================
           SESSION LENGTH
@@ -824,12 +743,9 @@ const BodyMetricsSection = ({
           Preferred Session Length
         </Typography>
 
-
         <Box
           component="select"
-          value={
-            data.sessionLength
-          }
+          value={data.sessionLength}
           onChange={(event) =>
             onChange(
               "sessionLength",
@@ -838,39 +754,20 @@ const BodyMetricsSection = ({
           }
           sx={{
             ...nativeSelectStyles,
-
             appearance: "auto",
           }}
         >
-          <option value="">
-            Select
-          </option>
+          <option value="">Select</option>
 
-          <option value="30 mins">
-            30 mins
-          </option>
-
-          <option value="45 mins">
-            45 mins
-          </option>
-
-          <option value="60 mins">
-            60 mins
-          </option>
-
-          <option value="75 mins">
-            75 mins
-          </option>
-
-          <option value="90 mins">
-            90 mins
-          </option>
+          <option value="30 mins">30 mins</option>
+          <option value="45 mins">45 mins</option>
+          <option value="60 mins">60 mins</option>
+          <option value="75 mins">75 mins</option>
+          <option value="90 mins">90 mins</option>
         </Box>
       </Box>
-
     </Box>
   );
 };
-
 
 export default BodyMetricsSection;

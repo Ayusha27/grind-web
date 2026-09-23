@@ -1,5 +1,6 @@
 export interface IntakeFormData {
   fullName: string;
+  phoneNumber: string;
   email: string;
   age: string;
   gender: string;
@@ -33,6 +34,7 @@ export interface IntakeFormData {
 
 export const initialFormData: IntakeFormData = {
   fullName: "",
+  phoneNumber: "",
   email: "",
   age: "",
   gender: "",

@@ -51,16 +51,16 @@ const WorkoutCompletionDialog = ({
       fullWidth
       maxWidth="xs"
       slotProps={{
-  paper: {
-    sx: {
-      width: "100%",
-      mx: 2,
-      borderRadius: "16px",
-      backgroundColor: "#ffffff",
-      overflow: "hidden",
-    },
-  },
-}}
+        paper: {
+          sx: {
+            width: "100%",
+            mx: 2,
+            borderRadius: "16px",
+            backgroundColor: "#ffffff",
+            overflow: "hidden",
+          },
+        },
+      }}
     >
       {!isSuccess ? (
         <>
@@ -105,6 +105,9 @@ const WorkoutCompletionDialog = ({
 
                 fontSize: 20,
 
+                fontFamily:
+                  "Archivo, sans-serif",
+
                 "&:hover": {
                   backgroundColor:
                     "#f5f2ed",
@@ -135,6 +138,9 @@ const WorkoutCompletionDialog = ({
 
                 fontSize: 25,
                 fontWeight: 900,
+
+                fontFamily:
+                  "Archivo, sans-serif",
               }}
             >
               ✓
@@ -157,6 +163,9 @@ const WorkoutCompletionDialog = ({
                 fontWeight: 900,
 
                 color: "#1c1b19",
+
+                fontFamily:
+                  "Archivo Black, sans-serif",
               }}
             >
               Mark Workout Complete?
@@ -174,6 +183,9 @@ const WorkoutCompletionDialog = ({
                 color: "#77716b",
 
                 pr: 2,
+
+                fontFamily:
+                  "Archivo, sans-serif",
               }}
             >
               Your workout progress will
@@ -249,6 +261,9 @@ const WorkoutCompletionDialog = ({
                 color: "#918b85",
 
                 textAlign: "center",
+
+                fontFamily:
+                  "Archivo, sans-serif",
               }}
             >
               All workout sets will be
@@ -280,6 +295,9 @@ const WorkoutCompletionDialog = ({
                     lineHeight: 1.4,
                     color: "#c62828",
                     fontWeight: 700,
+
+                    fontFamily:
+                      "Archivo, sans-serif",
                   }}
                 >
                   {errorMessage}
@@ -328,6 +346,9 @@ const WorkoutCompletionDialog = ({
 
                 fontWeight: 700,
 
+                fontFamily:
+                  "Archivo, sans-serif",
+
                 textTransform:
                   "none",
 
@@ -362,6 +383,9 @@ const WorkoutCompletionDialog = ({
                 fontSize: 11,
 
                 fontWeight: 800,
+
+                fontFamily:
+                  "Archivo, sans-serif",
 
                 textTransform:
                   "none",
@@ -432,6 +456,9 @@ const WorkoutCompletionDialog = ({
 
                 fontSize: 31,
                 fontWeight: 900,
+
+                fontFamily:
+                  "Archivo, sans-serif",
               }}
             >
               ✓
@@ -452,6 +479,9 @@ const WorkoutCompletionDialog = ({
                 fontWeight: 900,
 
                 color: "#1c1b19",
+
+                fontFamily:
+                  "Archivo Black, sans-serif",
               }}
             >
               Workout Saved
@@ -467,6 +497,9 @@ const WorkoutCompletionDialog = ({
                 color: "#77716b",
 
                 lineHeight: 1.5,
+
+                fontFamily:
+                  "Archivo, sans-serif",
               }}
             >
               Your workout progress has
@@ -508,11 +541,31 @@ const WorkoutCompletionDialog = ({
                   color: "#25864c",
 
                   textAlign: "center",
+
+                  fontFamily:
+                    "Archivo, sans-serif",
                 }}
               >
-                {completedSets} of{" "}
-                {totalSets} sets
-                completed
+                <Box
+                  component="span"
+                  sx={{
+                    fontFamily:
+                      "JetBrains Mono, monospace",
+                  }}
+                >
+                  {completedSets}
+                </Box>{" "}
+                of{" "}
+                <Box
+                  component="span"
+                  sx={{
+                    fontFamily:
+                      "JetBrains Mono, monospace",
+                  }}
+                >
+                  {totalSets}
+                </Box>{" "}
+                sets completed
               </Typography>
 
               <Typography
@@ -524,10 +577,21 @@ const WorkoutCompletionDialog = ({
                   color: "#6d766f",
 
                   textAlign: "center",
+
+                  fontFamily:
+                    "Archivo, sans-serif",
                 }}
               >
-                {earnedCalories} kcal
-                earned
+                <Box
+                  component="span"
+                  sx={{
+                    fontFamily:
+                      "JetBrains Mono, monospace",
+                  }}
+                >
+                  {earnedCalories}
+                </Box>{" "}
+                kcal earned
               </Typography>
             </Box>
           </DialogContent>
@@ -564,6 +628,9 @@ const WorkoutCompletionDialog = ({
                 fontSize: 11,
 
                 fontWeight: 800,
+
+                fontFamily:
+                  "Archivo, sans-serif",
 
                 textTransform:
                   "none",
@@ -625,6 +692,9 @@ const SummaryRow = ({
             color: "#77716b",
 
             flexShrink: 0,
+
+            fontFamily:
+              "Archivo, sans-serif",
           }}
         >
           {label}
@@ -639,6 +709,9 @@ const SummaryRow = ({
             color: "#282522",
 
             textAlign: "right",
+
+            fontFamily:
+              "JetBrains Mono, monospace",
           }}
         >
           {value}

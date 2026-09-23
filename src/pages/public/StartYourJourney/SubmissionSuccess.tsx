@@ -14,8 +14,8 @@ const SubmissionSuccess = () => {
     <Box
       sx={{
         minHeight: "100vh",
-        backgroundColor: "#080808",
-        color: "#f5f5f0",
+        backgroundColor: "background.default",
+        color: "text.primary",
         display: "flex",
         flexDirection: "column",
       }}
@@ -23,6 +23,7 @@ const SubmissionSuccess = () => {
       {/* =========================================================
           HEADER
       ========================================================= */}
+
       <Box
         component="header"
         sx={{
@@ -30,9 +31,13 @@ const SubmissionSuccess = () => {
             xs: 64,
             md: 72,
           },
-          borderBottom: "1px solid #222",
+
+          borderBottom: "1px solid",
+          borderBottomColor: "divider",
+
           display: "flex",
           alignItems: "center",
+
           px: {
             xs: 2.5,
             sm: 3,
@@ -49,12 +54,13 @@ const SubmissionSuccess = () => {
             gap: 2,
           }}
         >
+          {/* Logo */}
           <Typography
             component={RouterLink}
             to="/"
             sx={{
               textDecoration: "none",
-              color: "#f5f5f0",
+              color: "text.primary",
               fontFamily: '"Bebas Neue", sans-serif',
               fontSize: {
                 xs: 46,
@@ -78,6 +84,7 @@ const SubmissionSuccess = () => {
           {/* =====================================================
               RIGHT — NAVIGATION
           ===================================================== */}
+
           <Box
             sx={{
               display: "flex",
@@ -96,29 +103,37 @@ const SubmissionSuccess = () => {
               variant="text"
               sx={{
                 minWidth: "auto",
+
                 height: {
                   xs: 30,
                   md: 34,
                 },
+
                 px: {
                   xs: 1,
                   sm: 1.5,
                   md: 2,
                 },
+
                 borderRadius: 0,
-                color: "#777",
+
+                color: "text.primary",
+                opacity: 0.55,
+
                 fontSize: {
                   xs: 11,
                   sm: 12,
                   md: 14,
                 },
+
                 fontWeight: 700,
                 letterSpacing: "0.7px",
                 whiteSpace: "nowrap",
 
                 "&:hover": {
                   backgroundColor: "transparent",
-                  color: "#f5f5f0",
+                  color: "text.primary",
+                  opacity: 1,
                 },
               }}
             >
@@ -132,31 +147,36 @@ const SubmissionSuccess = () => {
               variant="outlined"
               sx={{
                 minWidth: "auto",
+
                 height: {
                   xs: 30,
                   md: 34,
                 },
+
                 px: {
                   xs: 1,
                   sm: 1.5,
                   md: 2,
                 },
+
                 borderRadius: 0,
-                borderColor: "#292929",
-                color: "#f5f5f0",
+
+                borderColor: "divider",
+                color: "text.primary",
+
                 fontSize: {
                   xs: 11,
                   sm: 12,
                   md: 14,
                 },
+
                 fontWeight: 700,
                 letterSpacing: "0.7px",
                 whiteSpace: "nowrap",
 
                 "&:hover": {
                   borderColor: "primary.main",
-                  backgroundColor:
-                    "rgba(255, 92, 53, 0.06)",
+                  backgroundColor: "rgba(255, 92, 53, 0.06)",
                 },
               }}
             >
@@ -169,15 +189,19 @@ const SubmissionSuccess = () => {
       {/* =========================================================
           MAIN CONTENT
       ========================================================= */}
+
       <Container
         maxWidth={false}
         sx={{
           mx: "auto",
+
           px: 3,
+
           py: {
             xs: 6,
             md: 8,
           },
+
           flex: 1,
         }}
       >
@@ -191,13 +215,17 @@ const SubmissionSuccess = () => {
           {/* =====================================================
               SUCCESS ICON
           ===================================================== */}
+
           <Box
             sx={{
               width: 48,
               height: 48,
+
               border: "1px solid",
               borderColor: "primary.main",
+
               borderRadius: "50%",
+
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -214,6 +242,7 @@ const SubmissionSuccess = () => {
           {/* =====================================================
               EYEBROW
           ===================================================== */}
+
           <Typography
             sx={{
               color: "primary.main",
@@ -230,18 +259,23 @@ const SubmissionSuccess = () => {
           {/* =====================================================
               MAIN HEADING
           ===================================================== */}
+
           <Typography
             component="h1"
             sx={{
               fontFamily: '"Bebas Neue", sans-serif',
+
               fontSize: {
                 xs: 78,
                 sm: 92,
                 md: 103,
               },
+
               lineHeight: 0.9,
               letterSpacing: "-1px",
-              color: "#f5f5f0",
+
+              color: "text.primary",
+
               textTransform: "uppercase",
               maxWidth: 500,
             }}
@@ -254,9 +288,12 @@ const SubmissionSuccess = () => {
           {/* =====================================================
               DESCRIPTION
           ===================================================== */}
+
           <Typography
             sx={{
-              color: "#777",
+              color: "text.primary",
+              opacity: 0.55,
+
               fontSize: 18,
               lineHeight: 1.7,
               maxWidth: 390,
@@ -269,6 +306,7 @@ const SubmissionSuccess = () => {
           {/* =====================================================
               ORANGE DIVIDER
           ===================================================== */}
+
           <Box
             sx={{
               width: 30,
@@ -281,16 +319,21 @@ const SubmissionSuccess = () => {
           {/* =====================================================
               RESPONSE TIME
           ===================================================== */}
+
           <Box
             sx={{
-              border: "1px solid #292929",
+              border: "1px solid",
+              borderColor: "divider",
+
               px: 2,
               py: 1,
             }}
           >
             <Typography
               sx={{
-                color: "#777",
+                color: "text.primary",
+                opacity: 0.55,
+
                 fontSize: 12,
                 fontWeight: 700,
                 letterSpacing: "1px",
@@ -301,7 +344,8 @@ const SubmissionSuccess = () => {
               <Box
                 component="span"
                 sx={{
-                  color: "#f5f5f0",
+                  color: "text.primary",
+                  opacity: 1,
                 }}
               >
                 48 hours
@@ -312,16 +356,21 @@ const SubmissionSuccess = () => {
           {/* =====================================================
               WHAT HAPPENS NEXT
           ===================================================== */}
+
           <Box
             sx={{
               width: "100%",
+
               border: "1px solid",
-              borderColor: "rgba(255, 126, 20, 0.45)",
-              backgroundColor: "rgba(255, 126, 20, 0.07)",
+              borderColor: "primary.main",
+
+              backgroundColor: "rgba(255, 92, 53, 0.07)",
+
               p: {
                 xs: 2.5,
                 md: 3,
               },
+
               textAlign: "left",
               mt: 1,
             }}
@@ -335,7 +384,7 @@ const SubmissionSuccess = () => {
             >
               <CheckIcon
                 sx={{
-                  color: "#f5f5f0",
+                  color: "primary.main",
                   fontSize: 24,
                   mt: 0.3,
                   flexShrink: 0,
@@ -347,7 +396,7 @@ const SubmissionSuccess = () => {
                   sx={{
                     fontSize: 16,
                     fontWeight: 700,
-                    color: "#f5f5f0",
+                    color: "text.primary",
                     mb: 1,
                   }}
                 >
@@ -356,7 +405,9 @@ const SubmissionSuccess = () => {
 
                 <Typography
                   sx={{
-                    color: "#777",
+                    color: "text.primary",
+                    opacity: 0.65,
+
                     fontSize: 15,
                     lineHeight: 1.7,
                   }}
@@ -381,7 +432,9 @@ const SubmissionSuccess = () => {
 
                 <Typography
                   sx={{
-                    color: "#777",
+                    color: "text.primary",
+                    opacity: 0.65,
+
                     fontSize: 15,
                     lineHeight: 1.7,
                     mt: 2,
@@ -398,15 +451,21 @@ const SubmissionSuccess = () => {
           {/* =====================================================
               COMMUNITY
           ===================================================== */}
+
           <Box
             sx={{
               width: "100%",
-              border: "1px solid #292929",
-              backgroundColor: "#111",
+
+              border: "1px solid",
+              borderColor: "divider",
+
+              backgroundColor: "background.paper",
+
               p: {
                 xs: 3,
                 md: 3.5,
               },
+
               textAlign: "center",
             }}
           >
@@ -420,7 +479,7 @@ const SubmissionSuccess = () => {
 
             <Typography
               sx={{
-                color: "#f5f5f0",
+                color: "text.primary",
                 fontSize: 16,
                 fontWeight: 700,
                 letterSpacing: "0.5px",

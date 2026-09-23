@@ -15,13 +15,28 @@ const WeeklyDetail = ({
         sx={{
           fontSize: 15,
           fontWeight: 900,
-          color: "#1a1714",
+          color: "#13131A",
+          fontFamily: "Archivo Black, sans-serif",
         }}
       >
         Weekly Detail
       </Typography>
 
-      <Stack direction="row" spacing={0.8} sx={{ mt: 1.5 }}>
+      <Stack
+        direction="row"
+        spacing={0.8}
+        sx={{
+          mt: 1.5,
+
+          overflowX: "auto",
+
+          scrollbarWidth: "none",
+
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+        }}
+      >
         {[1, 2, 3, 4].map((item) => {
           const active = week === item;
 
@@ -34,16 +49,39 @@ const WeeklyDetail = ({
                 height: 32,
                 px: 1.8,
                 borderRadius: "8px",
+
                 border: "1px solid",
-                borderColor: active ? "#ff5c35" : "#ddd7d0",
-                backgroundColor: active ? "#ff5c35" : "#ffffff",
-                color: active ? "#ffffff" : "#77716b",
+
+                borderColor: active
+                  ? "#FF5C35"
+                  : "#4C4A49",
+
+                backgroundColor: active
+                  ? "#FF5C35"
+                  : "#ffffff",
+
+                color: active
+                  ? "#ffffff"
+                  : "#13131A",
+
                 fontSize: 10,
                 fontWeight: 700,
+
+                fontFamily:
+                  "Archivo, sans-serif",
+
                 textTransform: "none",
 
+                whiteSpace: "nowrap",
+
                 "&:hover": {
-                  backgroundColor: active ? "#ff5c35" : "#f5f2ed",
+                  backgroundColor: active
+                    ? "#FF5C35"
+                    : "#f5f2ed",
+
+                  borderColor: active
+                    ? "#FF5C35"
+                    : "#4C4A49",
                 },
               }}
             >

@@ -21,11 +21,9 @@ const WeeklyWeightTracker = ({
       sx={{
         width: "100%",
 
-        backgroundColor:
-          "#ffffff",
+        backgroundColor: "#ffffff",
 
-        border:
-          "1px solid #e0dbd4",
+        border: "1px solid #4C4A49",
 
         borderRadius: "12px",
 
@@ -47,15 +45,20 @@ const WeeklyWeightTracker = ({
 
       <Typography
         sx={{
+          fontFamily:
+            "Archivo Black, sans-serif",
+
           fontSize: {
             xs: 13,
             sm: 14,
             md: 15,
           },
 
+          lineHeight: 1.2,
+
           fontWeight: 900,
 
-          color: "#1a1714",
+          color: "#13131A",
 
           mb: {
             xs: 1.5,
@@ -95,8 +98,7 @@ const WeeklyWeightTracker = ({
               sx={{
                 display: "flex",
 
-                alignItems:
-                  "center",
+                alignItems: "center",
 
                 gap: {
                   xs: 1,
@@ -112,13 +114,18 @@ const WeeklyWeightTracker = ({
                 sx={{
                   flexShrink: 0,
 
+                  fontFamily:
+                    "Archivo, sans-serif",
+
                   fontSize: {
                     xs: 11,
                     sm: 12,
                     md: 13,
                   },
 
-                  color: "#1a1714",
+                  lineHeight: 1.2,
+
+                  color: "#13131A",
 
                   fontWeight: 700,
                 }}
@@ -152,22 +159,22 @@ const WeeklyWeightTracker = ({
                 sx={{
                   minWidth: 0,
 
-                  "& .MuiInputBase-root":
-                  {
+                  "& .MuiInputBase-root": {
                     height: {
                       xs: 36,
                       sm: 38,
                       md: 40,
                     },
 
-                    borderRadius:
-                      "6px",
+                    borderRadius: "6px",
 
                     backgroundColor:
                       "#ffffff",
 
-                    color:
-                      "#000000",
+                    color: "#13131A",
+
+                    fontFamily:
+                      "JetBrains Mono, monospace",
 
                     fontSize: 12,
                   },
@@ -175,73 +182,74 @@ const WeeklyWeightTracker = ({
                   /* Normal border */
 
                   "& .MuiOutlinedInput-notchedOutline":
-                  {
-                    border:
-                      "1px solid #d5d9df !important",
-                  },
+                    {
+                      border:
+                        "1px solid #4C4A49 !important",
+                    },
 
                   /* Hover border */
 
                   "&:hover .MuiOutlinedInput-notchedOutline":
-                  {
-                    border:
-                      "1px solid #c8cdd4 !important",
-                  },
+                    {
+                      border:
+                        "1px solid #4C4A49 !important",
+                    },
 
                   /* Focus border */
 
                   "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                  {
-                    border:
-                      "1px solid #ff5c35 !important",
-                  },
+                    {
+                      border:
+                        "1px solid #FF5C35 !important",
+                    },
 
                   /* Input */
 
                   "& .MuiOutlinedInput-input":
-                  {
-                    color:
-                      "#000000 !important",
+                    {
+                      color:
+                        "#13131A !important",
 
-                    WebkitTextFillColor:
-                      "#000000 !important",
+                      WebkitTextFillColor:
+                        "#13131A !important",
 
-                    fontFamily:
-                      "monospace",
+                      fontFamily:
+                        "JetBrains Mono, monospace",
 
-                    fontSize: 12,
-                  },
+                      fontSize: 12,
+                    },
 
                   /* Placeholder */
 
-                  "& input::placeholder":
-                  {
+                  "& input::placeholder": {
                     color:
-                      "#77716b !important",
+                      "#4C4A49 !important",
 
                     opacity: 1,
+
+                    fontFamily:
+                      "JetBrains Mono, monospace",
                   },
 
                   /* Remove number spinner */
 
                   "& input::-webkit-outer-spin-button":
-                  {
-                    WebkitAppearance:
-                      "none",
+                    {
+                      WebkitAppearance:
+                        "none",
 
-                    margin: 0,
-                  },
+                      margin: 0,
+                    },
 
                   "& input::-webkit-inner-spin-button":
-                  {
-                    WebkitAppearance:
-                      "none",
+                    {
+                      WebkitAppearance:
+                        "none",
 
-                    margin: 0,
-                  },
+                      margin: 0,
+                    },
 
-                  "& input[type=number]":
-                  {
+                  "& input[type=number]": {
                     MozAppearance:
                       "textfield",
                   },

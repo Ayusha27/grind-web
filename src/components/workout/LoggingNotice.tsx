@@ -35,6 +35,7 @@ const LoggingNotice = ({
             sm: 14,
           },
           color: "#66615d",
+          fontFamily: "Archivo, sans-serif",
         }}
       >
         <Box
@@ -52,8 +53,10 @@ const LoggingNotice = ({
         <Box
           component="span"
           sx={{
+            mr: 0.5,
             fontWeight: 800,
             color: "#ff5535",
+            fontFamily: "JetBrains Mono, monospace",
           }}
         >
           Month {month} · Week {week}
@@ -63,6 +66,7 @@ const LoggingNotice = ({
           component="span"
           sx={{
             ml: 1,
+            fontFamily: "Archivo, sans-serif",
           }}
         >
           — change in the bar above
@@ -80,6 +84,7 @@ const LoggingNotice = ({
           fontSize: 10,
           fontWeight: 900,
           letterSpacing: 0.3,
+          fontFamily: "Archivo, sans-serif",
         }}
       >
         AUTO-SYNC

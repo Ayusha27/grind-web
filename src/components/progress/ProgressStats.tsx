@@ -185,7 +185,7 @@ const StatCard: React.FC<
   label,
   value,
   icon,
-  valueColor = "#1a1714",
+  valueColor = "#13131A",
 }) => {
   return (
     <Box
@@ -210,7 +210,7 @@ const StatCard: React.FC<
         backgroundColor: "#ffffff",
 
         border:
-          "1px solid #e3ddd6",
+          "1px solid #4C4A49",
 
         borderRadius: "14px",
 
@@ -262,7 +262,7 @@ const StatCard: React.FC<
           backgroundColor:
             "#fff3ee",
 
-          color: "#ff5c35",
+          color: "#FF5C35",
 
           display: "flex",
 
@@ -303,7 +303,7 @@ const StatCard: React.FC<
             fontWeight: 900,
 
             fontFamily:
-              "monospace",
+              "JetBrains Mono, monospace",
 
             color: valueColor,
 
@@ -329,7 +329,10 @@ const StatCard: React.FC<
 
             lineHeight: 1.2,
 
-            color: "#77716b",
+            color: "#4C4A49",
+
+            fontFamily:
+              "Archivo, sans-serif",
 
             fontWeight: 600,
 
@@ -393,7 +396,7 @@ const ProgressStats: React.FC<
       ? "#c62828"
       : bmiChange < 0
         ? "#16803d"
-        : "#1a1714";
+        : "#13131A";
 
   /**
    * =========================================================
@@ -445,6 +448,9 @@ const ProgressStats: React.FC<
       >
         <Typography
           sx={{
+            fontFamily:
+              "Archivo Black, sans-serif",
+
             fontSize: {
               xs: 20,
               sm: 22,
@@ -455,7 +461,7 @@ const ProgressStats: React.FC<
 
             fontWeight: 900,
 
-            color: "#1a1714",
+            color: "#13131A",
 
             letterSpacing:
               "-0.3px",
@@ -476,7 +482,10 @@ const ProgressStats: React.FC<
 
             lineHeight: 1.4,
 
-            color: "#77716b",
+            color: "#4C4A49",
+
+            fontFamily:
+              "Archivo, sans-serif",
 
             fontWeight: 500,
           }}
@@ -571,7 +580,7 @@ const ProgressStats: React.FC<
                 ? "#c62828"
                 : weightChange < 0
                   ? "#16803d"
-                  : "#1a1714"
+                  : "#13131A"
             }
             icon={
               <TrendingUpOutlinedIcon />
@@ -635,7 +644,7 @@ const ProgressStats: React.FC<
                 "#ffffff",
 
               border:
-                "1px solid #e3ddd6",
+                "1px solid #4C4A49",
 
               borderRadius: "14px",
 
@@ -680,7 +689,7 @@ const ProgressStats: React.FC<
                 backgroundColor:
                   "#fff3ee",
 
-                color: "#ff5c35",
+                color: "#FF5C35",
 
                 display: "flex",
 
@@ -723,7 +732,7 @@ const ProgressStats: React.FC<
                   fontWeight: 900,
 
                   fontFamily:
-                    "monospace",
+                    "JetBrains Mono, monospace",
 
                   color:
                     bmiValueColor,
@@ -753,7 +762,10 @@ const ProgressStats: React.FC<
 
                   lineHeight: 1.2,
 
-                  color: "#77716b",
+                  color: "#4C4A49",
+
+                  fontFamily:
+                    "Archivo, sans-serif",
 
                   fontWeight: 600,
                 }}
@@ -768,10 +780,6 @@ const ProgressStats: React.FC<
 
             <Box
               sx={{
-                /*
-                 * Push status to the right while allowing
-                 * it to shrink when space is limited.
-                 */
                 marginLeft: "auto",
 
                 flex: {
@@ -866,6 +874,9 @@ const ProgressStats: React.FC<
                         color:
                           bmiCategory.color,
 
+                        fontFamily:
+                          "Archivo, sans-serif",
+
                         whiteSpace:
                           "nowrap",
 
@@ -895,6 +906,9 @@ const ProgressStats: React.FC<
 
                         color:
                           bmiCategory.color,
+
+                        fontFamily:
+                          "Archivo, sans-serif",
 
                         whiteSpace:
                           "nowrap",
@@ -927,6 +941,9 @@ const ProgressStats: React.FC<
 
                       color:
                         bmiCategory.color,
+
+                      fontFamily:
+                        "Archivo, sans-serif",
 
                       whiteSpace:
                         "nowrap",
