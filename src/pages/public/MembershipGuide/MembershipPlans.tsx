@@ -90,6 +90,7 @@ const MembershipPlans = () => {
         <Typography
           component="h2"
           sx={{
+            fontFamily: "Bebas Neue",
             fontSize: { xs: 38, md: 50 },
             fontWeight: 800,
             lineHeight: 1,
@@ -102,6 +103,7 @@ const MembershipPlans = () => {
 
         <Typography
           sx={{
+            opacity: 0.65,
             color: "text.secondary",
             maxWidth: 850,
             fontSize: { xs: 14, md: 16 },
@@ -149,6 +151,7 @@ const MembershipPlans = () => {
                 {plan.badge && (
                   <Box
                     sx={{
+                      fontFamily: '"Syne", sans-serif',
                       position: "absolute",
                       top: 0,
                       right: 0,
@@ -174,6 +177,7 @@ const MembershipPlans = () => {
                 {plan.subtitle && (
                   <Typography
                     sx={{
+                      fontFamily: '"Syne", sans-serif',
                       color: "primary.main",
                       fontSize: 16,
                       fontWeight: 700,
@@ -187,6 +191,7 @@ const MembershipPlans = () => {
 
                 <Typography
                   sx={{
+                    fontFamily: '"Syne", sans-serif',
                     fontSize: 17,
                     fontWeight: 700,
                     mb: 2.5,
@@ -209,6 +214,7 @@ const MembershipPlans = () => {
                   {/* Main plan price */}
                   <Typography
                     sx={{
+                      fontFamily: '"Syne", sans-serif',
                       color: "primary.main",
                       fontSize: {
                         xs: 36,
@@ -225,6 +231,7 @@ const MembershipPlans = () => {
                   {/* Effective monthly price */}
                   <Typography
                     sx={{
+                      fontFamily: '"DM Sans", sans-serif',
                       color: "primary.main",
                       fontSize: {
                         xs: 15,
@@ -254,6 +261,8 @@ const MembershipPlans = () => {
 
                 <Typography
                   sx={{
+                    opacity: 0.65,
+                    fontFamily: '"Syne", sans-serif',
                     color: "text.secondary",
                     fontSize: 14,
                     lineHeight: 1.7,
@@ -284,6 +293,7 @@ const MembershipPlans = () => {
                 {plan.bonus && (
                   <Box
                     sx={{
+                      opacity: 0.65,
                       mt: "auto",
                       pt: 2.5,
                     }}
@@ -298,6 +308,7 @@ const MembershipPlans = () => {
                     >
                       <Typography
                         sx={{
+                          fontFamily: '"Syne", sans-serif',
                           color: "primary.main",
                           fontWeight: 700,
                           fontSize: 15,
@@ -311,6 +322,7 @@ const MembershipPlans = () => {
                         <Typography
                           key={item}
                           sx={{
+                            fontFamily: '"Syne", sans-serif',
                             color: "text.secondary",
                             fontSize: 13,
                             lineHeight: 1.7,
@@ -322,6 +334,7 @@ const MembershipPlans = () => {
 
                       <Typography
                         sx={{
+                          fontFamily: '"Syne", sans-serif',
                           color: "primary.main",
                           fontSize: 17,
                           fontWeight: 700,
@@ -333,6 +346,7 @@ const MembershipPlans = () => {
 
                       <Typography
                         sx={{
+                          fontFamily: '"Syne", sans-serif',
                           color: "text.secondary",
                           fontSize: 13,
                           lineHeight: 1.6,
@@ -370,6 +384,8 @@ const MembershipPlans = () => {
 
           <Typography
             sx={{
+              fontFamily: '"Syne", sans-serif',
+              opacity: 0.65,
               color: "text.secondary",
               textAlign: "center",
               fontSize: {

@@ -16,7 +16,9 @@ const IntakeSubmit = () => {
           xs: 2,
           md: 2.5,
         },
-        borderTop: "1px solid #292929",
+
+        // GRIND Charcoal Gray
+        borderTop: "1px solid #4C4A49",
 
         "@media (max-width:600px)": {
           flexDirection: "column",
@@ -27,7 +29,11 @@ const IntakeSubmit = () => {
       <Typography
         sx={{
           maxWidth: 310,
-          color: "#666",
+
+          // White with reduced opacity for secondary text
+          color: "#FFFFFF",
+          opacity: 0.65,
+
           fontSize: 11,
           lineHeight: 1.5,
         }}
@@ -35,8 +41,9 @@ const IntakeSubmit = () => {
         <Box
           component="span"
           sx={{
-            color: "#f5f5f0",
+            color: "#FFFFFF",
             fontWeight: 700,
+            opacity: 1,
           }}
         >
           Your data stays with us.
@@ -54,15 +61,19 @@ const IntakeSubmit = () => {
           minWidth: 110,
           height: 42,
           px: 3,
+
           borderRadius: 0,
-          backgroundColor: "#ff7417",
-          color: "#fff",
+
+          // GRIND Orange
+          backgroundColor: "#FF5C35",
+          color: "#FFFFFF",
+
           fontSize: 15,
           fontWeight: 800,
           letterSpacing: "0.5px",
 
           "&:hover": {
-            backgroundColor: "#ff7417",
+            backgroundColor: "#FF5C35",
           },
         }}
       >

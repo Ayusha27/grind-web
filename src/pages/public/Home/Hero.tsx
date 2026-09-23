@@ -34,15 +34,21 @@ const Hero = () => {
         <Typography
           variant="h1"
           sx={{
+            fontFamily: '"Bebas Neue", sans-serif',
+
             fontSize: {
               xs: 48,
               sm: 64,
               md: 82,
               lg: 92,
             },
+
             lineHeight: 0.92,
+
             maxWidth: 1100,
             mx: "auto",
+
+            color: "#f5f5f0",
           }}
         >
           FITNESS ISN'T ABOUT MOTIVATION.

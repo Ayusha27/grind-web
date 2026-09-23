@@ -78,16 +78,24 @@ const DayNavigation = ({
             }}
           >
             {/* Day number */}
-            <Typography
+           <Typography
               component="span"
               sx={{
+                fontFamily:
+                  "'Archivo Black', sans-serif",
+
                 fontSize: {
                   xs: 18,
                   sm: 23,
                 },
+
                 lineHeight: 1,
-                fontWeight: 900,
-                color: isActive ? "#ffffff" : "#55524f",
+
+                fontWeight: 400,
+
+                color: isActive
+                  ? "#FFFFFF"
+                  : "#4C4A49",
               }}
             >
               {day.dayNumber}
@@ -105,21 +113,24 @@ const DayNavigation = ({
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
 
+                fontFamily:
+                  "'Archivo', sans-serif",
+
                 fontSize: {
                   xs: 8,
-                  sm: 10,
+                  sm: 9,
                 },
 
                 letterSpacing: {
                   xs: 1,
-                  sm: 1.4,
+                  sm: 1.2,
                 },
 
-                fontWeight: 700,
+                fontWeight: 600,
 
                 color: isActive
-                  ? "#d8d4d0"
-                  : "#55524f",
+                  ? "#FFFFFF"
+                  : "#4C4A49",
               }}
             >
               {day.label}

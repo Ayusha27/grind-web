@@ -17,10 +17,10 @@ const ProgressTrackerHeader = ({
       }}
     >
       {/* TITLE */}
-
       <Typography
         component="h2"
         sx={{
+          fontFamily: "Archivo Black, sans-serif",
           fontSize: {
             xs: 18,
             sm: 20,
@@ -28,7 +28,7 @@ const ProgressTrackerHeader = ({
           },
           lineHeight: 1.15,
           fontWeight: 900,
-          color: "#1a1714",
+          color: "#13131A",
           mb: {
             xs: 1.4,
             sm: 1.5,
@@ -40,7 +40,6 @@ const ProgressTrackerHeader = ({
       </Typography>
 
       {/* MONTH SELECTOR */}
-
       <Box
         sx={{
           display: "flex",
@@ -66,9 +65,7 @@ const ProgressTrackerHeader = ({
           return (
             <Button
               key={item}
-              onClick={() =>
-                onMonthChange(item)
-              }
+              onClick={() => onMonthChange(item)}
               sx={{
                 flex: {
                   xs: "1 1 0",
@@ -98,16 +95,18 @@ const ProgressTrackerHeader = ({
                 border: "1px solid",
 
                 borderColor: active
-                  ? "#ff5c35"
-                  : "#e1ddd8",
+                  ? "#FF5C35"
+                  : "#4C4A49",
 
                 backgroundColor: active
-                  ? "#ff5c35"
+                  ? "#FF5C35"
                   : "#ffffff",
 
                 color: active
                   ? "#ffffff"
-                  : "#211e1b",
+                  : "#13131A",
+
+                fontFamily: "Archivo, sans-serif",
 
                 fontSize: {
                   xs: 11,
@@ -125,19 +124,18 @@ const ProgressTrackerHeader = ({
 
                 boxShadow: active
                   ? "0 3px 10px rgba(255,92,53,.16)"
-                  : "0 2px 8px rgba(26,23,20,.03)",
+                  : "none",
 
-                transition:
-                  "all 180ms ease",
+                transition: "all 180ms ease",
 
                 "&:hover": {
                   backgroundColor: active
-                    ? "#ff5c35"
+                    ? "#FF5C35"
                     : "#f8f6f3",
 
                   borderColor: active
-                    ? "#ff5c35"
-                    : "#d5d0ca",
+                    ? "#FF5C35"
+                    : "#4C4A49",
                 },
               }}
             >

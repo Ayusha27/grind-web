@@ -42,6 +42,7 @@ const WhyGrind = () => {
             fontWeight: 800,
             lineHeight: 1,
             textTransform: "uppercase",
+            fontFamily: "Bebas Neue",
             mb: 6,
           }}
         >
@@ -82,6 +83,7 @@ const WhyGrind = () => {
 
               <Typography
                 sx={{
+                  opacity: 0.65,
                   color: "text.secondary",
                   fontSize: 15,
                   lineHeight: 1.7,

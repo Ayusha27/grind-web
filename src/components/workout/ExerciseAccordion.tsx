@@ -131,22 +131,26 @@ const ExerciseAccordion = ({
         >
           <Typography
             sx={{
+              fontFamily:
+                "'Archivo', sans-serif",
+
               fontSize: {
-                xs: 15,
-                sm: 17,
+                xs: 14,
+                sm: 15,
               },
 
               lineHeight: 1.2,
 
-              fontWeight: 800,
+              fontWeight: 600,
 
               color: allSetsCompleted
-                ? "#706b66"
-                : "#252321",
+                ? "#4C4A49"
+                : "#13131A",
 
-              textDecoration: allSetsCompleted
-                ? "line-through"
-                : "none",
+              textDecoration:
+                allSetsCompleted
+                  ? "line-through"
+                  : "none",
             }}
           >
             {exercise.name}
@@ -157,15 +161,16 @@ const ExerciseAccordion = ({
               mt: 0.4,
 
               fontSize: {
-                xs: 11,
-                sm: 13,
+                xs: 9,
+                sm: 10,
               },
 
               lineHeight: 1,
 
-              color: "#716b66",
+              color: "#4C4A49",
 
-              fontFamily: "monospace",
+              fontFamily:
+                "'JetBrains Mono', monospace",
             }}
           >
             {exercise.sets.length} ×{" "}

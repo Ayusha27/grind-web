@@ -107,7 +107,7 @@ const Metric = ({
 
           color: "#ffffff",
 
-          fontFamily: "monospace",
+          fontFamily: "JetBrains Mono, monospace",
 
           mb: {
             xs: 0.55,
@@ -134,6 +134,8 @@ const Metric = ({
 
           color: "#f4f4f4",
 
+          fontFamily: "Archivo, sans-serif",
+
           whiteSpace: {
             xs: "normal",
             md: "nowrap",
@@ -158,8 +160,10 @@ const Metric = ({
           lineHeight: 1.25,
 
           color: accent
-            ? "#55b8e8"
+            ? "#FF5C35"
             : "#aaa9a7",
+
+          fontFamily: "Archivo, sans-serif",
 
           whiteSpace: {
             xs: "normal",
@@ -377,7 +381,7 @@ const ProgressSummaryCards = ({
                 cy="60"
                 r={radius}
                 fill="none"
-                stroke="#555758"
+                stroke="#4C4A49"
                 strokeWidth="8"
               />
 
@@ -388,7 +392,7 @@ const ProgressSummaryCards = ({
                 cy="60"
                 r={radius}
                 fill="none"
-                stroke="#9a9b9b"
+                stroke="#FF5C35"
                 strokeWidth="8"
                 strokeLinecap="round"
                 strokeDasharray={
@@ -432,7 +436,7 @@ const ProgressSummaryCards = ({
                   color: "#ffffff",
 
                   fontFamily:
-                    "monospace",
+                    "JetBrains Mono, monospace",
                 }}
               >
                 {Math.round(
@@ -462,6 +466,9 @@ const ProgressSummaryCards = ({
 
                 color: "#f1f1f1",
 
+                fontFamily:
+                  "Archivo, sans-serif",
+
                 letterSpacing: 0.2,
               }}
             >
@@ -481,6 +488,9 @@ const ProgressSummaryCards = ({
                 fontWeight: 500,
 
                 color: "#f1f1f1",
+
+                fontFamily:
+                  "JetBrains Mono, monospace",
               }}
             >
               {safeSessionsLogged}/
@@ -524,7 +534,10 @@ const ProgressSummaryCards = ({
 
                   fontWeight: 800,
 
-                  color: "#ff5c35",
+                  color: "#FF5C35",
+
+                  fontFamily:
+                    "Archivo, sans-serif",
                 }}
               >
                 {safeScore >= 100
@@ -595,7 +608,7 @@ const ProgressSummaryCards = ({
             icon={
               <LocalFireDepartmentOutlinedIcon
                 sx={{
-                  color: "#ff5c35",
+                  color: "#FF5C35",
                 }}
               />
             }
@@ -628,7 +641,7 @@ const ProgressSummaryCards = ({
             icon={
               <CalendarMonthOutlinedIcon
                 sx={{
-                  color: "#ff5c35",
+                  color: "#FF5C35",
                 }}
               />
             }

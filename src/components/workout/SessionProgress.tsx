@@ -11,16 +11,26 @@ const SessionProgress = ({
 }: SessionProgressProps) => {
   const percentage =
     total > 0
-      ? Math.min((completed / total) * 100, 100)
+      ? Math.min(
+          (completed / total) * 100,
+          100
+        )
       : 0;
 
   return (
-    <Box sx={{ width: "100%", boxSizing: "border-box" }}>
+    <Box
+      sx={{
+        width: "100%",
+        boxSizing: "border-box",
+      }}
+    >
       <Box
         sx={{
           width: "100%",
           boxSizing: "border-box",
+
           mb: 0.7,
+
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -28,8 +38,16 @@ const SessionProgress = ({
       >
         <Typography
           sx={{
-            fontSize: 12,
-            color: "#68635e",
+            fontFamily:
+              "'Archivo', sans-serif",
+
+            fontSize: 10,
+
+            fontWeight: 500,
+
+            letterSpacing: 0.3,
+
+            color: "#4C4A49",
           }}
         >
           Session Progress
@@ -37,8 +55,14 @@ const SessionProgress = ({
 
         <Typography
           sx={{
-            fontSize: 12,
-            color: "#68635e",
+            fontFamily:
+              "'JetBrains Mono', monospace",
+
+            fontSize: 10,
+
+            fontWeight: 400,
+
+            color: "#4C4A49",
           }}
         >
           {completed} of {total} sets
@@ -48,20 +72,29 @@ const SessionProgress = ({
       <Box
         sx={{
           width: "100%",
+
           height: 5,
+
           borderRadius: 5,
+
           overflow: "hidden",
-          backgroundColor: "#dedbd6",
+
+          backgroundColor:
+            "rgba(76, 74, 73, 0.25)",
         }}
       >
         <Box
           sx={{
             width: `${percentage}%`,
-            height: "100%",
-            borderRadius: 5,
-            backgroundColor: "#ff5b38",
 
-            transition: "width 0.3s ease",
+            height: "100%",
+
+            borderRadius: 5,
+
+            backgroundColor: "#FF5C35",
+
+            transition:
+              "width 0.3s ease",
           }}
         />
       </Box>

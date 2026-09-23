@@ -31,7 +31,15 @@ const DietHeader: React.FC<DietHeaderProps> = ({
         <Typography
           component="h1"
           sx={{
-            color: "#211e1b",
+            fontFamily: "'Archivo Black', sans-serif",
+            fontSize: {
+              xs: 24,
+              sm: 28,
+              md: 30,
+            },
+            fontWeight: 900,
+            lineHeight: 1.1,
+            color: "#211E1B",
           }}
         >
           AI Nutrition Plan
@@ -39,7 +47,16 @@ const DietHeader: React.FC<DietHeaderProps> = ({
 
         <Typography
           sx={{
-            color: "#6f6963",
+            mt: 0.5,
+            fontFamily: "'Archivo', sans-serif",
+            fontSize: {
+              xs: 12,
+              sm: 13,
+              md: 14,
+            },
+            fontWeight: 500,
+            lineHeight: 1.3,
+            color: "#6F6963",
           }}
         >
           Personalized by GRIND AI
@@ -67,8 +84,14 @@ const DietHeader: React.FC<DietHeaderProps> = ({
 
         <Typography
           sx={{
-            color: "#211e1b",
+            fontFamily: "'JetBrains Mono', monospace",
+            fontSize: {
+              xs: 13,
+              sm: 14,
+            },
             fontWeight: 700,
+            lineHeight: 1,
+            color: "#211E1B",
           }}
         >
           {water ?? "-"}

@@ -70,16 +70,21 @@ const WarmUpSection = ({
 
         {/* Header text */}
         <Box>
-          <Typography
+         <Typography
             sx={{
+              fontFamily:
+                "'Archivo Black', sans-serif",
+
               fontSize: {
-                xs: 18,
-                sm: 20,
+                xs: 17,
+                sm: 18,
               },
 
               lineHeight: 1.1,
-              fontWeight: 900,
-              color: "#211f1d",
+
+              fontWeight: 400,
+
+              color: "#13131A",
             }}
           >
             Warm-Up First
@@ -89,13 +94,17 @@ const WarmUpSection = ({
             sx={{
               mt: 0.7,
 
+              fontFamily:
+                "'Archivo', sans-serif",
+
               fontSize: {
-                xs: 11,
-                sm: 13,
+                xs: 10,
+                sm: 11,
               },
 
               lineHeight: 1.4,
-              color: "#6c6762",
+
+              color: "#4C4A49",
             }}
           >
             Prepare your joints and muscles for the workout to reduce the risk of strain. Complete these before starting your working sets.
@@ -240,14 +249,16 @@ const WarmUpItem = ({
             mt: 0.3,
 
             fontSize: {
-              xs: 10,
-              sm: 12,
+              xs: 9,
+              sm: 10,
             },
 
             lineHeight: 1.2,
 
-            fontFamily: "monospace",
-            color: "#716b66",
+            fontFamily:
+              "'JetBrains Mono', monospace",
+
+            color: "#4C4A49",
           }}
         >
           {exercise.instruction}

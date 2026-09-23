@@ -8,7 +8,6 @@ interface HealthLifestyleSectionProps {
     field: K,
     value: IntakeFormData[K]
   ) => void;
-
   dietError?: boolean;
   healthError?: boolean;
   dietSectionId?: string;
@@ -63,14 +62,12 @@ const HealthLifestyleSection = ({
     }
 
     return {
-      borderLeft:
-        "2px solid #ff7417",
-
+      borderLeft: "2px solid",
+      borderLeftColor: "primary.main",
       pl: {
         xs: 2.5,
         sm: 3,
       },
-
       ml: {
         xs: -2.5,
         sm: -3,
@@ -81,31 +78,40 @@ const HealthLifestyleSection = ({
   return (
     <Box
       sx={{
-        borderTop: "1px solid #292929",
+        borderTop: "1px solid",
+        borderTopColor: "divider",
+
         px: {
           xs: 2.5,
           sm: 3,
         },
+
         py: 3.5,
+
         display: "grid",
+
         gridTemplateColumns: {
           xs: "1fr",
           md: "1fr 1fr",
         },
+
         gap: {
           xs: 4,
           md: 5,
         },
       }}
     >
+      {/* ========================================================= */}
+      {/* HEALTH & LIMITATIONS */}
+      {/* ========================================================= */}
+
       <Box
         id={healthSectionId}
         sx={{
-          ...errorBorder(
-            healthError
-          ),
+          ...errorBorder(healthError),
         }}
       >
+        {/* Section Header */}
         <Box
           sx={{
             display: "flex",
@@ -130,7 +136,7 @@ const HealthLifestyleSection = ({
           <Box
             sx={{
               height: "1px",
-              backgroundColor: "#292929",
+              backgroundColor: "divider",
               flex: 1,
             }}
           />
@@ -138,21 +144,12 @@ const HealthLifestyleSection = ({
           {healthError && (
             <Typography
               sx={{
-                color:
-                  "primary.main",
-
+                color: "primary.main",
                 fontSize: 11,
-
                 fontWeight: 700,
-
-                letterSpacing:
-                  "0.8px",
-
-                textTransform:
-                  "uppercase",
-
-                whiteSpace:
-                  "nowrap",
+                letterSpacing: "0.8px",
+                textTransform: "uppercase",
+                whiteSpace: "nowrap",
               }}
             >
               Required
@@ -160,30 +157,27 @@ const HealthLifestyleSection = ({
           )}
         </Box>
 
+        {/* Error Message */}
         {healthError && (
           <Typography
             role="alert"
             sx={{
-              color:
-                "#ff7417",
-
+              color: "primary.main",
               fontSize: 12,
-
               lineHeight: 1.5,
-
               mb: 1.5,
             }}
           >
-            Please select an option.
-            If you have an injury or
-            limitation, describe it
-            below.
+            Please select an option. If you have an injury or limitation,
+            describe it below.
           </Typography>
         )}
 
+        {/* Injuries Label */}
         <Typography
           sx={{
-            color: "#777",
+            color: "text.primary",
+            opacity: 0.55,
             fontSize: 12,
             fontWeight: 700,
             letterSpacing: "1px",
@@ -191,9 +185,19 @@ const HealthLifestyleSection = ({
             mb: 1,
           }}
         >
-          Any injuries or physical limitations? <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
+          Any injuries or physical limitations?{" "}
+          <Box
+            component="span"
+            sx={{
+              color: "primary.main",
+              opacity: 1,
+            }}
+          >
+            *
+          </Box>
         </Typography>
 
+        {/* Injury Options */}
         <Box>
           {injuries.map((injury) => {
             const selected = selectedInjuries.includes(injury);
@@ -208,13 +212,18 @@ const HealthLifestyleSection = ({
                   width: "100%",
                   minHeight: 38,
                   px: 0,
+
                   display: "flex",
                   alignItems: "center",
                   gap: 1,
+
                   border: 0,
-                  borderBottom: "1px solid #292929",
+                  borderBottom: "1px solid",
+                  borderBottomColor: "divider",
+
                   background: "transparent",
-                  color: "#f5f5f0",
+
+                  color: "text.primary",
                   cursor: "pointer",
                   textAlign: "left",
                   fontFamily: "inherit",
@@ -225,7 +234,8 @@ const HealthLifestyleSection = ({
                   disableRipple
                   sx={{
                     p: 0,
-                    color: "#292929",
+
+                    color: "divider",
 
                     "&.Mui-checked": {
                       color: "primary.main",
@@ -239,7 +249,8 @@ const HealthLifestyleSection = ({
 
                 <Typography
                   sx={{
-                    color: selected ? "#f5f5f0" : "#777",
+                    color: "text.primary",
+                    opacity: selected ? 1 : 0.55,
                     fontSize: 14,
                     fontWeight: selected ? 500 : 400,
                   }}
@@ -251,9 +262,11 @@ const HealthLifestyleSection = ({
           })}
         </Box>
 
+        {/* Health Concern Label */}
         <Typography
           sx={{
-            color: "#777",
+            color: "text.primary",
+            opacity: 0.55,
             fontSize: 12,
             fontWeight: 700,
             letterSpacing: "1px",
@@ -265,6 +278,7 @@ const HealthLifestyleSection = ({
           Describe any injury / health concern
         </Typography>
 
+        {/* Health Concern Textarea */}
         <Box
           component="textarea"
           value={data.healthConcern}
@@ -277,17 +291,23 @@ const HealthLifestyleSection = ({
             minHeight: 72,
             boxSizing: "border-box",
             resize: "vertical",
-            border: "1px solid #292929",
-            backgroundColor: "#111",
-            color: "#f5f5f0",
+
+            border: "1px solid",
+            borderColor: "divider",
+
+            backgroundColor: "background.paper",
+            color: "text.primary",
+
             px: 1.5,
             py: 1.25,
+
             fontFamily: "inherit",
             fontSize: 14,
             outline: "none",
 
             "&::placeholder": {
-              color: "#555",
+              color: "text.primary",
+              opacity: 0.45,
               fontStyle: "italic",
             },
 
@@ -298,14 +318,17 @@ const HealthLifestyleSection = ({
         />
       </Box>
 
+      {/* ========================================================= */}
+      {/* DIET & LIFESTYLE */}
+      {/* ========================================================= */}
+
       <Box
         id={dietSectionId}
         sx={{
-          ...errorBorder(
-            dietError
-          ),
+          ...errorBorder(dietError),
         }}
       >
+        {/* Section Header */}
         <Box
           sx={{
             display: "flex",
@@ -330,7 +353,7 @@ const HealthLifestyleSection = ({
           <Box
             sx={{
               height: "1px",
-              backgroundColor: "#292929",
+              backgroundColor: "divider",
               flex: 1,
             }}
           />
@@ -338,50 +361,39 @@ const HealthLifestyleSection = ({
           {dietError && (
             <Typography
               sx={{
-                color:
-                  "primary.main",
-
+                color: "primary.main",
                 fontSize: 11,
-
                 fontWeight: 700,
-
-                letterSpacing:
-                  "0.8px",
-
-                textTransform:
-                  "uppercase",
-
-                whiteSpace:
-                  "nowrap",
+                letterSpacing: "0.8px",
+                textTransform: "uppercase",
+                whiteSpace: "nowrap",
               }}
             >
               Required
             </Typography>
           )}
         </Box>
+
+        {/* Error Message */}
         {dietError && (
           <Typography
             role="alert"
             sx={{
-              color:
-                "#ff7417",
-
+              color: "primary.main",
               fontSize: 12,
-
               lineHeight: 1.5,
-
               mb: 1.5,
             }}
           >
-            Please complete your
-            dietary preference,
-            sleep, and stress level.
+            Please complete your dietary preference, sleep, and stress level.
           </Typography>
         )}
 
+        {/* Dietary Preference */}
         <Typography
           sx={{
-            color: "#777",
+            color: "text.primary",
+            opacity: 0.55,
             fontSize: 12,
             fontWeight: 700,
             letterSpacing: "1px",
@@ -389,7 +401,16 @@ const HealthLifestyleSection = ({
             mb: 1,
           }}
         >
-          Dietary Preference <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
+          Dietary Preference{" "}
+          <Box
+            component="span"
+            sx={{
+              color: "primary.main",
+              opacity: 1,
+            }}
+          >
+            *
+          </Box>
         </Typography>
 
         <Box
@@ -401,16 +422,26 @@ const HealthLifestyleSection = ({
           sx={{
             width: "100%",
             height: 42,
-            border: "1px solid #292929",
-            backgroundColor: "#111",
-            color: "#f5f5f0",
+
+            border: "1px solid",
+            borderColor: "divider",
+
+            backgroundColor: "background.paper",
+            color: "text.primary",
+
             px: 1.5,
+
             fontFamily: "inherit",
             fontSize: 14,
             outline: "none",
 
             "&:focus": {
               borderColor: "primary.main",
+            },
+
+            "& option": {
+              backgroundColor: "background.paper",
+              color: "text.primary",
             },
           }}
         >
@@ -422,9 +453,11 @@ const HealthLifestyleSection = ({
           <option value="Other">Other</option>
         </Box>
 
+        {/* Average Sleep */}
         <Typography
           sx={{
-            color: "#777",
+            color: "text.primary",
+            opacity: 0.55,
             fontSize: 12,
             fontWeight: 700,
             letterSpacing: "1px",
@@ -433,7 +466,16 @@ const HealthLifestyleSection = ({
             mb: 1,
           }}
         >
-          Average Sleep (Hours/Night) <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
+          Average Sleep (Hours/Night){" "}
+          <Box
+            component="span"
+            sx={{
+              color: "primary.main",
+              opacity: 1,
+            }}
+          >
+            *
+          </Box>
         </Typography>
 
         <Box
@@ -445,16 +487,26 @@ const HealthLifestyleSection = ({
           sx={{
             width: "100%",
             height: 42,
-            border: "1px solid #292929",
-            backgroundColor: "#111",
-            color: "#f5f5f0",
+
+            border: "1px solid",
+            borderColor: "divider",
+
+            backgroundColor: "background.paper",
+            color: "text.primary",
+
             px: 1.5,
+
             fontFamily: "inherit",
             fontSize: 14,
             outline: "none",
 
             "&:focus": {
               borderColor: "primary.main",
+            },
+
+            "& option": {
+              backgroundColor: "background.paper",
+              color: "text.primary",
             },
           }}
         >
@@ -469,9 +521,11 @@ const HealthLifestyleSection = ({
           </option>
         </Box>
 
+        {/* Stress Level */}
         <Typography
           sx={{
-            color: "#777",
+            color: "text.primary",
+            opacity: 0.55,
             fontSize: 12,
             fontWeight: 700,
             letterSpacing: "1px",
@@ -480,7 +534,16 @@ const HealthLifestyleSection = ({
             mb: 1,
           }}
         >
-          Stress Level (Daily) <Box component="span" sx={{ color: "#ff7417" }}>*</Box>
+          Stress Level (Daily){" "}
+          <Box
+            component="span"
+            sx={{
+              color: "primary.main",
+              opacity: 1,
+            }}
+          >
+            *
+          </Box>
         </Typography>
 
         <Box
@@ -492,16 +555,26 @@ const HealthLifestyleSection = ({
           sx={{
             width: "100%",
             height: 42,
-            border: "1px solid #292929",
-            backgroundColor: "#111",
-            color: "#f5f5f0",
+
+            border: "1px solid",
+            borderColor: "divider",
+
+            backgroundColor: "background.paper",
+            color: "text.primary",
+
             px: 1.5,
+
             fontFamily: "inherit",
             fontSize: 14,
             outline: "none",
 
             "&:focus": {
               borderColor: "primary.main",
+            },
+
+            "& option": {
+              backgroundColor: "background.paper",
+              color: "text.primary",
             },
           }}
         >

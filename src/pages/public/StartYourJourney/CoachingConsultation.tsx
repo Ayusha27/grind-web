@@ -23,8 +23,6 @@ const CoachingConsultation = ({
   data,
   onChange,
 }: CoachingConsultationProps) => {
-
-
   return (
     <Box
       sx={{
@@ -33,8 +31,8 @@ const CoachingConsultation = ({
           md: 2.5,
         },
 
-        borderTop:
-          "1px solid #292929",
+        borderTop: "1px solid",
+        borderTopColor: "divider",
       }}
     >
       {/* =====================================================
@@ -51,7 +49,7 @@ const CoachingConsultation = ({
       >
         <Typography
           sx={{
-            color: "#ff7417",
+            color: "primary.main",
             fontSize: 11,
             fontWeight: 700,
             letterSpacing: "1.2px",
@@ -65,7 +63,7 @@ const CoachingConsultation = ({
           sx={{
             flex: 1,
             height: "1px",
-            backgroundColor: "#292929",
+            backgroundColor: "divider",
           }}
         />
       </Box>
@@ -85,11 +83,10 @@ const CoachingConsultation = ({
             md: 1.5,
           },
 
-          border:
-            "1px solid #292929",
+          border: "1px solid",
+          borderColor: "divider",
 
-          backgroundColor:
-            "#0d0d0d",
+          backgroundColor: "background.paper",
         }}
       >
         {/* ===================================================
@@ -98,9 +95,7 @@ const CoachingConsultation = ({
 
         <Checkbox
           size="small"
-          checked={
-            data.lifestyleConsultation
-          }
+          checked={data.lifestyleConsultation}
           onChange={(event) =>
             onChange(
               "lifestyleConsultation",
@@ -108,14 +103,14 @@ const CoachingConsultation = ({
             )
           }
           sx={{
-            color: "#333",
+            color: "divider",
 
             p: 0.2,
 
             mt: 0.1,
 
             "&.Mui-checked": {
-              color: "#ff7417",
+              color: "primary.main",
             },
           }}
         />
@@ -127,7 +122,7 @@ const CoachingConsultation = ({
         <Box>
           <Typography
             sx={{
-              color: "#f5f5f0",
+              color: "text.primary",
 
               fontSize: 14,
 
@@ -144,7 +139,8 @@ const CoachingConsultation = ({
             sx={{
               mt: 0.45,
 
-              color: "#666",
+              color: "text.primary",
+              opacity: 0.55,
 
               fontSize: 11,
 
@@ -164,25 +160,30 @@ const CoachingConsultation = ({
           <Typography
             sx={{
               mt: 0.35,
-
-              color: "#555",
-
+              color: "text.primary",
               fontSize: 10,
-
               lineHeight: 1.4,
             }}
           >
             <Box
               component="span"
               sx={{
+                color: "primary.main",
                 fontWeight: 700,
-                color: "#ff7417",
               }}
             >
               Paid service.
             </Box>{" "}
-            Pricing and package details are available
-            on the{" "}
+
+            <Box
+              component="span"
+              sx={{
+                color: "text.primary",
+                opacity: 0.65,
+              }}
+            >
+              Pricing and package details are available on the{" "}
+            </Box>
 
             <Box
               component={RouterLink}
@@ -191,39 +192,22 @@ const CoachingConsultation = ({
               rel="noopener noreferrer"
               sx={{
                 display: "inline",
-
-                border: 0,
-
-                margin: 0,
-
-                padding: 0,
-
-                background: "none",
-
-                color: "#ff7417",
-
+                color: "primary.main",
                 font: "inherit",
-
                 fontWeight: 700,
-
                 cursor: "pointer",
-
-                textDecoration:
-                  "underline",
-
-                textUnderlineOffset:
-                  "2px",
+                textDecoration: "underline",
+                textUnderlineOffset: "2px",
 
                 "&:hover": {
-                  color: "#ff8a3d",
+                  color: "primary.main",
+                  opacity: 0.8,
                 },
 
                 "&:focus-visible": {
-                  outline:
-                    "1px solid #ff7417",
-
-                  outlineOffset:
-                    "2px",
+                  outline: "1px solid",
+                  outlineColor: "primary.main",
+                  outlineOffset: "2px",
                 },
               }}
             >

@@ -6,9 +6,10 @@ const StartJourneyHero = () => {
     <Box
       component="section"
       sx={{
-        backgroundColor: "#080808",
-        color: "#f5f5f0",
-        borderBottom: "1px solid #222",
+        backgroundColor: "background.default",
+        color: "text.primary",
+        borderBottom: "1px solid",
+        borderColor: "divider",
       }}
     >
       {/* Header */}
@@ -16,7 +17,8 @@ const StartJourneyHero = () => {
         component="header"
         sx={{
           height: 72,
-          borderBottom: "1px solid #222",
+          borderBottom: "1px solid",
+          borderColor: "divider",
           display: "flex",
           alignItems: "center",
           px: {
@@ -33,6 +35,7 @@ const StartJourneyHero = () => {
             justifyContent: "space-between",
           }}
         >
+          {/* GRIND Logo */}
           <Typography
             component={Link}
             to="/"
@@ -44,7 +47,7 @@ const StartJourneyHero = () => {
               },
               lineHeight: 1,
               textDecoration: "none",
-              color: "inherit",
+              color: "text.primary",
             }}
           >
             GRIND
@@ -58,9 +61,10 @@ const StartJourneyHero = () => {
             </Box>
           </Typography>
 
+          {/* Copyright */}
           <Typography
             sx={{
-              color: "#666",
+              color: "secondary.main",
               fontSize: 15,
               letterSpacing: 1,
             }}
@@ -81,7 +85,7 @@ const StartJourneyHero = () => {
           },
         }}
       >
-        {/* Background text */}
+        {/* Background GRIND text */}
         <Typography
           aria-hidden="true"
           sx={{
@@ -98,7 +102,10 @@ const StartJourneyHero = () => {
               md: 311,
             },
             lineHeight: 1,
-            color: "#111",
+
+            color: "secondary.main",
+            opacity: 0.2,
+
             pointerEvents: "none",
             userSelect: "none",
           }}
@@ -108,18 +115,19 @@ const StartJourneyHero = () => {
 
         {/* Hero Content */}
         <Container
-  maxWidth={false}
-  sx={{
-    width: "100%",
-    mx: 0,
-    px: {
-      xs: 3,
-      md: 6,
-    },
-    position: "relative",
-    zIndex: 1,
-  }}
->
+          maxWidth={false}
+          sx={{
+            width: "100%",
+            mx: 0,
+            px: {
+              xs: 3,
+              md: 6,
+            },
+            position: "relative",
+            zIndex: 1,
+          }}
+        >
+          {/* Step Label */}
           <Typography
             sx={{
               color: "primary.main",
@@ -136,6 +144,7 @@ const StartJourneyHero = () => {
             Step 01 — Intake Form
           </Typography>
 
+          {/* Main Heading */}
           <Typography
             component="h1"
             sx={{
@@ -148,15 +157,18 @@ const StartJourneyHero = () => {
               lineHeight: 0.9,
               letterSpacing: -1,
               mb: 2.5,
+              color: "text.primary",
             }}
           >
             START YOUR JOURNEY
           </Typography>
 
+          {/* Description */}
           <Typography
             sx={{
               maxWidth: 540,
-              color: "#777",
+              color: "text.primary",
+              opacity: 0.65,
               fontSize: {
                 xs: 18,
                 md: 19,

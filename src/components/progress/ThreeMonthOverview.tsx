@@ -22,36 +22,49 @@ const ThreeMonthOverview = ({
     <Box
       sx={{
         width: "100%",
-        backgroundColor: "#fff",
-        border: "1px solid #e0dbd4",
+
+        backgroundColor: "#ffffff",
+
+        border: "1px solid #4C4A49",
+
         borderRadius: {
           xs: "10px",
           md: "12px",
         },
+
         px: {
           xs: 1.1,
           sm: 1.4,
           md: 1.7,
         },
+
         py: {
           xs: 1.15,
           md: 1.4,
         },
+
         boxShadow:
-          "0 2px 8px rgba(26,23,20,.04)",
+          "0 4px 14px rgba(26,23,20,.05)",
       }}
     >
-      {/* HEADER */}
+      {/* =====================================================
+          HEADER
+      ===================================================== */}
 
       <Box
         sx={{
           display: "flex",
+
           alignItems: {
             xs: "flex-start",
             sm: "center",
           },
-          justifyContent: "space-between",
+
+          justifyContent:
+            "space-between",
+
           gap: 1,
+
           flexWrap: "wrap",
         }}
       >
@@ -62,8 +75,15 @@ const ThreeMonthOverview = ({
                 xs: 12,
                 md: 14,
               },
+
+              lineHeight: 1.2,
+
               fontWeight: 900,
-              color: "#1a1714",
+
+              fontFamily:
+                "Archivo Black, sans-serif",
+
+              color: "#13131A",
             }}
           >
             3-Month Overview
@@ -71,17 +91,30 @@ const ThreeMonthOverview = ({
 
           <Typography
             sx={{
-              mt: 0.25,
+              mt: 0.3,
+
               fontSize: {
                 xs: 7,
                 md: 8,
               },
-              color: "#77716b",
+
+              lineHeight: 1.2,
+
+              color: "#4C4A49",
+
+              fontFamily:
+                "Archivo, sans-serif",
+
+              fontWeight: 500,
             }}
           >
             Workouts · Calories · Score
           </Typography>
         </Box>
+
+        {/* =================================================
+            LEGEND
+        ================================================= */}
 
         <Stack
           direction="row"
@@ -107,21 +140,30 @@ const ThreeMonthOverview = ({
         </Stack>
       </Box>
 
-      {/* COMPACT CHART */}
+      {/* =====================================================
+          COMPACT CHART
+      ===================================================== */}
 
       <Box
         sx={{
           mt: 1.25,
+
           height: {
             xs: 105,
             sm: 115,
             md: 125,
           },
+
           display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "space-around",
+
+          alignItems:
+            "flex-end",
+
+          justifyContent:
+            "space-around",
+
           borderBottom:
-            "1px solid #e5e0da",
+            "1px solid #4C4A49",
         }}
       >
         {data.map((item) => (
@@ -129,12 +171,21 @@ const ThreeMonthOverview = ({
             key={item.month}
             sx={{
               height: "100%",
+
               flex: 1,
+
               maxWidth: 150,
+
               display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "flex-end",
+
+              flexDirection:
+                "column",
+
+              alignItems:
+                "center",
+
+              justifyContent:
+                "flex-end",
             }}
           >
             <Stack
@@ -144,45 +195,71 @@ const ThreeMonthOverview = ({
                 md: 0.7,
               }}
               sx={{
-                alignItems: "flex-end",
+                alignItems:
+                  "flex-end",
+
                 height: "100%",
               }}
             >
               <ChartBar
-                height={item.workouts * 3}
+                height={
+                  item.workouts * 3
+                }
                 color="#ff5c35"
               />
 
               <ChartBar
-                height={item.calories / 10}
+                height={
+                  item.calories / 10
+                }
                 color="#2865dc"
               />
 
               <ChartBar
-                height={item.score}
+                height={
+                  item.score
+                }
                 color="#16b85a"
               />
             </Stack>
 
+            {/* SCORE */}
+
             <Typography
               sx={{
                 mt: 0.35,
+
                 fontSize: 7,
-                color: "#aaa39c",
+
+                lineHeight: 1.1,
+
+                color: "#4C4A49",
+
                 fontFamily:
-                  '"Roboto Mono", "Courier New", monospace',
+                  "JetBrains Mono, monospace",
               }}
             >
               {item.score}%
             </Typography>
 
+            {/* MONTH */}
+
             <Typography
               sx={{
-                mt: 0.1,
+                mt: 0.15,
+
                 mb: 0.6,
+
                 fontSize: 8,
-                fontWeight: 900,
-                color: "#77716b",
+
+                lineHeight: 1.1,
+
+                fontWeight: 700,
+
+                color: "#4C4A49",
+
+                fontFamily:
+                  "Archivo, sans-serif",
               }}
             >
               {item.month}
@@ -208,11 +285,15 @@ const ChartBar = ({
         sm: 10,
         md: 12,
       },
+
       height: Math.min(
         85,
         Math.max(3, height)
       ),
-      borderRadius: "3px 3px 0 0",
+
+      borderRadius:
+        "3px 3px 0 0",
+
       backgroundColor: color,
     }}
   />
@@ -236,7 +317,9 @@ const Legend = ({
       sx={{
         width: 5,
         height: 5,
+
         borderRadius: "50%",
+
         backgroundColor: color,
       }}
     />
@@ -244,7 +327,15 @@ const Legend = ({
     <Typography
       sx={{
         fontSize: 6.5,
-        color: "#77716b",
+
+        lineHeight: 1.1,
+
+        color: "#4C4A49",
+
+        fontFamily:
+          "Archivo, sans-serif",
+
+        fontWeight: 600,
       }}
     >
       {label}

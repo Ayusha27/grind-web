@@ -13,8 +13,11 @@ const IntakeFooter = () => {
           xs: 5,
           md: 7,
         },
-        borderTop: "1px solid #292929",
-        backgroundColor: "#080808",
+
+        borderTop: "1px solid",
+        borderTopColor: "divider",
+
+        backgroundColor: "background.default",
       }}
     >
       <Container
@@ -45,7 +48,8 @@ const IntakeFooter = () => {
         >
           <Typography
             sx={{
-              color: "#555",
+              color: "text.primary",
+              opacity: 0.45,
               fontSize: 11,
               fontWeight: 500,
             }}
@@ -55,7 +59,8 @@ const IntakeFooter = () => {
 
           <Typography
             sx={{
-              color: "#555",
+              color: "text.primary",
+              opacity: 0.45,
               fontSize: 11,
               fontWeight: 500,
             }}

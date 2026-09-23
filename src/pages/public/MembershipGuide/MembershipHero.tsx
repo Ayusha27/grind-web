@@ -31,6 +31,7 @@ const MembershipHero = () => {
                 md: 15,
               },
               fontWeight: 500,
+              fontFamily: '"Syne", sans-serif',
               letterSpacing: 3,
               mb: 2,
               textTransform: "uppercase",
@@ -51,7 +52,8 @@ const MembershipHero = () => {
               },
               fontWeight: 800,
               lineHeight: 0.95,
-              letterSpacing: -2,
+             
+              fontFamily: "Bebas Neue",
               textTransform: "uppercase",
             }}
           >
@@ -73,6 +75,8 @@ const MembershipHero = () => {
                 md: 16,
               },
               lineHeight: 1.8,
+              fontFamily: '"Syne", sans-serif',
+              opacity: 0.65,
             }}
           >
             Every GRIND programme is generated using AI and carefully reviewed

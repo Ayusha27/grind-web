@@ -35,13 +35,14 @@ const DietPlanInfo = ({
       <Typography
         component="h2"
         sx={{
+          fontFamily: "'Archivo Black', sans-serif",
           fontSize: {
             xs: 17,
             md: 19,
           },
           lineHeight: 1.1,
           fontWeight: 900,
-          color: "#211e1b",
+          color: "#211E1B",
           maxWidth: 700,
         }}
       >
@@ -51,9 +52,10 @@ const DietPlanInfo = ({
       <Typography
         sx={{
           mt: 0.7,
+          fontFamily: "'Archivo', sans-serif",
           fontSize: 10,
           lineHeight: 1.5,
-          color: "#6f6963",
+          color: "#6F6963",
           fontStyle: "italic",
         }}
       >

@@ -5,28 +5,35 @@ export const theme = createTheme({
     mode: "dark",
 
     primary: {
-      main: "#f47920",
-      contrastText: "#ffffff",
+      main: "#FF5C35",
+      contrastText: "#FFFFFF",
     },
 
     secondary: {
-      main: "#ffffff",
+      main: "#4C4A49",
+      contrastText: "#FFFFFF",
     },
 
     background: {
-      default: "#0b0b0b",
-      paper: "#171717",
+      default: "#13131A",
+      paper: "#13131A",
     },
 
     text: {
-      primary: "#f5f5f0",
-      secondary: "rgba(255, 255, 255, 0.75)",
+      primary: "#FFFFFF",
+      secondary: "#FFFFFF",
     },
 
-    divider: "rgba(255, 255, 255, 0.08)",
+    divider: "rgba(76, 74, 73, 0.35)",
   },
 
   typography: {
+    /*
+     * Default body font.
+     *
+     * This matches the GRIND public/start-your-journey
+     * PHP pages.
+     */
     fontFamily: '"DM Sans", sans-serif',
 
     h1: {
@@ -45,6 +52,29 @@ export const theme = createTheme({
       fontFamily: '"Bebas Neue", sans-serif',
       fontWeight: 400,
       letterSpacing: "1px",
+    },
+
+    h4: {
+      fontFamily: '"DM Sans", sans-serif',
+      fontWeight: 700,
+    },
+
+    h5: {
+      fontFamily: '"DM Sans", sans-serif',
+      fontWeight: 700,
+    },
+
+    h6: {
+      fontFamily: '"DM Sans", sans-serif',
+      fontWeight: 700,
+    },
+
+    body1: {
+      fontFamily: '"DM Sans", sans-serif',
+    },
+
+    body2: {
+      fontFamily: '"DM Sans", sans-serif',
     },
 
     button: {
@@ -67,8 +97,8 @@ export const theme = createTheme({
 
         body: {
           margin: 0,
-          backgroundColor: "#0b0b0b",
-          color: "#f5f5f0",
+          backgroundColor: "#13131A",
+          color: "#FFFFFF",
           overflowX: "hidden",
         },
 
