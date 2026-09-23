@@ -1,9 +1,10 @@
 import {
   Box,
-  MenuItem,
   TextField,
   Typography,
 } from "@mui/material";
+
+import { FaWhatsapp } from "react-icons/fa";
 
 import type { IntakeFormData } from "./types";
 
@@ -19,6 +20,7 @@ interface PersonalSectionProps {
 
   errors?: {
     fullName?: boolean;
+    phoneNumber?: boolean;
     email?: boolean;
     age?: boolean;
     gender?: boolean;
@@ -56,10 +58,6 @@ const inputStyles = {
 
   "& .MuiInputBase-input": {
     py: 1,
-  },
-
-  "& .MuiSelect-icon": {
-    color: "secondary.main",
   },
 
   "& .MuiInputBase-input::placeholder": {
@@ -238,7 +236,96 @@ const PersonalSection = ({
       </Box>
 
       {/* ======================================================
-          EMAIL
+          PHONE NUMBER — REQUIRED
+      ====================================================== */}
+
+      <Box
+        id="intake-phone-number"
+        sx={{
+          mb: 1.6,
+          borderLeft: errors.phoneNumber
+            ? "2px solid"
+            : "2px solid transparent",
+          borderColor: errors.phoneNumber
+            ? "primary.main"
+            : "transparent",
+          pl: errors.phoneNumber ? 1 : 0,
+        }}
+      >
+        <Typography
+          sx={{
+            ...labelStyles,
+            display: "flex",
+            alignItems: "center",
+            gap: 0.7,
+          }}
+        >
+          <FaWhatsapp
+            style={{
+              color: "#25D366",
+              fontSize: 16,
+              flexShrink: 0,
+            }}
+          />
+
+          Whatsapp{" "}
+          <Box
+            component="span"
+            sx={{
+              color: "primary.main",
+              opacity: 1,
+            }}
+          >
+            *
+          </Box>
+        </Typography>
+
+        <TextField
+          fullWidth
+          size="small"
+          type="tel"
+          value={data.phoneNumber}
+          placeholder="+91 98765 43210"
+          error={Boolean(errors.phoneNumber)}
+          onChange={(event) => {
+            const value = event.target.value;
+
+            // Allow digits, spaces, +, -, and parentheses.
+            if (/^[0-9+\-() ]*$/.test(value)) {
+              onChange("phoneNumber", value);
+            }
+          }}
+          slotProps={{
+            htmlInput: {
+              inputMode: "tel",
+              maxLength: 16,
+            },
+          }}
+          sx={inputStyles}
+        />
+
+        <Typography
+            sx={{
+              mt: 0.5,
+              color: "text.primary",
+              opacity: 0.45,
+              fontSize: 11,
+              fontStyle: "italic",
+              lineHeight: 1.4,
+            }}
+          >
+            Strictly for communication and reminders, not for ads or promotional purposes
+          </Typography>
+
+        {errors.phoneNumber && (
+          <ErrorMessage>
+            Please enter a valid whatsapp number.
+          </ErrorMessage>
+        )}
+      </Box>
+
+      {/* ======================================================
+          EMAIL — OPTIONAL
       ====================================================== */}
 
       <Box
@@ -255,15 +342,7 @@ const PersonalSection = ({
         }}
       >
         <Typography sx={labelStyles}>
-          Email Address{" "}
-          <Box
-            component="span"
-            sx={{
-              color: "primary.main",
-            }}
-          >
-            *
-          </Box>
+          Email Address
         </Typography>
 
         <TextField
@@ -386,13 +465,9 @@ const PersonalSection = ({
           }}
         >
           <option value="">Select</option>
-
           <option value="male">Male</option>
-
           <option value="female">Female</option>
-
           <option value="other">Other</option>
-
           <option value="prefer-not-to-say">
             Prefer not to say
           </option>
@@ -406,8 +481,7 @@ const PersonalSection = ({
       </Box>
 
       {/* ======================================================
-          OCCUPATION
-          OPTIONAL
+          OCCUPATION — OPTIONAL
       ====================================================== */}
 
       <Box>
@@ -438,8 +512,7 @@ const PersonalSection = ({
             fontStyle: "italic",
           }}
         >
-          Helps us understand your daily
-          activity & stress levels.
+          Helps us understand your daily activity & stress levels.
         </Typography>
       </Box>
     </Box>
