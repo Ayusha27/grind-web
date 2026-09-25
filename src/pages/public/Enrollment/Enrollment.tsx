@@ -207,8 +207,9 @@ export default function Enrollment() {
             acceptedTerms: false,
         });
 
+    // Affiliate links arrive as ?ref=CODE; prefill so the visitor only has to apply it.
     const [referralCode, setReferralCode] =
-        useState("");
+        useState(() => new URLSearchParams(window.location.search).get("ref")?.trim() ?? "");
 
     const [discountPercent, setDiscountPercent] =
         useState(0);

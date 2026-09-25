@@ -305,17 +305,17 @@ const PersonalSection = ({
         />
 
         <Typography
-            sx={{
-              mt: 0.5,
-              color: "text.primary",
-              opacity: 0.45,
-              fontSize: 11,
-              fontStyle: "italic",
-              lineHeight: 1.4,
-            }}
-          >
-            Strictly for communication and reminders, not for ads or promotional purposes
-          </Typography>
+          sx={{
+            mt: 0.5,
+            color: "text.primary",
+            opacity: 0.45,
+            fontSize: 11,
+            fontStyle: "italic",
+            lineHeight: 1.4,
+          }}
+        >
+          Strictly for communication and reminders, not for ads or promotional purposes
+        </Typography>
 
         {errors.phoneNumber && (
           <ErrorMessage>

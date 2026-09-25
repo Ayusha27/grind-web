@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Chip } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import api from '../../../services/api';
+import ClientProgressDialog, { type ProgressDialogClient } from '../../../components/admin/ClientProgressDialog';
 
 const ClientsList = () => {
     const [clients, setClients] = useState<any[]>([]);
+    const navigate = useNavigate();
+    const [viewing, setViewing] = useState<ProgressDialogClient | null>(null);
 
     useEffect(() => {
         const fetchClients = async () => {
@@ -23,7 +27,7 @@ const ClientsList = () => {
         <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
                 <Typography variant="h2">Clients</Typography>
-                <Button variant="contained" color="primary">Add New Client</Button>
+                <Button variant="contained" color="primary" onClick={() => navigate('/admin/clients/create')}>Add New Client</Button>
             </Box>
 
             <Card sx={{ bgcolor: 'background.paper', border: '1px solid rgba(255,255,255,0.05)' }}>
@@ -55,7 +59,7 @@ const ClientsList = () => {
                                         />
                                     </TableCell>
                                     <TableCell sx={{ textAlign: 'right' }}>
-                                        <Button size="small" variant="text">View</Button>
+                                        <Button size="small" variant="text" onClick={() => setViewing(row)}>View</Button>
                                     </TableCell>
                                 </TableRow>
                             )) : (
@@ -69,6 +73,8 @@ const ClientsList = () => {
                     </Table>
                 </TableContainer>
             </Card>
+
+            <ClientProgressDialog client={viewing} onClose={() => setViewing(null)} />
         </Box>
     );
 };
