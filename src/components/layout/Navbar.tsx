@@ -12,7 +12,7 @@ const Navbar = () => {
         right: 0,
         zIndex: 1200,
         height: 84,
-        backgroundColor: "#0b0b0b",
+        backgroundColor: "background.default",
         borderBottom: "1px solid #1d1d1d",
         display: "flex",
         alignItems: "center",

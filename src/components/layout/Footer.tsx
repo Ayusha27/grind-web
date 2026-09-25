@@ -117,7 +117,7 @@ const PublicFooter = () => {
     <Box
       component="footer"
       sx={{
-        backgroundColor: "#0b0b0b",
+        backgroundColor: "background.default",
         borderTop: "1px solid #171717",
         py: {
           xs: 6,

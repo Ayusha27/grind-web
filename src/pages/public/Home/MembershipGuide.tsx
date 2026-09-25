@@ -11,7 +11,7 @@ const MembershipGuide = () => {
           xs: 7,
           md: 10,
         },
-        backgroundColor: "#0b0b0b",
+        backgroundColor: "background.default",
       }}
     >
       <Container
