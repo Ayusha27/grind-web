@@ -12,7 +12,7 @@ const Vision = () => {
           xs: 8,
           md: 12,
         },
-        backgroundColor: "#0b0b0b",
+        backgroundColor: "background.default",
       }}
     >
       <Container

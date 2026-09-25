@@ -69,7 +69,7 @@ const FinalCTA = () => {
             to="/start-your-journey"
             variant="contained"
             sx={{
-              backgroundColor: "#0b0b0b",
+              backgroundColor: "background.default",
               color: "#ffffff",
               minWidth: 145,
               height: 42,

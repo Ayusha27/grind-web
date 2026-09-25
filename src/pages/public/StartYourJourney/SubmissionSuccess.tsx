@@ -100,7 +100,7 @@ const SubmissionSuccess = () => {
             <Button
               component={RouterLink}
               to="/grind-walkthrough"
-              variant="text"
+              variant="contained"
               sx={{
                 minWidth: "auto",
 
@@ -110,15 +110,16 @@ const SubmissionSuccess = () => {
                 },
 
                 px: {
-                  xs: 1,
-                  sm: 1.5,
-                  md: 2,
+                  xs: 1.5,
+                  sm: 2,
+                  md: 3,
                 },
 
                 borderRadius: 0,
 
-                color: "text.primary",
-                opacity: 0.55,
+                backgroundColor: "primary.main",
+                color: "#fff",
+                opacity: 1,
 
                 fontSize: {
                   xs: 11,
@@ -131,9 +132,21 @@ const SubmissionSuccess = () => {
                 whiteSpace: "nowrap",
 
                 "&:hover": {
-                  backgroundColor: "transparent",
-                  color: "text.primary",
-                  opacity: 1,
+                  backgroundColor: "secondary.main",
+                },
+
+                animation: "submissionPulse 2s infinite",
+
+                "@keyframes submissionPulse": {
+                  "0%": {
+                    boxShadow: "0 0 0 0 rgba(255, 92, 53, 0.6)",
+                  },
+                  "70%": {
+                    boxShadow: "0 0 0 15px rgba(255, 92, 53, 0)",
+                  },
+                  "100%": {
+                    boxShadow: "0 0 0 0 rgba(255, 92, 53, 0)",
+                  },
                 },
               }}
             >
