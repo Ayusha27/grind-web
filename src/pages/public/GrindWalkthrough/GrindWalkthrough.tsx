@@ -1275,7 +1275,7 @@ const GrindWalkthrough = () => {
                             RIGHT CONTROL PANEL
                         ================================================= */}
 
-                      <Box
+                        <Box
                             sx={{
                                 width: {
                                     xs: "100%",

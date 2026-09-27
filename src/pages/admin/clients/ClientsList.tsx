@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Chip } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../../../services/api';
 import ClientProgressDialog, { type ProgressDialogClient } from '../../../components/admin/ClientProgressDialog';
 
 const ClientsList = () => {
     const [clients, setClients] = useState<any[]>([]);
     const navigate = useNavigate();
+    // ?q= comes from the admin header search.
+    const [searchParams] = useSearchParams();
+    const query = (searchParams.get('q') || '').trim().toLowerCase();
     const [viewing, setViewing] = useState<ProgressDialogClient | null>(null);
 
     useEffect(() => {
@@ -26,7 +29,15 @@ const ClientsList = () => {
     return (
         <Box>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
-                <Typography variant="h2">Clients</Typography>
+                <Box>
+                    <Typography variant="h2">Clients</Typography>
+                    {query && (
+                        <Typography variant="body2" sx={{ color: 'text.secondary', opacity: 0.7 }}>
+                            Showing results for &ldquo;{searchParams.get('q')}&rdquo; &middot;{' '}
+                            <Box component="span" onClick={() => navigate('/admin/clients')} sx={{ color: 'primary.main', cursor: 'pointer' }}>Clear</Box>
+                        </Typography>
+                    )}
+                </Box>
                 <Button variant="contained" color="primary" onClick={() => navigate('/admin/clients/create')}>Add New Client</Button>
             </Box>
 
@@ -44,7 +55,7 @@ const ClientsList = () => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {Array.isArray(clients) ? clients.map((row) => (
+                            {Array.isArray(clients) ? clients.filter((row) => !query || [row.name, row.first_name, row.last_name, row.email, row.phone, row.id].some((v) => String(v ?? '').toLowerCase().includes(query))).map((row) => (
                                 <TableRow key={row.id || row._id || Math.random()}>
                                     <TableCell>#{row.id || row._id || 'N/A'}</TableCell>
                                     <TableCell>{row.name || (row.first_name + ' ' + row.last_name)}</TableCell>

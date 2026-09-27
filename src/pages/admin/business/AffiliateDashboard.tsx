@@ -394,11 +394,11 @@ const AffiliateDashboard = () => {
         <ThemeProvider theme={lightTheme}>
             <Box
                 sx={{
-                    m: { xs: -2, md: -4 },
+                    m: { xs: -2, md: -5 },
                     p: { xs: 2, md: 3.5 },
                     bgcolor: C.page,
                     color: C.text,
-                    minHeight: 'calc(100vh - 64px)',
+                    minHeight: 'calc(100vh - 72px)',
                 }}
             >
                 {children}
