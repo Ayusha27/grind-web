@@ -604,7 +604,7 @@ const AffiliateDashboard = () => {
                     </Box>
 
                     {/* Referrals + link */}
-                    <Box sx={{ display: 'grid', gap: 2.5, gridTemplateColumns: { xs: '1fr', lg: '1.65fr 1fr' }, alignItems: 'start' }}>
+                    <Box sx={{ display: 'grid', gap: 2.5, gridTemplateColumns: { xs: 'minmax(0, 1fr)', lg: 'minmax(0, 1.65fr) minmax(0, 1fr)' }, alignItems: 'start' }}>
                         <Box sx={{ ...cardSx, p: 2.5, minWidth: 0 }}>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                                 <CardTitle>Referral Details</CardTitle>
@@ -620,7 +620,7 @@ const AffiliateDashboard = () => {
                                     No referrals yet. Enrollments that use {code || 'this code'} will show up here.
                                 </Typography>
                             ) : (
-                                <TableContainer sx={{ maxHeight: showAll ? 520 : 'none' }}>
+                                <TableContainer sx={{ maxHeight: showAll ? 520 : 'none', overflowX: 'auto' }}>
                                     <Table size="small" stickyHeader sx={{ minWidth: 640, '& td, & th': { borderColor: C.border, py: 1.35, fontSize: 14 } }}>
                                         <TableHead>
                                             <TableRow sx={{ '& th': { bgcolor: '#f3f4f6', fontWeight: 600, color: C.text } }}>
@@ -681,7 +681,7 @@ const AffiliateDashboard = () => {
                             <Typography sx={{ fontSize: 14, color: C.muted, mt: 1, mb: 2 }}>Share this link directly with your network</Typography>
 
                             <Box sx={{ display: 'flex', alignItems: 'center', border: `1px solid ${C.border}`, borderRadius: 2, pl: 2, pr: 0.5, py: 0.5 }}>
-                                <Typography sx={{ flex: 1, fontSize: 15, color: C.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                <Typography sx={{ flex: 1, minWidth: 0, fontSize: 15, color: C.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                     {link || 'No code assigned'}
                                 </Typography>
                                 <IconButton disabled={!link} onClick={() => copy(link, 'Affiliate link')}>

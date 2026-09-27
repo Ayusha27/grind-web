@@ -58,12 +58,30 @@ export interface AffiliateDetailResponse {
     referrals: AffiliateReferral[];
 }
 
+const isAffiliate = (): boolean => {
+    try {
+        const token = localStorage.getItem('grind_token');
+        if (!token) return false;
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        const payload = JSON.parse(jsonPayload);
+        return payload?.typ === 'affiliate';
+    } catch {
+        return false;
+    }
+};
+
 export const getAffiliates = async (): Promise<AffiliateListResponse> => {
-    const response = await api.get<AffiliateListResponse>("/admin/affiliates");
+    const endpoint = isAffiliate() ? "/affiliate/dashboard" : "/admin/affiliates";
+    const response = await api.get<AffiliateListResponse>(endpoint);
     return response.data;
 };
 
 export const getAffiliateDetail = async (id: number): Promise<AffiliateDetailResponse> => {
-    const response = await api.get<AffiliateDetailResponse>(`/admin/affiliates/${id}`);
+    const endpoint = isAffiliate() ? "/affiliate/dashboard/detail" : `/admin/affiliates/${id}`;
+    const response = await api.get<AffiliateDetailResponse>(endpoint);
     return response.data;
 };

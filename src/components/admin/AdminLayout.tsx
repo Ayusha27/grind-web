@@ -25,6 +25,29 @@ const AdminLayout = () => {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const decodeToken = (token: string) => {
+        try {
+            const base64Url = token.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            return JSON.parse(jsonPayload);
+        } catch(e) {
+            return null;
+        }
+    };
+
+    const token = localStorage.getItem('grind_token') || '';
+    const payload = decodeToken(token);
+    const isAffiliate = payload?.typ === 'affiliate';
+
+    React.useEffect(() => {
+        if (isAffiliate && location.pathname !== '/admin/business/affiliate') {
+            navigate('/admin/business/affiliate', { replace: true });
+        }
+    }, [isAffiliate, location.pathname, navigate]);
+
     const handleDrawerToggle = () => {
         setMobileOpen(!mobileOpen);
     };
@@ -52,11 +75,18 @@ const AdminLayout = () => {
 
     const renderNavItem = (item: any, isSubItem = false) => {
         const active = location.pathname === item.path;
+        const disabled = isAffiliate && item.path !== '/admin/business/affiliate';
+
         return (
             <ListItem
                 component="button"
                 key={item.path}
-                onClick={() => { navigate(item.path); if (isMobile) setMobileOpen(false); }}
+                disabled={disabled}
+                onClick={() => { 
+                    if (disabled) return;
+                    navigate(item.path); 
+                    if (isMobile) setMobileOpen(false); 
+                }}
                 sx={{
                     py: 1.5,
                     px: isSubItem ? 4 : 2.5,
@@ -67,10 +97,11 @@ const AdminLayout = () => {
                     textAlign: 'left',
                     border: 'none',
                     bgcolor: 'transparent',
-                    cursor: 'pointer',
+                    cursor: disabled ? 'not-allowed' : 'pointer',
+                    opacity: disabled ? 0.4 : 1,
                     '&:hover': {
-                        background: 'rgba(255, 255, 255, 0.02)',
-                        color: active ? 'primary.main' : 'text.primary',
+                        background: disabled ? 'transparent' : 'rgba(255, 255, 255, 0.02)',
+                        color: active ? 'primary.main' : (disabled ? 'text.secondary' : 'text.primary'),
                     }
                 }}
             >
@@ -138,36 +169,43 @@ const AdminLayout = () => {
             </Box>
 
             <List sx={{ flex: 1, overflowY: 'auto', px: 0 }}>
-                {menuItems.map(item => renderNavItem(item))}
+                {!isAffiliate && (
+                    <>
+                        {menuItems.map(item => renderNavItem(item))}
 
-                {/* Clients Section */}
-                <ListItem component="button" onClick={() => setClientsOpen(!clientsOpen)} sx={{ px: 2.5, mt: 1, width: '100%', textAlign: 'left', border: 'none', bgcolor: 'transparent', cursor: 'pointer' }}>
-                    <ListItemIcon sx={{ minWidth: 40, color: 'text.secondary' }}><PeopleIcon /></ListItemIcon>
-                    <ListItemText primary="Clients" sx={{ '& .MuiListItemText-primary': { fontSize: '0.85rem', fontFamily: 'DM Sans', color: 'text.secondary' } }} />
-                    {clientsOpen ? <ExpandLess sx={{ color: 'text.secondary' }} /> : <ExpandMore sx={{ color: 'text.secondary' }} />}
-                </ListItem>
-                <Collapse in={clientsOpen} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        {clientItems.map(item => renderNavItem(item, true))}
-                    </List>
-                </Collapse>
+                        {/* Clients Section */}
+                        <ListItem component="button" onClick={() => setClientsOpen(!clientsOpen)} sx={{ px: 2.5, mt: 1, width: '100%', textAlign: 'left', border: 'none', bgcolor: 'transparent', cursor: 'pointer' }}>
+                            <ListItemIcon sx={{ minWidth: 40, color: 'text.secondary' }}><PeopleIcon /></ListItemIcon>
+                            <ListItemText primary="Clients" sx={{ '& .MuiListItemText-primary': { fontSize: '0.85rem', fontFamily: 'DM Sans', color: 'text.secondary' } }} />
+                            {clientsOpen ? <ExpandLess sx={{ color: 'text.secondary' }} /> : <ExpandMore sx={{ color: 'text.secondary' }} />}
+                        </ListItem>
+                        <Collapse in={clientsOpen} timeout="auto" unmountOnExit>
+                            <List component="div" disablePadding>
+                                {clientItems.map(item => renderNavItem(item, true))}
+                            </List>
+                        </Collapse>
 
-                {/* Plans & Progress */}
-                <ListItem component="button" onClick={() => setPlansOpen(!plansOpen)} sx={{ px: 2.5, mt: 1, width: '100%', textAlign: 'left', border: 'none', bgcolor: 'transparent', cursor: 'pointer' }}>
-                    <ListItemIcon sx={{ minWidth: 40, color: 'text.secondary' }}><FitnessCenterIcon /></ListItemIcon>
-                    <ListItemText primary="Programs" sx={{ '& .MuiListItemText-primary': { fontSize: '0.85rem', fontFamily: 'DM Sans', color: 'text.secondary' } }} />
-                    {plansOpen ? <ExpandLess sx={{ color: 'text.secondary' }} /> : <ExpandMore sx={{ color: 'text.secondary' }} />}
-                </ListItem>
-                <Collapse in={plansOpen} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        {planItems.map(item => renderNavItem(item, true))}
-                    </List>
-                </Collapse>
+                        {/* Plans & Progress */}
+                        <ListItem component="button" onClick={() => setPlansOpen(!plansOpen)} sx={{ px: 2.5, mt: 1, width: '100%', textAlign: 'left', border: 'none', bgcolor: 'transparent', cursor: 'pointer' }}>
+                            <ListItemIcon sx={{ minWidth: 40, color: 'text.secondary' }}><FitnessCenterIcon /></ListItemIcon>
+                            <ListItemText primary="Programs" sx={{ '& .MuiListItemText-primary': { fontSize: '0.85rem', fontFamily: 'DM Sans', color: 'text.secondary' } }} />
+                            {plansOpen ? <ExpandLess sx={{ color: 'text.secondary' }} /> : <ExpandMore sx={{ color: 'text.secondary' }} />}
+                        </ListItem>
+                        <Collapse in={plansOpen} timeout="auto" unmountOnExit>
+                            <List component="div" disablePadding>
+                                {planItems.map(item => renderNavItem(item, true))}
+                            </List>
+                        </Collapse>
+                    </>
+                )}
 
                 <Typography variant="caption" sx={{ px: 3, mt: 3, mb: 1, display: 'block', color: 'rgba(255,255,255,0.3)', textTransform: 'uppercase', letterSpacing: '1px' }}>
                     Business
                 </Typography>
-                {businessItems.map(item => renderNavItem(item))}
+                {businessItems.map(item => {
+                    if (isAffiliate && item.path !== '/admin/business/affiliate') return null;
+                    return renderNavItem(item);
+                })}
             </List>
 
             <Box sx={{ p: 2, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
@@ -204,7 +242,9 @@ const AdminLayout = () => {
                         <MenuIcon />
                     </IconButton>
                     <Box sx={{ flexGrow: 1 }} />
-                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>Admin Portal</Typography>
+                    <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+                        {isAffiliate ? 'Affiliate Portal' : 'Admin Portal'}
+                    </Typography>
                 </Toolbar>
             </AppBar>
 

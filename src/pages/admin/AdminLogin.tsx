@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Container, Card, CircularProgress, Alert } from '@mui/material';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 
 const AdminLogin = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [role, setRole] = useState<'admin' | 'affiliate'>('admin');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const navigate = useNavigate();
@@ -17,7 +17,8 @@ const AdminLogin = () => {
         setError(false);
 
         try {
-            const response = await api.post('/admin/login', { username: email, password });
+            const endpoint = role === 'admin' ? '/admin/login' : '/affiliate/login';
+            const response = await api.post(endpoint, { username: email, password });
 
             const token = response.data?.token || response.data?.access_token;
             if (token) {
@@ -52,7 +53,7 @@ const AdminLogin = () => {
 
             <Container maxWidth="xs" sx={{ position: 'relative', zIndex: 1 }}>
                 <Box sx={{ textAlign: 'center', mb: 4 }}>
-                    <AdminPanelSettingsIcon sx={{ fontSize: 64, color: 'primary.main', mb: 1 }} />
+                    <Box component="img" src={`${import.meta.env.BASE_URL}GrindLogo.svg`} alt="Grind Logo" sx={{ height: 64, mb: 1 }} />
                     <Typography variant="h2" sx={{ letterSpacing: '2px' }}>
                         COMMAND CENTER
                     </Typography>
@@ -64,9 +65,28 @@ const AdminLogin = () => {
                 <Card sx={{ p: 4, borderRadius: 2, background: 'rgba(20, 20, 20, 0.8)', border: '1px solid rgba(255, 255, 255, 0.05)', boxShadow: '0 8px 32px rgba(0,0,0,0.5)' }}>
                     {error && <Alert severity="error" sx={{ mb: 3 }}>Invalid credentials.</Alert>}
                     <form onSubmit={handleLogin}>
+                        <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
+                            <Button
+                                fullWidth
+                                variant={role === 'admin' ? 'contained' : 'outlined'}
+                                onClick={() => setRole('admin')}
+                                sx={{ py: 1 }}
+                            >
+                                Admin
+                            </Button>
+                            <Button
+                                fullWidth
+                                variant={role === 'affiliate' ? 'contained' : 'outlined'}
+                                onClick={() => setRole('affiliate')}
+                                sx={{ py: 1 }}
+                            >
+                                Affiliate
+                            </Button>
+                        </Box>
+
                         <TextField
                             fullWidth
-                            label="Admin ID or Email"
+                            label={`${role === 'admin' ? 'Admin' : 'Email'}`}
                             variant="filled"
                             margin="normal"
                             value={email}
