@@ -96,7 +96,7 @@ const plans: EnrollmentPlan[] = [
     {
         id: "3m",
         name: "3 MONTH KICKSTART",
-        price: 3499,
+        price: 5999,
         description:
             "A focused programme to help you build consistency and make meaningful progress.",
         features: [
@@ -110,7 +110,7 @@ const plans: EnrollmentPlan[] = [
     {
         id: "6m",
         name: "6 MONTH TRANSFORMATION",
-        price: 7999,
+        price: 9999,
         badge: "MOST RECOMMENDED",
         description:
             "A complete transformation programme with additional support and programme flexibility.",
@@ -126,7 +126,7 @@ const plans: EnrollmentPlan[] = [
     {
         id: "12m",
         name: "12 MONTH LIFESTYLE EVOLUTION",
-        price: 12999,
+        price: 15999,
         description:
             "A long-term approach designed to help you build sustainable fitness and lifestyle habits.",
         features: [

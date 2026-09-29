@@ -23,13 +23,13 @@ type EnrollmentPlansProps = {
  * Membership Guide benefit calculations.
  *
  * 3M:
- * (₹3,499 - ₹0) / 4 months = ₹874.75 → ₹875
+ * (₹5,999 - ₹0) / 4 months = ₹1,499.75 → ₹1,500
  *
  * 6M:
- * (₹7,999 - ₹2,198) / 8 months = ₹725.125 → ₹725
+ * (₹9,999 - ₹2,198) / 8 months = ₹975.125 → ₹975
  *
  * 12M:
- * (₹12,999 - ₹5,594) / 15 months = ₹493.67 → ₹494
+ * (₹15,999 - ₹5,594) / 15 months = ₹693.67 → ₹694
  */
 const membershipValueData: Record<
     EnrollmentPlan["id"],
