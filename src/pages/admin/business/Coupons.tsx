@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Chip, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Alert } from '@mui/material';
+import { Box, Typography, Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Chip, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Alert, IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import api from '../../../services/api';
 
 const Coupons = () => {
@@ -11,15 +13,18 @@ const Coupons = () => {
         affiliate_email: '',
         passcode: '',
         discount_percent: '',
-        commission_percent: ''
+        commission_percent: '',
+        expiry_date: ''
     });
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState('');
     const [error, setError] = useState('');
 
-    // Revoke dialog state
     const [revokeDialogOpen, setRevokeDialogOpen] = useState(false);
     const [couponToRevoke, setCouponToRevoke] = useState<number | null>(null);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editingId, setEditingId] = useState<number | null>(null);
+    const [isDateFocused, setIsDateFocused] = useState(false);
 
     const fetchCoupons = async () => {
         try {
@@ -32,8 +37,11 @@ const Coupons = () => {
                     email: aff.affiliate_email,
                     passcode: aff.passcode,
                     discount: `${aff.discount_percent}%`,
+                    raw_discount: aff.discount_percent,
+                    commission: aff.commission_percent,
                     usage: `${aff.total_sales}`,
-                    expires: 'N/A', // no expiry available on dashboard route currently
+                    expires: aff.expiry_date ? new Date(aff.expiry_date.replace(' ', 'T')).toLocaleDateString() : 'N/A',
+                    raw_expiry: aff.expiry_date,
                     status: aff.status === 'active' ? 'Active' : 'Expired'
                 }));
                 setCoupons(mappedCoupons);
@@ -47,12 +55,37 @@ const Coupons = () => {
         fetchCoupons();
     }, []);
 
-    const handleOpen = () => setOpen(true);
+    const handleOpen = () => {
+        setIsEditing(false);
+        setEditingId(null);
+        setFormData({ code: '', affiliate_name: '', affiliate_email: '', passcode: '', discount_percent: '', commission_percent: '', expiry_date: '' });
+        setOpen(true);
+    };
+    
     const handleClose = () => {
         setOpen(false);
-        setFormData({ code: '', affiliate_name: '', affiliate_email: '', passcode: '', discount_percent: '', commission_percent: '' });
+        setFormData({ code: '', affiliate_name: '', affiliate_email: '', passcode: '', discount_percent: '', commission_percent: '', expiry_date: '' });
         setError('');
         setSuccess('');
+        setIsEditing(false);
+        setEditingId(null);
+    };
+
+    const handleEditClick = (row: any) => {
+        setIsEditing(true);
+        setEditingId(row.id);
+        setFormData({
+            code: row.code,
+            affiliate_name: row.name,
+            affiliate_email: row.email,
+            passcode: row.passcode,
+            discount_percent: row.raw_discount || '',
+            commission_percent: row.commission || '',
+            expiry_date: row.raw_expiry ? row.raw_expiry.replace(' ', 'T').slice(0, 10) : ''
+        });
+        setError('');
+        setSuccess('');
+        setOpen(true);
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,14 +98,19 @@ const Coupons = () => {
         setError('');
         setSuccess('');
         try {
-            await api.post('/admin/affiliates', formData);
-            setSuccess('Coupon created successfully!');
+            if (isEditing) {
+                await api.put(`/admin/affiliates/${editingId}`, formData);
+                setSuccess('Coupon updated successfully!');
+            } else {
+                await api.post('/admin/affiliates', formData);
+                setSuccess('Coupon created successfully!');
+            }
             fetchCoupons();
             setTimeout(() => {
                 handleClose();
             }, 1500);
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Failed to create coupon');
+            setError(err.response?.data?.message || `Failed to ${isEditing ? 'update' : 'create'} coupon`);
         } finally {
             setLoading(false);
         }
@@ -137,7 +175,15 @@ const Coupons = () => {
                                         />
                                     </TableCell>
                                     <TableCell sx={{ textAlign: 'right' }}>
-                                        <Button size="small" variant="text" color="error" onClick={() => handleRevokeClick(row.id)}>Revoke</Button>
+                                        <Box sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                            <IconButton size="small" color="primary" onClick={() => handleEditClick(row)}>
+                                                <EditIcon fontSize="small" />
+                                            </IconButton>
+                                            <Typography sx={{ color: 'text.secondary', mx: 0.5, fontSize: 18 }}>/</Typography>
+                                            <IconButton size="small" color="error" onClick={() => handleRevokeClick(row.id)}>
+                                                <DeleteIcon fontSize="small" />
+                                            </IconButton>
+                                        </Box>
                                     </TableCell>
                                 </TableRow>
                             ))}
@@ -147,7 +193,7 @@ const Coupons = () => {
             </Card>
 
             <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
-                <DialogTitle>Create New Coupon / Affiliate</DialogTitle>
+                <DialogTitle>{isEditing ? 'Edit Coupon' : 'Create New Coupon / Affiliate'}</DialogTitle>
                 <form onSubmit={handleSubmit}>
                     <DialogContent>
                         {success && <Alert severity="success" sx={{ mb: 3 }}>{success}</Alert>}
@@ -159,12 +205,22 @@ const Coupons = () => {
                             <TextField label="Passcode" name="passcode" type="text" value={formData.passcode} onChange={handleChange} required fullWidth helperText="Used by the affiliate to login to their dashboard" />
                             <TextField label="Discount Percent (%)" name="discount_percent" type="number" value={formData.discount_percent} onChange={handleChange} fullWidth />
                             <TextField label="Commission Percent (%)" name="commission_percent" type="number" value={formData.commission_percent} onChange={handleChange} fullWidth />
+                            <TextField 
+                                label="Expiry Date" 
+                                name="expiry_date" 
+                                type={(isDateFocused || formData.expiry_date) ? "date" : "text"} 
+                                onFocus={() => setIsDateFocused(true)}
+                                onBlur={() => setIsDateFocused(false)}
+                                value={formData.expiry_date} 
+                                onChange={handleChange} 
+                                fullWidth 
+                            />
                         </Box>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleClose}>Cancel</Button>
                         <Button type="submit" variant="contained" color="primary" disabled={loading}>
-                            {loading ? 'Creating...' : 'Create'}
+                            {loading ? (isEditing ? 'Saving...' : 'Creating...') : (isEditing ? 'Save' : 'Create')}
                         </Button>
                     </DialogActions>
                 </form>
