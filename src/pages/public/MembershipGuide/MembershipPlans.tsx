@@ -19,8 +19,8 @@ const plans: Plan[] = [
   {
     duration: "3M KICKSTART",
     name: "",
-    price: "₹3,499",
-    monthlyPrice: "₹875 / month*",
+    price: "₹5,999",
+    monthlyPrice: "₹1,500 / month*",
     description: "Perfect for beginners building consistency.",
     subtitle: "FOUNDATION",
     features: [
@@ -33,8 +33,8 @@ const plans: Plan[] = [
   {
     duration: "6M TRANSFORMATION",
     name: "",
-    price: "₹7,999",
-    monthlyPrice: "₹725 / month*",
+    price: "₹9,999",
+    monthlyPrice: "₹975 / month*",
     description:
       "For noticeable transformation and lifestyle change.",
     subtitle: "MOST POPULAR",
@@ -57,8 +57,8 @@ const plans: Plan[] = [
   {
     duration: "12M LIFESTYLE EVOLUTION",
     name: "",
-    price: "₹12,999",
-    monthlyPrice: "₹494 / month*",
+    price: "₹15,999",
+    monthlyPrice: "₹694 / month*",
     description: "For long-term health and performance.",
     subtitle: "BEST VALUE",
     features: [
@@ -207,7 +207,7 @@ const MembershipPlans = () => {
                     display: "flex",
                     alignItems: "baseline",
                     justifyContent: "space-between",
-                    gap: 2,
+                    gap: 1,
                     mb: 2.5,
                   }}
                 >
@@ -217,8 +217,8 @@ const MembershipPlans = () => {
                       fontFamily: '"Syne", sans-serif',
                       color: "primary.main",
                       fontSize: {
-                        xs: 36,
-                        md: 40,
+                        xs: 32,
+                        md: 34,
                       },
                       fontWeight: 800,
                       lineHeight: 1,
@@ -234,8 +234,8 @@ const MembershipPlans = () => {
                       fontFamily: '"DM Sans", sans-serif',
                       color: "primary.main",
                       fontSize: {
-                        xs: 15,
-                        md: 16,
+                        xs: 12,
+                        md: 14,
                       },
                       fontWeight: 800,
                       lineHeight: 1.2,
