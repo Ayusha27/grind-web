@@ -48,7 +48,9 @@ const DashboardFooter = () => {
           {/* Instagram */}
           <Typography
             component="a"
-            href="#"
+            href="https://instagram.com/grindfit.ai"
+            target="_blank"
+            rel="noopener noreferrer"
             sx={{
               display: "inline-flex",
               alignItems: "center",
