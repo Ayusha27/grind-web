@@ -35,6 +35,7 @@ type ValidationErrors = {
   height: boolean;
   fitnessLevel: boolean;
   trainingDays: boolean;
+  sessionLength: boolean;
 
   // Other mandatory sections
   trainingGoals: boolean;
@@ -106,6 +107,7 @@ const IntakeForm = () => {
       height: false,
       fitnessLevel: false,
       trainingDays: false,
+      sessionLength: false,
 
       trainingGoals: false,
       workoutPreference: false,
@@ -237,6 +239,11 @@ const IntakeForm = () => {
       if (field === "trainingDays") {
         next.trainingDays =
           !updatedData.trainingDays.trim();
+      }
+
+      if (field === "sessionLength") {
+        next.sessionLength =
+          !updatedData.sessionLength.trim();
       }
 
 
@@ -413,6 +420,9 @@ const IntakeForm = () => {
       trainingDays:
         !formData.trainingDays.trim(),
 
+      sessionLength:
+        !formData.sessionLength.trim(),
+
 
       // Training goals
       trainingGoals:
@@ -487,7 +497,9 @@ const IntakeForm = () => {
                     ? "intake-fitness-level"
                     : errors.trainingDays
                       ? "intake-training-days"
-                      : errors.trainingGoals
+                      : errors.sessionLength
+                        ? "intake-session-length"
+                        : errors.trainingGoals
                         ? "intake-training-goals"
                         : errors.workoutPreference
                           ? "intake-workout-preference"
@@ -794,6 +806,9 @@ const IntakeForm = () => {
 
                 trainingDays:
                   validationErrors.trainingDays,
+
+                sessionLength:
+                  validationErrors.sessionLength,
               }}
             />
           </Box>

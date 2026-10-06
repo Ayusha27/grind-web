@@ -1,6 +1,6 @@
 import { Box, Container, Typography } from "@mui/material";
 
-import howGrindWorks from "../../../assets/how-grind-works (1).jpg";
+import howGrindWorks from "../../../assets/HOW_GRIND_WORKS.png";
 
 const HowGrindWorks = () => {
   return (
