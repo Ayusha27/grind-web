@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Box, Typography, Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Chip, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Alert, IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import api from '../../../services/api';
 
 const Coupons = () => {
@@ -160,7 +161,21 @@ const Coupons = () => {
                         <TableBody>
                             {coupons.map((row) => (
                                 <TableRow key={row.code}>
-                                    <TableCell sx={{ fontWeight: 'bold' }}>{row.code}</TableCell>
+                                    <TableCell sx={{ fontWeight: 'bold' }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                            {row.code}
+                                            <IconButton
+                                                size="small"
+                                                onClick={() => {
+                                                    const link = `${window.location.origin}${import.meta.env.BASE_URL}client/enrollment?ref=${encodeURIComponent(row.code)}`;
+                                                    navigator.clipboard.writeText(link);
+                                                }}
+                                                title="Copy Enrollment Link"
+                                            >
+                                                <ContentCopyIcon sx={{ fontSize: 16 }} />
+                                            </IconButton>
+                                        </Box>
+                                    </TableCell>
                                     <TableCell>{row.name || 'N/A'}</TableCell>
                                     <TableCell>{row.email || 'N/A'}</TableCell>
                                     <TableCell>{row.passcode || 'N/A'}</TableCell>

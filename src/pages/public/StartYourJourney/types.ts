@@ -30,6 +30,7 @@ export interface IntakeFormData {
   stressLevel: string;
 
   lifestyleConsultation: boolean;
+  referralCode: string;
 }
 
 export const initialFormData: IntakeFormData = {
@@ -64,4 +65,5 @@ export const initialFormData: IntakeFormData = {
   stressLevel: "",
 
   lifestyleConsultation: false,
+  referralCode: "",
 };
