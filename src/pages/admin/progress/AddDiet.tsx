@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Box, Typography, Card, TextField, Button, Grid, Alert } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Box, Typography, Card, TextField, Button, Grid, Alert, MenuItem } from '@mui/material';
 import api from '../../../services/api';
 
 const AddDiet = () => {
@@ -10,6 +10,21 @@ const AddDiet = () => {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState('');
     const [error, setError] = useState('');
+    const [clients, setClients] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchClients = async () => {
+            try {
+                const response = await api.get('/admin/clients');
+                const jsonData = response.data;
+                const clientsList = Array.isArray(jsonData) ? jsonData : (jsonData?.data || jsonData?.clients || []);
+                setClients(clientsList);
+            } catch (err) {
+                console.error('Error fetching clients', err);
+            }
+        };
+        fetchClients();
+    }, []);
 
     const handleChange = (e: any) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -45,13 +60,20 @@ const AddDiet = () => {
                         <Grid size={{ xs: 12 }}>
                             <TextField
                                 fullWidth
-                                label="Access Token"
+                                select
+                                label="Select Client"
                                 name="access_token"
                                 value={formData.access_token}
                                 onChange={handleChange}
                                 variant="filled"
                                 required
-                            />
+                            >
+                                {clients.map((client) => (
+                                    <MenuItem key={client.id} value={client.access_token}>
+                                        {client.name || (client.first_name + ' ' + client.last_name)} ({client.email})
+                                    </MenuItem>
+                                ))}
+                            </TextField>
                         </Grid>
                         <Grid size={{ xs: 12 }}>
                             <TextField

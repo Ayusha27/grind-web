@@ -30,7 +30,7 @@ const services = [
   },
   {
     title: "Workout Refresh",
-    price: "₹599",
+    price: "₹899",
     description:
       "Receive an additional workout variation tailored to your progress and evolving fitness goals.",
     features: [

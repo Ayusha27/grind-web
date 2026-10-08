@@ -1,5 +1,5 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { validateAffiliate } from "../../../api/enrollmentApi";
 
 type EnrollmentReferralProps = {
@@ -21,6 +21,7 @@ const EnrollmentReferral = ({
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
     const [error, setError] = useState("");
+    const [hasAutoApplied, setHasAutoApplied] = useState(false);
 
     const handleApply = async () => {
         const code = referralCode.trim();
@@ -95,6 +96,14 @@ const EnrollmentReferral = ({
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        if (referralCode && !hasAutoApplied) {
+            setHasAutoApplied(true);
+            handleApply();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [hasAutoApplied]);
 
     const handleCodeChange = (value: string) => {
         onChange(value);

@@ -49,9 +49,9 @@ const plans: Plan[] = [
     bonus: {
       items: [
         "Lifestyle Consultation (Worth ₹1,599)",
-        "Workout Refresh (Worth ₹599)",
+        "Workout Refresh (Worth ₹899)",
       ],
-      total: "₹2,198",
+      total: "₹2,498",
     },
   },
   {
@@ -71,9 +71,9 @@ const plans: Plan[] = [
     bonus: {
       items: [
         "2 Lifestyle Consultations (Worth ₹3,198)",
-        "4 Workout Refreshes (Worth ₹2,396)",
+        "4 Workout Refreshes (Worth ₹3,596)",
       ],
-      total: "₹5,594",
+      total: "₹6,794",
     },
   },
 ];

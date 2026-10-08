@@ -4,7 +4,6 @@ const ProgressMonitoring = () => {
   const progressItems = [
     "Workout consistency",
     "Body weight",
-    "Body measurements",
     "Training progress",
   ];
 

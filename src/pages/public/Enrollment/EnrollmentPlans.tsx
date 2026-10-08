@@ -47,19 +47,19 @@ const membershipValueData: Record<
 
     "6m": {
         accessMonths: 8,
-        benefitValue: 2198,
+        benefitValue: 2498,
         bonusItems: [
             "Lifestyle Consultation (Worth ₹1,599)",
-            "Workout Refresh (Worth ₹599)",
+            "Workout Refresh (Worth ₹899)",
         ],
     },
 
     "12m": {
         accessMonths: 15,
-        benefitValue: 5594,
+        benefitValue: 6794,
         bonusItems: [
             "2 Lifestyle Consultations (Worth ₹3,198)",
-            "4 Workout Refreshes (Worth ₹2,396)",
+            "4 Workout Refreshes (Worth ₹3,596)",
         ],
     },
 };

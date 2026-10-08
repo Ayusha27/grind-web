@@ -425,7 +425,7 @@ const AffiliateDashboard = () => {
     const isActive = (aff?.status || '').toLowerCase() === 'active';
     const expiry = parseDbDate(aff?.expiry_date ?? null);
     const expired = !!expiry && expiry < new Date(new Date().toDateString());
-    const link = code ? `${window.location.origin}${import.meta.env.BASE_URL}client/enrollment?ref=${encodeURIComponent(code)}` : '';
+    const link = code ? `${window.location.origin}${import.meta.env.BASE_URL}start-your-journey?ref=${encodeURIComponent(code)}` : '';
     const shareText = `Get ${aff?.discount_percent ?? 0}% off your GRIND fitness plan with my code ${code}:`;
     const visibleReferrals = showAll ? referrals : referrals.slice(0, PREVIEW_ROWS);
 

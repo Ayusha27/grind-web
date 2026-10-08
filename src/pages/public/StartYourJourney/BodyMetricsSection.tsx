@@ -19,13 +19,14 @@ interface BodyMetricsSectionProps {
     value: IntakeFormData[K]
   ) => void;
 
-  errors?: {
-    weight?: boolean;
-    height?: boolean;
-    fitnessLevel?: boolean;
-    trainingDays?: boolean;
-  };
-}
+    errors?: {
+      weight?: boolean;
+      height?: boolean;
+      fitnessLevel?: boolean;
+      trainingDays?: boolean;
+      sessionLength?: boolean;
+    };
+  }
 
 // ============================================================
 // INPUT STYLES
@@ -735,12 +736,26 @@ const BodyMetricsSection = ({
 
       {/* ======================================================
           SESSION LENGTH
-          OPTIONAL
       ====================================================== */}
 
-      <Box>
+      <Box
+        id="intake-session-length"
+        sx={{
+          ...errorWrapperStyles(
+            errors.sessionLength
+          ),
+        }}
+      >
         <Typography sx={labelStyles}>
-          Preferred Session Length
+          Preferred Session Length{" "}
+          <Box
+            component="span"
+            sx={{
+              color: "primary.main",
+            }}
+          >
+            *
+          </Box>
         </Typography>
 
         <Box
@@ -755,6 +770,10 @@ const BodyMetricsSection = ({
           sx={{
             ...nativeSelectStyles,
             appearance: "auto",
+
+            borderColor: errors.sessionLength
+              ? "primary.main"
+              : "divider",
           }}
         >
           <option value="">Select</option>
@@ -765,6 +784,12 @@ const BodyMetricsSection = ({
           <option value="75 mins">75 mins</option>
           <option value="90 mins">90 mins</option>
         </Box>
+
+        {errors.sessionLength && (
+          <ErrorMessage>
+            Please select your preferred session length.
+          </ErrorMessage>
+        )}
       </Box>
     </Box>
   );

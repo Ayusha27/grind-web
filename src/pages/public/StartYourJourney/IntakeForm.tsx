@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { Box, Container } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Box, Container, Typography, TextField } from "@mui/material";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import api from "../../../services/api";
 
 import PersonalSection from "./PersonalSection";
@@ -35,6 +35,7 @@ type ValidationErrors = {
   height: boolean;
   fitnessLevel: boolean;
   trainingDays: boolean;
+  sessionLength: boolean;
 
   // Other mandatory sections
   trainingGoals: boolean;
@@ -90,6 +91,7 @@ const isValidPhoneNumber = (phoneNumber: string) => {
 
 const IntakeForm = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const [formData, setFormData] =
     useState<IntakeFormData>(initialFormData);
@@ -106,12 +108,28 @@ const IntakeForm = () => {
       height: false,
       fitnessLevel: false,
       trainingDays: false,
+      sessionLength: false,
 
       trainingGoals: false,
       workoutPreference: false,
       dietLifestyle: false,
       healthLimitations: false,
     });
+
+
+  // ==========================================================
+  // PREFILL FROM URL
+  // ==========================================================
+
+  useEffect(() => {
+    const code = searchParams.get("ref");
+    if (code) {
+      setFormData((prev) => ({
+        ...prev,
+        referralCode: code,
+      }));
+    }
+  }, [searchParams]);
 
 
   // ==========================================================
@@ -237,6 +255,11 @@ const IntakeForm = () => {
       if (field === "trainingDays") {
         next.trainingDays =
           !updatedData.trainingDays.trim();
+      }
+
+      if (field === "sessionLength") {
+        next.sessionLength =
+          !updatedData.sessionLength.trim();
       }
 
 
@@ -387,7 +410,7 @@ const IntakeForm = () => {
         !isValidPhoneNumber(
           formData.phoneNumber
         ),
-  
+
       email:
         !isValidEmail(
           formData.email
@@ -412,6 +435,9 @@ const IntakeForm = () => {
 
       trainingDays:
         !formData.trainingDays.trim(),
+
+      sessionLength:
+        !formData.sessionLength.trim(),
 
 
       // Training goals
@@ -469,33 +495,35 @@ const IntakeForm = () => {
      */
 
     const sectionId =
-    errors.fullName
-      ? "intake-full-name"
-      : errors.phoneNumber
-        ? "intake-phone-number"
-        : errors.email
-          ? "intake-email"
-          : errors.age
-            ? "intake-age"
-            : errors.gender
-              ? "intake-gender"
-              : errors.weight
-                ? "intake-weight"
-                : errors.height
-                  ? "intake-height"
-                  : errors.fitnessLevel
-                    ? "intake-fitness-level"
-                    : errors.trainingDays
-                      ? "intake-training-days"
-                      : errors.trainingGoals
-                        ? "intake-training-goals"
-                        : errors.workoutPreference
-                          ? "intake-workout-preference"
-                          : errors.dietLifestyle
-                            ? "intake-diet-lifestyle"
-                            : errors.healthLimitations
-                              ? "intake-health-limitations"
-                              : null;
+      errors.fullName
+        ? "intake-full-name"
+        : errors.phoneNumber
+          ? "intake-phone-number"
+          : errors.email
+            ? "intake-email"
+            : errors.age
+              ? "intake-age"
+              : errors.gender
+                ? "intake-gender"
+                : errors.weight
+                  ? "intake-weight"
+                  : errors.height
+                    ? "intake-height"
+                    : errors.fitnessLevel
+                      ? "intake-fitness-level"
+                      : errors.trainingDays
+                        ? "intake-training-days"
+                        : errors.sessionLength
+                          ? "intake-session-length"
+                          : errors.trainingGoals
+                            ? "intake-training-goals"
+                            : errors.workoutPreference
+                              ? "intake-workout-preference"
+                              : errors.dietLifestyle
+                                ? "intake-diet-lifestyle"
+                                : errors.healthLimitations
+                                  ? "intake-health-limitations"
+                                  : null;
 
 
     if (!sectionId) {
@@ -632,6 +660,9 @@ const IntakeForm = () => {
         workout_pref:
           formData.workoutPreference,
 
+        referral_code:
+          formData.referralCode,
+
         injuries:
           formData.injuries.join(
             ", "
@@ -763,7 +794,7 @@ const IntakeForm = () => {
               errors={{
                 fullName:
                   validationErrors.fullName,
-                
+
                 phoneNumber:
                   validationErrors.phoneNumber,
 
@@ -794,6 +825,9 @@ const IntakeForm = () => {
 
                 trainingDays:
                   validationErrors.trainingDays,
+
+                sessionLength:
+                  validationErrors.sessionLength,
               }}
             />
           </Box>
@@ -862,6 +896,63 @@ const IntakeForm = () => {
             onChange={handleChange}
           />
 
+
+          {/* ====================================================
+              REFERRAL CODE
+          ==================================================== */}
+
+          <Box
+            sx={{
+              p: { xs: 2, md: 2.5 },
+              borderBottom: "1px solid #292929",
+            }}
+          >
+            <Typography
+              sx={{
+                color: "primary.main",
+                fontSize: 12,
+                fontWeight: 700,
+                letterSpacing: "0.7px",
+                textTransform: "uppercase",
+                mb: 0.7,
+              }}
+            >
+              Do you have a referral code?
+            </Typography>
+
+            <TextField
+              fullWidth
+              size="small"
+              value={formData.referralCode}
+              placeholder="e.g. GR_PSS_30"
+              onChange={(event) => handleChange("referralCode", event.target.value)}
+              sx={{
+                "& .MuiInputBase-root": {
+                  backgroundColor: "background.paper",
+                  color: "text.primary",
+                  borderRadius: 0,
+                  fontSize: 16,
+                  minHeight: 38,
+                },
+                "& .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "divider",
+                },
+                "&:hover .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "secondary.main",
+                },
+                "& .Mui-focused .MuiOutlinedInput-notchedOutline": {
+                  borderColor: "primary.main",
+                },
+                "& .MuiInputBase-input": {
+                  py: 1,
+                },
+                "& .MuiInputBase-input::placeholder": {
+                  color: "text.primary",
+                  opacity: 0.45,
+                },
+              }}
+            />
+          </Box>
 
           {/* ====================================================
               SUBMIT

@@ -39,7 +39,7 @@ export const services: ExpertService[] = [
     {
         id: "workout-variant",
         title: "Additional Workout Variant",
-        price: 599,
+        price: 899,
         description:
             "Unlock an additional workout variant beyond those included in your programme.",
         highlight:
