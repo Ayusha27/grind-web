@@ -7,6 +7,7 @@ import MembershipPlans from "./MembershipPlans";
 import PlanComparison from "./PlanComparison";
 import TermsAndConditions from "./TermsAndConditions";
 import WhyGrind from "./WhyGrind";
+import FinalCTA from "../Home/FinalCTA";
 
 const MembershipGuide = () => {
   return (
@@ -17,6 +18,7 @@ const MembershipGuide = () => {
       <PlanComparison />
       <ExpertServices />
       <HowGrindWorks />
+      <FinalCTA />
       <MembershipFAQ />
       <TermsAndConditions />
     </>

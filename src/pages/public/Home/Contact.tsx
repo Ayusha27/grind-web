@@ -104,7 +104,7 @@ const Contact = () => {
             <Grid
               size={{
                 xs: 12,
-                md: 6,
+                md: 4,
               }}
               sx={{
                 borderRight: {
@@ -161,7 +161,17 @@ const Contact = () => {
             <Grid
               size={{
                 xs: 12,
-                md: 6,
+                md: 4,
+              }}
+              sx={{
+                borderRight: {
+                  xs: "none",
+                  md: "1px solid #292929",
+                },
+                borderBottom: {
+                  xs: "1px solid #292929",
+                  md: "none",
+                },
               }}
             >
               <Box
@@ -202,6 +212,55 @@ const Contact = () => {
                   }}
                 >
                   @grindfit.ai
+                </Typography>
+              </Box>
+            </Grid>
+
+            {/* WhatsApp */}
+            <Grid
+              size={{
+                xs: 12,
+                md: 4,
+              }}
+            >
+              <Box
+                sx={{
+                  textAlign: "center",
+                  px: 2,
+                  py: 3,
+                }}
+              >
+                <Typography
+                  sx={{
+                    color: "primary.main",
+                    fontSize: 11,
+                    fontWeight: 500,
+                    mb: 0.75,
+                  }}
+                >
+                  WHATSAPP
+                </Typography>
+
+                <Typography
+                  component="a"
+                  href="https://wa.me/917349576770"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  sx={{
+                    color: "#f5f5f0",
+                    textDecoration: "none",
+                    fontSize: {
+                      xs: 16,
+                      md: 18,
+                    },
+                    fontWeight: 600,
+
+                    "&:hover": {
+                      color: "primary.main",
+                    },
+                  }}
+                >
+                  +91 7349576770
                 </Typography>
               </Box>
             </Grid>
