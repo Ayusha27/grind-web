@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Chip } from '@mui/material';
+import { Box, Typography, Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Chip, Snackbar } from '@mui/material';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../../../services/api';
 import ClientProgressDialog, { type ProgressDialogClient } from '../../../components/admin/ClientProgressDialog';
+
+// Welcome message with the client's portal link and their code.
+// The code is needed on iPhone, where the installed app asks for it on first launch.
+const buildInvite = (row: any, code: string) => {
+    const name = row.first_name || row.name || 'there';
+    const link = `${window.location.origin}/GRIND/client/dashboard/workout?token=${encodeURIComponent(code)}`;
+    return `Hi ${name}, welcome to GRIND!\n\nOpen your plan here: ${link}\n\nYour GRIND code: ${code}\n(Keep this handy - on iPhone you'll need it once after adding GRIND to your Home Screen.)`;
+};
 
 const ClientsList = () => {
     const [clients, setClients] = useState<any[]>([]);
@@ -11,6 +19,16 @@ const ClientsList = () => {
     const [searchParams] = useSearchParams();
     const query = (searchParams.get('q') || '').trim().toLowerCase();
     const [viewing, setViewing] = useState<ProgressDialogClient | null>(null);
+    const [toast, setToast] = useState('');
+
+    const copy = async (text: string, message: string) => {
+        try {
+            await navigator.clipboard.writeText(text);
+            setToast(message);
+        } catch {
+            setToast('Could not copy to clipboard');
+        }
+    };
 
     useEffect(() => {
         const fetchClients = async () => {
@@ -70,6 +88,12 @@ const ClientsList = () => {
                                         />
                                     </TableCell>
                                     <TableCell sx={{ textAlign: 'right' }}>
+                                        {row.access_token?.trim() && (
+                                            <>
+                                                <Button size="small" variant="text" onClick={() => copy(row.access_token.trim(), 'Code copied')}>Copy code</Button>
+                                                <Button size="small" variant="text" onClick={() => copy(buildInvite(row, row.access_token.trim()), 'Invite message copied')}>Copy invite</Button>
+                                            </>
+                                        )}
                                         <Button size="small" variant="text" onClick={() => setViewing(row)}>View</Button>
                                     </TableCell>
                                 </TableRow>
@@ -86,6 +110,7 @@ const ClientsList = () => {
             </Card>
 
             <ClientProgressDialog client={viewing} onClose={() => setViewing(null)} />
+            <Snackbar open={!!toast} autoHideDuration={2500} onClose={() => setToast('')} message={toast} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} />
         </Box>
     );
 };

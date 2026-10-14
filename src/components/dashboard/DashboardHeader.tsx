@@ -6,7 +6,8 @@ import IosShareIcon from "@mui/icons-material/IosShare";
 import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
 import InstallDesktopRoundedIcon from "@mui/icons-material/InstallDesktopRounded";
 
-import useInstallPrompt from "../../hooks/useInstallPrompt";
+import useInstallPrompt, { IOS_SHARE_LOCATION } from "../../hooks/useInstallPrompt";
+import IosCodeStep, { copyGrindCode } from "../common/IosCodeStep";
 
 const DashboardHeader = () => {
   const {
@@ -15,12 +16,14 @@ const DashboardHeader = () => {
     installApp,
     isIOS,
     isSafari,
+    iosBrowser,
   } = useInstallPrompt();
 
   const [iosDialogOpen, setIosDialogOpen] = useState(false);
 
   const handleInstall = async () => {
     if (isIOS || isSafari) {
+      if (isIOS) void copyGrindCode();
       setIosDialogOpen(true);
       return;
     }
@@ -303,7 +306,7 @@ const DashboardHeader = () => {
                         <IosShareIcon sx={{ color: "#007AFF" }} />
                     </Box>
                     <Typography sx={{ fontSize: 15 }}>
-                        <strong>1.</strong> Tap the <strong>Share</strong> button at the bottom of Safari.
+                        <strong>1.</strong> Tap the <strong>Share</strong> button {IOS_SHARE_LOCATION[iosBrowser]}.
                     </Typography>
                 </Box>
                 
@@ -315,6 +318,8 @@ const DashboardHeader = () => {
                         <strong>2.</strong> Scroll down and select <strong>Add to Home Screen</strong>.
                     </Typography>
                 </Box>
+                
+                <IosCodeStep />
                 </>
             ) : (
                 <>

@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Box } from "@mui/material";
+import axios from "axios";
 import {
   Outlet,
   useLocation,
@@ -9,6 +10,10 @@ import DashboardHeader from "./DashboardHeader";
 import DashboardPeriodBar from "./DashboardPeriodBar";
 import DashboardNavigation from "./DashboardNavigation";
 import Footer from "../layout/Footer";
+import IosCodeEntry from "../auth/IosCodeEntry";
+
+import { getToken, clearToken } from "../../utils/auth";
+import { isIosStandaloneApp } from "../../utils/platform";
 
 import {
   DashboardProvider,
@@ -33,6 +38,7 @@ interface DashboardContentProps {
 
   onMonthChange: (month: number) => void;
   onWeekChange: (week: number) => void;
+  onAuthFailed: () => void;
 }
 
 const DashboardContent = ({
@@ -41,6 +47,7 @@ const DashboardContent = ({
   periodResetKey,
   onMonthChange,
   onWeekChange,
+  onAuthFailed,
 }: DashboardContentProps) => {
   const {
     setDashboard,
@@ -85,11 +92,28 @@ const DashboardContent = ({
           "Failed to load dashboard:",
           error
         );
+
+        /**
+         * In the installed iOS app, a rejected token
+         * sends the user back to the code entry screen
+         * instead of leaving them on an empty dashboard.
+         */
+        const status = axios.isAxiosError(error)
+          ? error.response?.status
+          : undefined;
+
+        if (
+          isIosStandaloneApp() &&
+          (status === 401 || status === 403)
+        ) {
+          clearToken();
+          onAuthFailed();
+        }
       }
     };
 
     void loadDashboard();
-  }, [setDashboard]);
+  }, [setDashboard, onAuthFailed]);
 
   /**
    * =======================================================
@@ -374,6 +398,28 @@ const DashboardContent = ({
 const DashboardLayout = () => {
   /**
    * =======================================================
+   * iOS HOME SCREEN APP CODE ENTRY
+   * =======================================================
+   *
+   * iOS Home Screen apps don't share storage with the
+   * browser, so the first launch has no token. Ask for
+   * the GRIND code once instead of showing empty data.
+   */
+
+  const [
+    needsCode,
+    setNeedsCode,
+  ] = useState(
+    () => isIosStandaloneApp() && !getToken()
+  );
+
+  const handleAuthFailed = useCallback(
+    () => setNeedsCode(true),
+    []
+  );
+
+  /**
+   * =======================================================
    * GLOBAL MONTH / WEEK
    * =======================================================
    */
@@ -433,6 +479,14 @@ const DashboardLayout = () => {
     );
   };
 
+  if (needsCode) {
+    return (
+      <IosCodeEntry
+        onSuccess={() => setNeedsCode(false)}
+      />
+    );
+  }
+
   return (
     <DashboardProvider>
       <DashboardContent
@@ -446,6 +500,9 @@ const DashboardLayout = () => {
         }
         onWeekChange={
           handleWeekChange
+        }
+        onAuthFailed={
+          handleAuthFailed
         }
       />
     </DashboardProvider>

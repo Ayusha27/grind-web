@@ -4,7 +4,8 @@ import InstallDesktopRoundedIcon from "@mui/icons-material/InstallDesktopRounded
 import CloseIcon from "@mui/icons-material/Close";
 import IosShareIcon from "@mui/icons-material/IosShare";
 import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
-import useInstallPrompt from "../../hooks/useInstallPrompt";
+import useInstallPrompt, { IOS_SHARE_LOCATION } from "../../hooks/useInstallPrompt";
+import IosCodeStep, { copyGrindCode } from "./IosCodeStep";
 
 
 interface InstallGrindButtonProps {
@@ -19,7 +20,8 @@ const InstallGrindButton: React.FC<
         isInstalled,
         installApp,
         isIOS,
-        isSafari
+        isSafari,
+        iosBrowser,
     } = useInstallPrompt();
 
     const [iosDialogOpen, setIosDialogOpen] = useState(false);
@@ -38,6 +40,7 @@ const InstallGrindButton: React.FC<
 
     const handleInstall = async () => {
         if (isIOS || isSafari) {
+            if (isIOS) void copyGrindCode();
             setIosDialogOpen(true);
             return;
         }
@@ -113,7 +116,7 @@ const InstallGrindButton: React.FC<
                             <IosShareIcon sx={{ color: "#007AFF" }} />
                         </Box>
                         <Typography sx={{ fontSize: 15 }}>
-                            <strong>1.</strong> Tap the <strong>Share</strong> button at the bottom of Safari.
+                            <strong>1.</strong> Tap the <strong>Share</strong> button {IOS_SHARE_LOCATION[iosBrowser]}.
                         </Typography>
                     </Box>
                     
@@ -125,6 +128,8 @@ const InstallGrindButton: React.FC<
                             <strong>2.</strong> Scroll down and select <strong>Add to Home Screen</strong>.
                         </Typography>
                     </Box>
+                    
+                    <IosCodeStep />
                     </>
                 ) : (
                     <>

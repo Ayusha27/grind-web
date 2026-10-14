@@ -17,6 +17,28 @@ declare global {
     }
 }
 
+export type IosBrowser = "safari" | "chrome" | "edge" | "firefox" | "other";
+
+// Every iOS browser runs on WebKit and its user agent still
+// contains "Safari", so other browsers have to be identified
+// by their own tokens (CriOS, EdgiOS, FxiOS).
+const detectIosBrowser = (userAgent: string): IosBrowser => {
+    if (/CriOS/.test(userAgent)) return "chrome";
+    if (/EdgiOS/.test(userAgent)) return "edge";
+    if (/FxiOS/.test(userAgent)) return "firefox";
+    if (/Safari/.test(userAgent) && !/OPiOS|GSA|DuckDuckGo|Brave/.test(userAgent)) return "safari";
+    return "other";
+};
+
+// Where the Share button lives in each iOS browser.
+export const IOS_SHARE_LOCATION: Record<IosBrowser, string> = {
+    safari: "at the bottom of Safari",
+    chrome: "in Chrome's address bar",
+    edge: "in Edge's ••• menu at the bottom",
+    firefox: "in Firefox's ☰ menu",
+    other: "in your browser's menu",
+};
+
 export const useInstallPrompt = () => {
     const [installPrompt, setInstallPrompt] =
         useState<BeforeInstallPromptEvent | null>(null);
@@ -26,6 +48,7 @@ export const useInstallPrompt = () => {
 
     const [isIOS, setIsIOS] = useState(false);
     const [isSafari, setIsSafari] = useState(false);
+    const [iosBrowser, setIosBrowser] = useState<IosBrowser>("safari");
 
     useEffect(() => {
         const handleBeforeInstallPrompt = (
@@ -58,18 +81,17 @@ export const useInstallPrompt = () => {
         // Detect iOS (for custom install guide)
         const checkIsIOS = () => {
             const userAgent = window.navigator.userAgent || "";
-            const isIosDevice = /iPad|iPhone|iPod/.test(userAgent) || (userAgent.includes("Mac") && "ontouchend" in document);
-            // Verify it's actually Safari/WebKit to avoid showing on browsers that don't support add to home screen well
-            return isIosDevice;
+            return /iPad|iPhone|iPod/.test(userAgent) || (userAgent.includes("Mac") && "ontouchend" in document);
         };
 
         const checkIsSafari = () => {
             const userAgent = window.navigator.userAgent || "";
-            return userAgent.includes("Safari") && !userAgent.includes("Chrome") && !userAgent.includes("Edg");
+            return userAgent.includes("Safari") && !/Chrome|CriOS|Edg|FxiOS|OPiOS/.test(userAgent);
         };
 
         setIsIOS(checkIsIOS());
         setIsSafari(checkIsSafari());
+        setIosBrowser(detectIosBrowser(window.navigator.userAgent || ""));
 
         window.addEventListener(
             "beforeinstallprompt",
@@ -118,6 +140,7 @@ export const useInstallPrompt = () => {
         installApp,
         isIOS,
         isSafari,
+        iosBrowser,
     };
 };
 
