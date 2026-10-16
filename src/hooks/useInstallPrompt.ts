@@ -39,9 +39,31 @@ export const IOS_SHARE_LOCATION: Record<IosBrowser, string> = {
     other: "in your browser's menu",
 };
 
+// Chrome fires `beforeinstallprompt` only once per page load, usually
+// before the dashboard has mounted (e.g. while the user is still on the
+// login page). Capture it at module load so it is never missed.
+let deferredPrompt: BeforeInstallPromptEvent | null = null;
+const listeners = new Set<() => void>();
+const notify = () => listeners.forEach((listener) => listener());
+
+if (typeof window !== "undefined") {
+    window.addEventListener("beforeinstallprompt", (event) => {
+        // Prevent Chrome from showing its automatic
+        // installation prompt.
+        event.preventDefault();
+        deferredPrompt = event;
+        notify();
+    });
+
+    window.addEventListener("appinstalled", () => {
+        deferredPrompt = null;
+        notify();
+    });
+}
+
 export const useInstallPrompt = () => {
     const [installPrompt, setInstallPrompt] =
-        useState<BeforeInstallPromptEvent | null>(null);
+        useState<BeforeInstallPromptEvent | null>(deferredPrompt);
 
     const [isInstalled, setIsInstalled] =
         useState(false);
@@ -51,19 +73,10 @@ export const useInstallPrompt = () => {
     const [iosBrowser, setIosBrowser] = useState<IosBrowser>("safari");
 
     useEffect(() => {
-        const handleBeforeInstallPrompt = (
-            event: BeforeInstallPromptEvent
-        ) => {
-            // Prevent Chrome from showing its automatic
-            // installation prompt.
-            event.preventDefault();
-
-            setInstallPrompt(event);
-        };
+        const sync = () => setInstallPrompt(deferredPrompt);
 
         const handleAppInstalled = () => {
             setIsInstalled(true);
-            setInstallPrompt(null);
         };
 
         // Detect if Grind is already running as an
@@ -93,10 +106,8 @@ export const useInstallPrompt = () => {
         setIsSafari(checkIsSafari());
         setIosBrowser(detectIosBrowser(window.navigator.userAgent || ""));
 
-        window.addEventListener(
-            "beforeinstallprompt",
-            handleBeforeInstallPrompt
-        );
+        listeners.add(sync);
+        sync();
 
         window.addEventListener(
             "appinstalled",
@@ -104,10 +115,7 @@ export const useInstallPrompt = () => {
         );
 
         return () => {
-            window.removeEventListener(
-                "beforeinstallprompt",
-                handleBeforeInstallPrompt
-            );
+            listeners.delete(sync);
 
             window.removeEventListener(
                 "appinstalled",
@@ -129,7 +137,9 @@ export const useInstallPrompt = () => {
             setIsInstalled(true);
         }
 
-        setInstallPrompt(null);
+        // A prompt can only be used once.
+        deferredPrompt = null;
+        notify();
 
         return choice.outcome === "accepted";
     }, [installPrompt]);

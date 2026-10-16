@@ -443,6 +443,8 @@ const Workout = () => {
 
               name: exercise.name,
 
+              note: exercise.note,
+
               sets,
 
               videoUrl:

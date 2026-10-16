@@ -1,4 +1,12 @@
-import { Box, Typography } from "@mui/material";
+import { useState } from "react";
+import {
+  Box,
+  Button,
+  Drawer,
+  IconButton,
+  Typography,
+} from "@mui/material";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 import SetTracker, {
   type WorkoutSet,
@@ -8,6 +16,7 @@ export interface WorkoutExercise {
   id: number;
   exerciseNumber: number;
   name: string;
+  note?: string;
   sets: WorkoutSet[];
   videoUrl?: string;
 }
@@ -27,6 +36,10 @@ const ExerciseAccordion = ({
   onSetToggle,
   onWatch,
 }: ExerciseAccordionProps) => {
+  const [isNoteOpen, setIsNoteOpen] = useState(false);
+
+  const note = exercise.note?.trim();
+
   const completedSets = exercise.sets.filter(
     (set) => set.completed
   ).length;
@@ -178,6 +191,30 @@ const ExerciseAccordion = ({
           </Typography>
         </Box>
 
+        {/* Info */}
+        {note && (
+          <IconButton
+            component="span"
+            aria-label={`About ${exercise.name}`}
+            onClick={(event) => {
+              event.stopPropagation();
+              setIsNoteOpen(true);
+            }}
+            sx={{
+              flexShrink: 0,
+
+              mr: 0.5,
+
+              width: 40,
+              height: 40,
+
+              color: "#77716c",
+            }}
+          >
+            <InfoOutlinedIcon fontSize="small" />
+          </IconButton>
+        )}
+
         {/* Watch */}
         <Box
           component="span"
@@ -263,6 +300,75 @@ const ExerciseAccordion = ({
             />
           </Box>
         </Box>
+      )}
+
+      {/* Exercise note */}
+      {note && (
+        <Drawer
+          anchor="bottom"
+          open={isNoteOpen}
+          onClose={() => setIsNoteOpen(false)}
+          slotProps={{
+            paper: {
+              sx: {
+                px: 2.5,
+                pt: 2.5,
+                pb: "calc(20px + env(safe-area-inset-bottom))",
+
+                borderTopLeftRadius: "18px",
+                borderTopRightRadius: "18px",
+
+                maxWidth: 600,
+                mx: "auto",
+              },
+            },
+          }}
+        >
+          <Typography
+            sx={{
+              fontFamily:
+                "'Archivo', sans-serif",
+
+              fontSize: 16,
+              fontWeight: 700,
+
+              color: "#13131A",
+            }}
+          >
+            {exercise.name}
+          </Typography>
+
+          <Typography
+            sx={{
+              mt: 1,
+
+              fontSize: 14,
+              lineHeight: 1.5,
+
+              color: "#4C4A49",
+
+              whiteSpace: "pre-line",
+            }}
+          >
+            {note}
+          </Typography>
+
+          <Button
+            fullWidth
+            variant="contained"
+            onClick={() => setIsNoteOpen(false)}
+            sx={{
+              mt: 2.5,
+
+              borderRadius: "10px",
+
+              textTransform: "none",
+              fontWeight: 700,
+            }}
+          >
+            Close
+          </Button>
+        </Drawer>
       )}
     </Box>
   );

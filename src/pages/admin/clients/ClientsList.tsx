@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Chip, Snackbar } from '@mui/material';
+import { Box, Typography, Card, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Button, Chip, Snackbar, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import api from '../../../services/api';
 import ClientProgressDialog, { type ProgressDialogClient } from '../../../components/admin/ClientProgressDialog';
@@ -20,6 +20,7 @@ const ClientsList = () => {
     const query = (searchParams.get('q') || '').trim().toLowerCase();
     const [viewing, setViewing] = useState<ProgressDialogClient | null>(null);
     const [toast, setToast] = useState('');
+    const [confirmDelete, setConfirmDelete] = useState<{ id: number; name: string } | null>(null);
 
     const copy = async (text: string, message: string) => {
         try {
@@ -27,6 +28,18 @@ const ClientsList = () => {
             setToast(message);
         } catch {
             setToast('Could not copy to clipboard');
+        }
+    };
+
+    const deleteClient = async (id: number) => {
+        try {
+            await api.delete(`/admin/clients/${id}`);
+            setClients((prev) => prev.filter((c) => c.id !== id));
+            setToast('Client deleted');
+        } catch {
+            setToast('Failed to delete client');
+        } finally {
+            setConfirmDelete(null);
         }
     };
 
@@ -69,6 +82,8 @@ const ClientsList = () => {
                                 <TableCell sx={{ color: 'text.secondary' }}>Email</TableCell>
                                 <TableCell sx={{ color: 'text.secondary' }}>Plan</TableCell>
                                 <TableCell sx={{ color: 'text.secondary' }}>Status</TableCell>
+                                <TableCell sx={{ color: 'text.secondary' }}>Tokens</TableCell>
+                                <TableCell sx={{ color: 'text.secondary' }}>Invite</TableCell>
                                 <TableCell sx={{ color: 'text.secondary', textAlign: 'right' }}>Actions</TableCell>
                             </TableRow>
                         </TableHead>
@@ -87,19 +102,24 @@ const ClientsList = () => {
                                             variant="outlined"
                                         />
                                     </TableCell>
-                                    <TableCell sx={{ textAlign: 'right' }}>
+                                    <TableCell>
                                         {row.access_token?.trim() && (
-                                            <>
-                                                <Button size="small" variant="text" onClick={() => copy(row.access_token.trim(), 'Code copied')}>Copy code</Button>
-                                                <Button size="small" variant="text" onClick={() => copy(buildInvite(row, row.access_token.trim()), 'Invite message copied')}>Copy invite</Button>
-                                            </>
+                                            <Button size="small" variant="text" onClick={() => copy(row.access_token.trim(), 'Code copied')}>Copy code</Button>
                                         )}
+                                    </TableCell>
+                                    <TableCell>
+                                        {row.access_token?.trim() && (
+                                            <Button size="small" variant="text" onClick={() => copy(buildInvite(row, row.access_token.trim()), 'Invite message copied')}>Copy invite</Button>
+                                        )}
+                                    </TableCell>
+                                    <TableCell sx={{ textAlign: 'right' }}>
                                         <Button size="small" variant="text" onClick={() => setViewing(row)}>View</Button>
+                                        <Button size="small" variant="text" color="error" onClick={() => setConfirmDelete({ id: row.id, name: row.name || row.first_name || String(row.id) })}>Delete</Button>
                                     </TableCell>
                                 </TableRow>
                             )) : (
                                 <TableRow>
-                                    <TableCell colSpan={6} sx={{ textAlign: 'center', py: 3 }}>
+                                    <TableCell colSpan={8} sx={{ textAlign: 'center', py: 3 }}>
                                         No clients fully loaded or invalid format.
                                     </TableCell>
                                 </TableRow>
@@ -110,6 +130,19 @@ const ClientsList = () => {
             </Card>
 
             <ClientProgressDialog client={viewing} onClose={() => setViewing(null)} />
+
+            <Dialog open={!!confirmDelete} onClose={() => setConfirmDelete(null)}>
+                <DialogTitle>Delete Client</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure you want to permanently delete <strong>{confirmDelete?.name}</strong>? This cannot be undone.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setConfirmDelete(null)}>Cancel</Button>
+                    <Button color="error" variant="contained" onClick={() => confirmDelete && deleteClient(confirmDelete.id)}>Delete</Button>
+                </DialogActions>
+            </Dialog>
             <Snackbar open={!!toast} autoHideDuration={2500} onClose={() => setToast('')} message={toast} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} />
         </Box>
     );
